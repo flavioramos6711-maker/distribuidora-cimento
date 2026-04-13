@@ -4,6 +4,30 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Lock, Mail, Eye, EyeOff } from "lucide-react"
 
+/** Mensagem clara quando a API não tem service role / URL no servidor (hospedagem). */
+function messageForLoginFailure(status: number, apiError: string): string {
+  const raw = (apiError || "").toLowerCase()
+  const looksLikeEnv =
+    status === 503 ||
+    raw.includes("incompleta") ||
+    raw.includes("service_role") ||
+    raw.includes("ambiente de desenvolvimento")
+
+  if (looksLikeEnv) {
+    return [
+      "O servidor de hospedagem não está com as variáveis do Supabase configuradas para o painel admin.",
+      "",
+      "No painel do provedor (ex.: Vercel → Settings → Environment Variables), adicione para Production:",
+      "• SUPABASE_SERVICE_ROLE_KEY (chave service_role do Supabase — Settings → API)",
+      "• NEXT_PUBLIC_SUPABASE_URL (já deve existir)",
+      "",
+      "Salve, faça um novo deploy e teste de novo. Confira também GET /api/admin/login (campo supabaseAdminEnvReady).",
+    ].join("\n")
+  }
+
+  return apiError || "Erro ao fazer login"
+}
+
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -24,7 +48,7 @@ export default function AdminLoginPage() {
       })
       const data = await res.json()
       if (!res.ok) {
-        setError(data.error || "Erro ao fazer login")
+        setError(messageForLoginFailure(res.status, typeof data.error === "string" ? data.error : ""))
         return
       }
       window.location.href = "/admin"
@@ -47,7 +71,7 @@ export default function AdminLoginPage() {
         </div>
         <form onSubmit={handleSubmit} className="bg-card rounded-xl p-8 shadow-2xl">
           {error && (
-            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm text-center">
+            <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm text-left whitespace-pre-line">
               {error}
             </div>
           )}

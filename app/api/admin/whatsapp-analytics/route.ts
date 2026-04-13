@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createAdminClient } from "@/lib/supabase/admin"
+import { createAdminClient, isAdminServerConfigured } from "@/lib/supabase/admin"
+
+export const runtime = "nodejs"
 
 async function verifyAdmin(request: NextRequest) {
   const sessionId = request.cookies.get("admin_session")?.value
   if (!sessionId) return null
+  if (!isAdminServerConfigured()) {
+    console.error("[whatsapp-analytics] env admin incompleto")
+    return null
+  }
   let supabase
   try {
     supabase = createAdminClient()
@@ -22,12 +28,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    let supabase
-    try {
-      supabase = createAdminClient()
-    } catch {
-      return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY ausente" }, { status: 503 })
+    if (!isAdminServerConfigured()) {
+      console.error("[whatsapp-analytics] SUPABASE_SERVICE_ROLE_KEY ausente")
+      const isDev = process.env.NODE_ENV === "development"
+      return NextResponse.json(
+        { error: isDev ? "Defina SUPABASE_SERVICE_ROLE_KEY em .env.local" : "Erro interno" },
+        { status: isDev ? 503 : 500 }
+      )
     }
+
+    const supabase = createAdminClient()
     const { data, error } = await supabase
       .from("whatsapp_clicks")
       .select("id, source, page, device_type, browser, os, user_id, created_at")
