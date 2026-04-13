@@ -1,23 +1,28 @@
 -- =============================================================================
--- Cria ou ATUALIZA contas do painel admin (tabela public.admin_users).
--- Execute no Supabase: Dashboard → SQL → New query → Run.
+-- GARANTIR ACESSO AO PAINEL ADMIN (Supabase → SQL → New query → RUN)
+-- =============================================================================
 --
--- Requisitos no app: .env.local com SUPABASE_SERVICE_ROLE_KEY + NEXT_PUBLIC_SUPABASE_URL
+-- ANTES DE RODAR ESTE SQL:
+--   1) No projeto (.env.local ou Vercel): NEXT_PUBLIC_SUPABASE_URL e
+--      SUPABASE_SERVICE_ROLE_KEY (service_role do Supabase → Settings → API).
+--   2) Depois do deploy, faça login em /admin/login com o e-mail abaixo e a
+--      senha que você definiu ao gerar este hash (pnpm admin:hash-password).
 --
--- O password_hash abaixo é bcrypt (compatível com app/api/admin/login).
--- Para gerar outro hash: pnpm admin:hash-password -- "suaNovaSenha"
+-- Hash bcrypt atualizado e conferido no projeto (mesma senha para ambos e-mails
+-- se você usar este arquivo sem alterar o password_hash).
+--
 -- =============================================================================
 
 INSERT INTO public.admin_users (email, password_hash, name)
 VALUES
   (
     'consultorgabriel2026@gmail.com',
-    '$2a$12$NUOQyJUPxve.oxPrmnxu1u6BpVe2.Ixyf0gPbtVmtuPVA40SrwH0G',
+    '$2a$12$F1RUz0o7o5pxMiv4oJyaOu57VohxlLsFOvmnbf5Sy4xgJngPFhPwy',
     'Consultor Gabriel'
   ),
   (
     'flavioramos6711@gmail.com',
-    '$2a$12$NUOQyJUPxve.oxPrmnxu1u6BpVe2.Ixyf0gPbtVmtuPVA40SrwH0G',
+    '$2a$12$F1RUz0o7o5pxMiv4oJyaOu57VohxlLsFOvmnbf5Sy4xgJngPFhPwy',
     'Flavio Ramos'
   )
 ON CONFLICT (email) DO UPDATE SET

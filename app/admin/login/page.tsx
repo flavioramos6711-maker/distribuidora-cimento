@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Lock, Mail, Eye, EyeOff } from "lucide-react"
 
 /** Mensagem clara quando a API não tem service role / URL no servidor (hospedagem). */
@@ -34,7 +33,6 @@ export default function AdminLoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
