@@ -1,0 +1,15 @@
+-- Painel admin (sistema atual no código Next.js)
+-- ---------------------------------------------------------------------------
+-- 1) Tabela: public.admin_users (id, email UNIQUE, password_hash, name, …)
+--    Senha: bcrypt ($2a$…) — gere com: pnpm admin:hash-password -- "suaSenha"
+--    Ou no Postgres: crypt('senha', gen_salt('bf')) com extensão pgcrypto.
+--
+-- 2) Variáveis no servidor (.env.local / Vercel):
+--    NEXT_PUBLIC_SUPABASE_URL
+--    SUPABASE_SERVICE_ROLE_KEY   (obrigatório para ler admin_users no login/verify)
+--    ADMIN_SESSION_SECRET        (opcional; se ausente, a assinatura do cookie usa a service role)
+--
+-- 3) Sessão: cookie httpOnly `admin_access` (payload JSON + HMAC). Não usa Supabase Auth.
+--    Logout: POST /api/admin/logout
+--
+-- 4) Seed de exemplo: scripts/006_seed_admin_accounts.sql (ajuste e-mails/senhas antes de rodar).

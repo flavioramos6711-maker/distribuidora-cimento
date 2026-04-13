@@ -31,7 +31,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   useEffect(() => {
     async function checkSession() {
       try {
-        const res = await fetch("/api/admin/verify")
+        const res = await fetch("/api/admin/verify", { credentials: "include" })
         if (res.ok) {
           setIsAdmin(true)
         } else {
@@ -45,8 +45,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   }, [router])
 
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST" })
-    document.cookie = "admin_session=; Max-Age=0; path=/"
+    await fetch("/api/admin/logout", { method: "POST", credentials: "include" })
     window.location.href = "/admin/login"
   }
 

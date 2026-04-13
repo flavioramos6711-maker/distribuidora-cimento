@@ -1,39 +1,39 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createAdminClient, isAdminServerConfigured } from "@/lib/supabase/admin"
+import { getAdminAccessPayload } from "@/lib/admin/session"
 
 export const runtime = "nodejs"
 
+/** Confirma cookie assinado e que o admin ainda existe no banco. */
 export async function GET(request: NextRequest) {
-  const sessionId = request.cookies.get("admin_session")?.value
-  if (!sessionId) {
+  const payload = getAdminAccessPayload(request)
+  if (!payload) {
     return NextResponse.json({ valid: false }, { status: 401 })
   }
 
   if (!isAdminServerConfigured()) {
-    console.error("[admin verify] SUPABASE_SERVICE_ROLE_KEY ou URL ausentes")
-    const isDev = process.env.NODE_ENV === "development"
-    return NextResponse.json(
-      { valid: false },
-      { status: isDev ? 503 : 500 }
-    )
+    return NextResponse.json({ valid: false }, { status: 503 })
   }
 
   let supabase
   try {
     supabase = createAdminClient()
-  } catch (e) {
-    console.error("[admin verify] createAdminClient:", e)
+  } catch {
     return NextResponse.json({ valid: false }, { status: 500 })
   }
 
   const { data, error } = await supabase
     .from("admin_users")
     .select("id, email, name")
-    .eq("id", sessionId)
+    .eq("id", payload.sub)
     .maybeSingle()
 
   if (error || !data) {
     return NextResponse.json({ valid: false }, { status: 401 })
   }
-  return NextResponse.json({ valid: true, admin: data })
+
+  return NextResponse.json({
+    valid: true,
+    admin: { id: data.id, email: data.email, name: data.name },
+  })
 }
