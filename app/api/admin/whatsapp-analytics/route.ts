@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 async function verifyAdmin(request: NextRequest) {
   const sessionId = request.cookies.get("admin_session")?.value
   if (!sessionId) return null
-  const supabase = await createClient()
-  const { data, error } = await supabase.from("admin_users").select("id").eq("id", sessionId).single()
+  let supabase
+  try {
+    supabase = createAdminClient()
+  } catch {
+    return null
+  }
+  const { data, error } = await supabase.from("admin_users").select("id").eq("id", sessionId).maybeSingle()
   if (error || !data) return null
   return data
 }
