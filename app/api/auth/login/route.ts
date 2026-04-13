@@ -1,12 +1,21 @@
 import { createRouteHandlerSupabase } from "@/lib/supabase/route-handler"
+import { isAdmin } from "@/lib/auth/admin"
+import { AUTH_SCOPE_ADMIN } from "@/lib/auth/scopes"
 import { NextRequest } from "next/server"
 
 /**
- * Login de clientes da loja via Supabase Auth (não usa admin_users).
+ * Login via Supabase Auth.
+ * - Loja: POST { email, password }
+ * - Painel admin: POST { email, password, scope: "admin" } — exige linha em public.admins
  */
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password, scope } = body as {
+      email?: string
+      password?: string
+      scope?: string
+    }
 
     if (!email || !password) {
       return Response.json({ error: "Email e senha obrigatórios" }, { status: 400 })
@@ -24,6 +33,17 @@ export async function POST(request: NextRequest) {
         { error: error?.message || "Credenciais inválidas" },
         { status: 401 }
       )
+    }
+
+    if (scope === AUTH_SCOPE_ADMIN) {
+      const adminOk = await isAdmin(supabase, data.user.id)
+      if (!adminOk) {
+        await supabase.auth.signOut()
+        return jsonWithSession(
+          { error: "Acesso negado: usuário não é administrador." },
+          { status: 403 }
+        )
+      }
     }
 
     return jsonWithSession({

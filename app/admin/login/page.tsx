@@ -2,28 +2,13 @@
 
 import { useState } from "react"
 import { Lock, Mail, Eye, EyeOff } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { AUTH_SCOPE_ADMIN } from "@/lib/auth/scopes"
 
-/** Mensagem clara quando a API não tem service role / URL no servidor (hospedagem). */
 function messageForLoginFailure(status: number, apiError: string): string {
-  const raw = (apiError || "").toLowerCase()
-  const looksLikeEnv =
-    status === 503 ||
-    raw.includes("incompleta") ||
-    raw.includes("service_role") ||
-    raw.includes("ambiente de desenvolvimento")
-
-  if (looksLikeEnv) {
-    return [
-      "O servidor de hospedagem não está com as variáveis do Supabase configuradas para o painel admin.",
-      "",
-      "No painel do provedor (ex.: Vercel → Settings → Environment Variables), adicione para Production:",
-      "• SUPABASE_SERVICE_ROLE_KEY (chave service_role do Supabase — Settings → API)",
-      "• NEXT_PUBLIC_SUPABASE_URL (já deve existir)",
-      "",
-      "Salve, faça um novo deploy e teste de novo. Confira também GET /api/admin/login (campo supabaseAdminEnvReady).",
-    ].join("\n")
+  if (status === 403) {
+    return apiError || "Acesso negado: este usuário não está autorizado no painel admin."
   }
-
   return apiError || "Erro ao fazer login"
 }
 
@@ -39,17 +24,30 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("/api/admin/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, scope: AUTH_SCOPE_ADMIN }),
       })
       const data = await res.json()
       if (!res.ok) {
         setError(messageForLoginFailure(res.status, typeof data.error === "string" ? data.error : ""))
         return
       }
+
+      if (data.session?.access_token && data.session?.refresh_token) {
+        const supabase = createClient()
+        const { error: sessionErr } = await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        })
+        if (sessionErr) {
+          setError(sessionErr.message)
+          return
+        }
+      }
+
       window.location.href = "/admin"
     } catch {
       setError("Erro de conexao")

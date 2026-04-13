@@ -1,16 +1,19 @@
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { ADMIN_ACCESS_COOKIE } from "@/lib/admin/constants"
-import { verifyAdminAccessToken } from "@/lib/admin/session-token"
+import { createClient } from "@/lib/supabase/server"
+import { isAdmin } from "@/lib/auth/admin"
 
 export const dynamic = "force-dynamic"
 
-/** Já autenticado: vai direto ao painel. */
+/** Logado como admin → já vai para o painel. */
 export default async function AdminLoginGateLayout({ children }: { children: React.ReactNode }) {
-  const jar = await cookies()
-  const session = verifyAdminAccessToken(jar.get(ADMIN_ACCESS_COOKIE)?.value)
-  if (session) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user && (await isAdmin(supabase, user.id))) {
     redirect("/admin")
   }
+
   return <>{children}</>
 }

@@ -14,7 +14,7 @@ ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
 
 -- ---------------------------------------------------------------------------
 -- Criar ou atualizar um administrador (ajuste email, senha e nome).
--- O hash é compatível com bcryptjs no Node (login em app/api/admin/login).
+-- O hash é compatível com bcryptjs no Node (legado; o painel usa Supabase Auth + public.admins).
 -- ---------------------------------------------------------------------------
 -- INSERT INTO public.admin_users (email, password_hash, name)
 -- VALUES (

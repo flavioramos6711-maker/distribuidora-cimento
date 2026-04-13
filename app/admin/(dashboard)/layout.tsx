@@ -1,24 +1,35 @@
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { ADMIN_ACCESS_COOKIE } from "@/lib/admin/constants"
-import { verifyAdminAccessToken } from "@/lib/admin/session-token"
+import { createClient } from "@/lib/supabase/server"
+import { isAdmin } from "@/lib/auth/admin"
 import AdminAppShell from "@/components/admin/AdminAppShell"
 
 export const dynamic = "force-dynamic"
 
 /**
- * Painel admin v2: sessão validada no SERVIDOR (cookie httpOnly assinado).
- * Não depende de fetch /api/admin/verify no cliente — elimina falhas de timing e credenciais.
+ * Painel admin: sessão Supabase Auth + linha em public.admins.
+ * UI (AdminAppShell) inalterada — apenas origem dos dados de usuário.
  */
 export default async function AdminDashboardRootLayout({ children }: { children: React.ReactNode }) {
-  const jar = await cookies()
-  const session = verifyAdminAccessToken(jar.get(ADMIN_ACCESS_COOKIE)?.value)
-  if (!session) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
     redirect("/admin/login")
   }
 
+  const ok = await isAdmin(supabase, user.id)
+  if (!ok) {
+    redirect("/admin/login?error=acesso_negado")
+  }
+
+  const meta = user.user_metadata as { full_name?: string; name?: string } | undefined
+  const name = meta?.full_name ?? meta?.name ?? null
+  const email = user.email ?? ""
+
   return (
-    <AdminAppShell adminEmail={session.email} adminName={session.name}>
+    <AdminAppShell adminEmail={email} adminName={name}>
       {children}
     </AdminAppShell>
   )

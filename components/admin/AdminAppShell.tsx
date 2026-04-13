@@ -46,7 +46,7 @@ export default function AdminAppShell({ children, adminEmail, adminName }: Props
   const pathname = usePathname()
 
   async function handleLogout() {
-    await fetch("/api/admin/logout", { method: "POST", credentials: "include" })
+    await fetch("/api/auth/logout", { method: "POST", credentials: "include" })
     window.location.href = "/admin/login"
   }
 
