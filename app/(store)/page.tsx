@@ -3,7 +3,6 @@
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
-import HeroSearchBar from "@/components/store/hero-search-bar"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import Image from "next/image"
@@ -34,7 +33,6 @@ function HomeSkeleton() {
     <div className="animate-in fade-in duration-300">
       <Skeleton className="w-full min-h-[220px] max-h-[50vh] h-[40vh] rounded-none bg-muted" />
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-4">
-        <Skeleton className="h-12 max-w-2xl mx-auto rounded-2xl" />
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-36 rounded-xl bg-muted" />
@@ -60,7 +58,6 @@ export default function HomePage() {
   return (
     <div>
       <HeroBanner />
-      <HeroSearchBar />
 
       <section className="border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">

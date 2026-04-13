@@ -70,7 +70,7 @@ export default function StoreHeader() {
     : "bg-background/45 border-white/10"
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-all duration-300">
+    <header className="sticky top-0 left-0 right-0 z-50 border-b border-transparent transition-all duration-300 shrink-0">
       <div
         className={`${glass} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-300`}
       >

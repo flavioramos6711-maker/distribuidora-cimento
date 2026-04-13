@@ -35,10 +35,8 @@ export default function HeroBanner() {
     return () => clearInterval(timer)
   }, [banners, next])
 
-  /* Sobrepõe área do header fixo + altura máx. 70vh */
   const shellClass =
     "relative w-full overflow-hidden bg-secondary " +
-    "-mt-[8.75rem] pt-[8.75rem] md:-mt-[7.5rem] md:pt-[7.5rem] lg:-mt-[10rem] lg:pt-[10rem] " +
     "min-h-[200px] max-h-[70vh] h-[clamp(200px,38vh,480px)] " +
     "sm:h-[clamp(220px,42vh,500px)] md:h-[clamp(240px,45vh,520px)]"
 
