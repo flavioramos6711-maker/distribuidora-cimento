@@ -4,6 +4,8 @@ import type { ComponentType } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
+import InstitutionalSection from "@/components/store/institutional-section"
+import TestimonialsCarousel from "@/components/store/testimonials-carousel"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import Image from "next/image"
@@ -123,6 +125,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <InstitutionalSection />
+
+      <TestimonialsCarousel />
 
       {data?.categories && data.categories.length > 0 && (
         <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">

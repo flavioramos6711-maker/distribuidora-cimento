@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
-import BrandLogo from "@/components/store/brand-logo"
+import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import StoreSearch from "@/components/store/store-search"
 import { SITE } from "@/lib/site-config"
 
@@ -119,7 +119,7 @@ export default function StoreHeader() {
               href="/"
               className="order-2 flex min-w-0 shrink-0 items-center transition hover:opacity-90 active:scale-[0.98]"
             >
-              <BrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
+              <DynamicBrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
             </Link>
 
             <div className="order-3 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:order-4">

@@ -20,6 +20,7 @@ import {
   ExternalLink,
   PieChart,
   User,
+  Settings,
 } from "lucide-react"
 
 const menuItems = [
@@ -33,6 +34,7 @@ const menuItems = [
   { label: "Produtos", href: "/admin/produtos", icon: Package },
   { label: "Avaliacoes", href: "/admin/avaliacoes", icon: Star },
   { label: "Banners", href: "/admin/banners", icon: ImageIcon },
+  { label: "CMS / Aparência", href: "/admin/settings", icon: Settings },
 ] as const
 
 type Props = {
