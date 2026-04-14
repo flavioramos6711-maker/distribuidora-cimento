@@ -18,7 +18,7 @@ export default function StoreHeader() {
   const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
+    const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -49,13 +49,17 @@ export default function StoreHeader() {
     try {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]")
       setCartCount(cart.reduce((acc: number, item: { qty: number }) => acc + item.qty, 0))
-    } catch { /* empty */ }
+    } catch {
+      /* empty */
+    }
 
     function handleCartUpdate() {
       try {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]")
         setCartCount(cart.reduce((acc: number, item: { qty: number }) => acc + item.qty, 0))
-      } catch { /* empty */ }
+      } catch {
+        /* empty */
+      }
     }
     window.addEventListener("cart-updated", handleCartUpdate)
 
@@ -65,74 +69,77 @@ export default function StoreHeader() {
     }
   }, [])
 
-  const glass = scrolled
-    ? "bg-background/88 shadow-md shadow-black/5 border-border/80"
-    : "bg-background/45 border-white/10"
+  const barSurface = scrolled
+    ? "bg-background/92 shadow-app border-border/60"
+    : "bg-background/80 border-border/40"
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 border-b border-transparent transition-all duration-300 shrink-0">
+    <header className="sticky top-0 left-0 right-0 z-50 shrink-0">
       <div
-        className={`${glass} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-300`}
+        className={`${barSurface} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-200 ease-out`}
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-4">
-          <div className="hidden sm:flex items-center justify-between gap-3 py-1.5 text-[11px] text-muted-foreground border-b border-border/30">
+        <div className="mx-auto max-w-7xl px-3 sm:px-4">
+          <div className="hidden sm:flex items-center justify-between gap-3 py-2 text-[11px] text-muted-foreground border-b border-border/25">
             <div className="flex items-center gap-2 min-w-0">
-              <Phone className="w-3 h-3 text-primary shrink-0" aria-hidden />
-              <a href={`tel:+${SITE.whatsappE164}`} className="hover:text-primary transition truncate">
+              <Phone className="w-3 h-3 text-emerald-600 shrink-0" aria-hidden />
+              <a href={`tel:+${SITE.whatsappE164}`} className="hover:text-foreground transition truncate">
                 {SITE.phoneDisplay}
               </a>
               <span className="text-border hidden md:inline">|</span>
-              <span className="hidden md:inline truncate">Atacado B2B e B2C</span>
+              <span className="hidden md:inline truncate">Entrega e atacado</span>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <Link href="/rastrear-pedido" className="hover:text-primary transition">
+            <div className="flex items-center gap-4 shrink-0">
+              <Link href="/rastrear-pedido" className="hover:text-foreground transition">
                 Rastrear
               </Link>
-              <Link href="/contato" className="hover:text-primary transition">
+              <Link href="/contato" className="hover:text-foreground transition">
                 Contato
               </Link>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 py-2.5 sm:py-3">
+          <div className="flex flex-wrap items-center gap-2 py-2.5 sm:py-3">
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="order-1 lg:hidden p-2 rounded-xl text-foreground hover:bg-foreground/5 -ml-1"
+              className="order-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-foreground transition hover:bg-muted/80 hover:scale-[1.03] active:scale-[0.97] lg:hidden"
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             >
-              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link href="/" className="order-2 shrink-0 min-w-0 mr-1">
-              <BrandLogo variant="full" />
+            <Link
+              href="/"
+              className="order-2 flex min-w-0 shrink-0 items-center transition hover:opacity-90 active:scale-[0.98]"
+            >
+              <BrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
             </Link>
 
-            <div className="order-3 flex items-center gap-1 sm:gap-2 ml-auto shrink-0 md:order-4">
+            <div className="order-3 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:order-4">
               <Link
                 href={user ? "/minha-conta" : "/login"}
-                className="group flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/[0.07] px-2.5 sm:px-3 py-2 text-foreground transition hover:bg-primary/15 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="group flex h-11 min-w-[2.75rem] items-center justify-center gap-2 rounded-full border border-border/60 bg-muted/30 px-2.5 text-foreground transition hover:border-primary/25 hover:bg-muted/60 hover:scale-[1.03] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 sm:px-3"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary group-hover:bg-primary/25 transition">
-                  {user ? <User className="w-[18px] h-[18px]" strokeWidth={2.25} /> : <LogIn className="w-[18px] h-[18px]" strokeWidth={2.25} />}
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-background text-primary shadow-sm">
+                  {user ? <User className="h-[17px] w-[17px]" strokeWidth={2.2} /> : <LogIn className="h-[17px] w-[17px]" strokeWidth={2.2} />}
                 </span>
-                <span className="hidden lg:flex flex-col items-start leading-tight max-w-[120px]">
-                  <span className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
-                    {user ? "Minha conta" : "Entrar"}
+                <span className="hidden lg:flex max-w-[100px] flex-col items-start leading-tight">
+                  <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
+                    {user ? "Conta" : "Entrar"}
                   </span>
-                  <span className="text-xs font-semibold truncate w-full">{user ? user.name || "Perfil" : "Cadastre-se"}</span>
+                  <span className="truncate text-xs font-semibold">{user ? user.name || "Perfil" : "Acesso"}</span>
                 </span>
               </Link>
 
               <Link
                 href="/carrinho"
-                className="relative flex h-11 w-11 items-center justify-center rounded-xl border border-border/80 bg-background/50 text-foreground transition hover:bg-muted/80 hover:border-primary/25"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-muted/30 text-foreground transition hover:border-primary/25 hover:bg-muted/60 hover:scale-[1.03] active:scale-[0.97]"
                 aria-label="Carrinho"
               >
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="h-[1.15rem] w-[1.15rem]" strokeWidth={2} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                    {cartCount}
+                  <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground shadow-sm">
+                    {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </Link>
@@ -140,7 +147,7 @@ export default function StoreHeader() {
 
             <Suspense
               fallback={
-                <div className="order-4 h-11 w-full basis-full min-w-0 rounded-xl bg-muted/60 animate-pulse border border-border/40 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto" />
+                <div className="order-4 h-11 w-full basis-full min-w-0 animate-pulse rounded-full bg-muted/50 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto" />
               }
             >
               <div className="order-4 w-full basis-full min-w-0 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto">
@@ -149,26 +156,24 @@ export default function StoreHeader() {
             </Suspense>
           </div>
 
-          <nav className="hidden lg:block border-t border-border/40">
-            <ul className="flex flex-wrap items-center justify-center gap-0">
-              <li>
+          <nav className="scrollbar-hide hidden overflow-x-auto border-t border-border/30 lg:block">
+            <ul className="flex min-w-0 flex-nowrap items-center justify-start gap-0.5 py-1">
+              <li className="shrink-0">
                 <Link
                   href="/produtos"
-                  className="group relative flex items-center gap-1 px-4 py-3 text-sm font-semibold text-foreground/90 transition hover:text-primary"
+                  className="flex items-center gap-1 rounded-full px-4 py-2.5 text-sm font-semibold text-foreground/85 transition hover:bg-muted/80 hover:text-primary"
                 >
-                  <ChevronDown className="w-3.5 h-3.5 opacity-50" aria-hidden />
-                  Todos os produtos
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 scale-x-0 bg-primary transition group-hover:scale-x-100" />
+                  <ChevronDown className="h-3.5 w-3.5 opacity-45" aria-hidden />
+                  Catálogo
                 </Link>
               </li>
               {categories.map((cat) => (
-                <li key={cat.id}>
+                <li key={cat.id} className="shrink-0">
                   <Link
                     href={`/categoria/${cat.slug}`}
-                    className="group relative block px-4 py-3 text-sm font-medium text-foreground/85 transition hover:text-primary"
+                    className="block whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:bg-muted/80 hover:text-primary"
                   >
                     {cat.name}
-                    <span className="absolute bottom-2 left-4 right-4 h-0.5 scale-x-0 bg-primary transition group-hover:scale-x-100" />
                   </Link>
                 </li>
               ))}
@@ -178,30 +183,30 @@ export default function StoreHeader() {
       </div>
 
       {menuOpen && (
-        <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-xl shadow-lg max-h-[min(75vh,560px)] overflow-y-auto">
-          <div className="p-3 space-y-1">
+        <div className="max-h-[min(78vh,520px)] overflow-y-auto border-b border-border bg-background/98 shadow-app-lg backdrop-blur-xl lg:hidden">
+          <div className="mx-auto max-w-7xl space-y-1 p-3">
             <Link
               href="/produtos"
               onClick={() => setMenuOpen(false)}
-              className="block rounded-xl px-4 py-3 text-sm font-semibold hover:bg-muted"
+              className="block rounded-2xl px-4 py-3.5 text-sm font-semibold transition hover:bg-muted/80 active:scale-[0.99]"
             >
-              Todos os produtos
+              Ver catálogo completo
             </Link>
             {categories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categoria/${cat.slug}`}
                 onClick={() => setMenuOpen(false)}
-                className="block rounded-xl px-4 py-2.5 text-sm hover:bg-muted"
+                className="block rounded-2xl px-4 py-3 text-sm transition hover:bg-muted/80 active:scale-[0.99]"
               >
                 {cat.name}
               </Link>
             ))}
-            <div className="pt-2 border-t border-border mt-2 sm:hidden flex flex-col gap-1 text-sm">
-              <a href={`tel:+${SITE.whatsappE164}`} className="px-4 py-2 text-muted-foreground">
+            <div className="mt-3 flex flex-col gap-1 border-t border-border/60 pt-3 text-sm sm:hidden">
+              <a href={`tel:+${SITE.whatsappE164}`} className="rounded-2xl px-4 py-2.5 text-muted-foreground">
                 {SITE.phoneDisplay}
               </a>
-              <Link href="/rastrear-pedido" className="px-4 py-2" onClick={() => setMenuOpen(false)}>
+              <Link href="/rastrear-pedido" className="rounded-2xl px-4 py-2.5" onClick={() => setMenuOpen(false)}>
                 Rastrear pedido
               </Link>
             </div>

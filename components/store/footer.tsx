@@ -24,8 +24,8 @@ export default function StoreFooter() {
   }, [])
 
   return (
-    <footer className="bg-secondary text-secondary-foreground border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 py-14 lg:py-16">
+    <footer className="mt-auto rounded-t-[1.75rem] bg-secondary text-secondary-foreground shadow-[0_-8px_40px_-12px_rgb(0,0,0,0.15)] border-t border-white/5 sm:rounded-t-3xl">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:py-14 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           <div className="lg:col-span-4 space-y-4">
             <BrandLogo variant="compact" inverted className="mb-2" />

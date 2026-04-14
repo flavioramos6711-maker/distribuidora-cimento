@@ -50,8 +50,20 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     mutateReviews()
   }
 
-  if (isLoading) return <div className="flex items-center justify-center py-20"><div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full" /></div>
-  if (!product) return <div className="max-w-7xl mx-auto px-4 py-20 text-center"><p className="text-muted-foreground text-lg">Produto nao encontrado.</p></div>
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    )
+  }
+  if (!product) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-20 text-center">
+        <p className="text-lg text-muted-foreground">Produto não encontrado.</p>
+      </div>
+    )
+  }
 
   const allImages = [product.image_url, ...(product.images || [])].filter(Boolean) as string[]
   const discount = product.original_price ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : 0
@@ -59,9 +71,9 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
   const ratingCounts = [5, 4, 3, 2, 1].map(star => ({ star, count: reviews?.filter((r: { rating: number }) => r.rating === star).length || 0 }))
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6 flex-wrap">
+      <nav className="mb-5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground sm:mb-6 sm:text-sm">
         <Link href="/" className="hover:text-primary transition">Home</Link>
         <ChevronRight className="w-3.5 h-3.5" />
         {product.categories && (
@@ -73,18 +85,24 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
         <span className="text-foreground font-medium line-clamp-1">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
+      <div className="mb-12 grid grid-cols-1 gap-8 lg:mb-16 lg:grid-cols-2 lg:gap-10">
         {/* Images */}
         <div>
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted/30 border border-border mb-4">
+          <div className="relative mb-4 aspect-square overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-b from-white to-muted/20 shadow-app sm:rounded-3xl">
             {allImages.length > 0 ? (
               <Image src={allImages[selectedImage]} alt={product.name} fill className="object-contain p-6" />
             ) : (
               <div className="w-full h-full flex items-center justify-center"><Package className="w-24 h-24 text-muted-foreground/20" /></div>
             )}
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {discount > 0 && <span className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-lg">-{discount}% OFF</span>}
-              {product.is_new && <span className="px-3 py-1.5 bg-[#22c55e] text-white text-xs font-bold rounded-lg">Novo</span>}
+            <div className="absolute left-3 top-3 flex flex-col gap-2 sm:left-4 sm:top-4">
+              {discount > 0 && (
+                <span className="rounded-full bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground shadow-sm">
+                  -{discount}% OFF
+                </span>
+              )}
+              {product.is_new && (
+                <span className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm">Novo</span>
+              )}
             </div>
           </div>
           {allImages.length > 1 && (
@@ -114,7 +132,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           )}
 
           {/* Price */}
-          <div className="bg-muted/50 rounded-2xl p-5 mb-6">
+          <div className="mb-6 rounded-2xl border border-border/40 bg-muted/40 p-5 shadow-inner sm:rounded-3xl">
             {product.original_price && product.original_price > product.price && (
               <div className="flex items-center gap-3 mb-1">
                 <p className="text-base text-muted-foreground line-through">R$ {Number(product.original_price).toFixed(2).replace(".", ",")}</p>
@@ -149,13 +167,13 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 mb-8">
+          <div className="mb-8 flex flex-col gap-3 sm:flex-row">
             <button
               onClick={() => addToCart(product, qty)}
               disabled={product.stock <= 0}
-              className="flex-1 flex items-center justify-center gap-2 py-4 bg-primary text-primary-foreground rounded-xl font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg shadow-primary/20"
+              className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 text-base font-bold text-primary-foreground shadow-app transition duration-200 hover:scale-[1.02] hover:bg-primary/92 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
             >
-              <ShoppingCart className="w-5 h-5" /> Adicionar ao Carrinho
+              <ShoppingCart className="h-5 w-5 shrink-0" /> Adicionar ao carrinho
             </button>
             <a
               href={waLink(
@@ -164,20 +182,23 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick("product_page", `/produto/${product.slug}`)}
-              className="px-6 py-4 bg-[#25d366] text-white rounded-xl font-bold hover:bg-[#20c15c] transition shadow-lg shadow-[#25d366]/20 min-h-[52px] flex items-center justify-center"
+              className="flex min-h-12 items-center justify-center rounded-full border border-emerald-500/35 bg-emerald-500/10 px-6 text-base font-semibold text-emerald-800 transition duration-200 hover:scale-[1.02] hover:bg-emerald-500/15 dark:text-emerald-100"
             >
               WhatsApp
             </a>
           </div>
 
           {/* Trust badges */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {[
               { icon: Truck, label: "Entrega\nRapida" },
               { icon: ShieldCheck, label: "Compra\nSegura" },
               { icon: Award, label: "Garantia\nOriginal" },
             ].map((b) => (
-              <div key={b.label} className="flex flex-col items-center gap-2 p-3 rounded-xl bg-muted/50 border border-border text-center">
+              <div
+                key={b.label}
+                className="flex flex-col items-center gap-2 rounded-2xl border border-border/50 bg-muted/30 p-2.5 text-center shadow-sm sm:rounded-3xl sm:p-3"
+              >
                 <b.icon className="w-6 h-6 text-primary" />
                 <span className="text-[11px] font-medium text-foreground whitespace-pre-line leading-tight">{b.label}</span>
               </div>

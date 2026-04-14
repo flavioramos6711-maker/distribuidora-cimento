@@ -68,50 +68,78 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <ShoppingCart className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-        <h1 className="text-2xl font-bold text-foreground mb-2">Carrinho Vazio</h1>
-        <p className="text-muted-foreground mb-6">Adicione produtos ao seu carrinho.</p>
-        <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition">
-          <ArrowLeft className="w-4 h-4" /> Continuar Comprando
+      <div className="mx-auto max-w-lg px-4 py-16 text-center sm:py-20">
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted/80 shadow-inner">
+          <ShoppingCart className="h-9 w-9 text-muted-foreground" />
+        </div>
+        <h1 className="font-heading text-2xl font-bold text-foreground">Carrinho vazio</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Adicione produtos ao seu orçamento.</p>
+        <Link
+          href="/"
+          className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-app transition hover:scale-[1.03] hover:bg-primary/92 active:scale-[0.98]"
+        >
+          <ArrowLeft className="h-4 w-4 shrink-0" /> Continuar comprando
         </Link>
       </div>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-foreground">Carrinho ({totalItems} itens)</h1>
-        <button onClick={clearCart} className="text-sm text-destructive hover:underline">Limpar carrinho</button>
+    <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 sm:py-8">
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="font-heading text-xl font-bold text-foreground sm:text-2xl">
+          Carrinho · {totalItems} {totalItems === 1 ? "item" : "itens"}
+        </h1>
+        <button
+          type="button"
+          onClick={clearCart}
+          className="self-start text-sm font-medium text-destructive transition hover:underline sm:self-auto"
+        >
+          Limpar carrinho
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-3">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="space-y-3 lg:col-span-2">
           {cart.map((item) => (
-            <div key={item.id} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+            <div
+              key={item.id}
+              className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card p-3 shadow-app sm:gap-4 sm:rounded-3xl sm:p-4"
+            >
               {item.image_url ? (
-                <Image src={item.image_url} alt={item.name} width={80} height={80} className="w-20 h-20 rounded-lg object-cover shrink-0" />
+                <Image src={item.image_url} alt={item.name} width={80} height={80} className="h-16 w-16 shrink-0 rounded-2xl object-cover sm:h-20 sm:w-20" />
               ) : (
-                <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center shrink-0"><Package className="w-8 h-8 text-muted-foreground" /></div>
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-muted sm:h-20 sm:w-20">
+                  <Package className="h-8 w-8 text-muted-foreground" />
+                </div>
               )}
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-card-foreground text-sm line-clamp-2">{item.name}</h3>
                 <p className="text-primary font-bold mt-1">R$ {Number(item.price).toFixed(2)} <span className="text-xs text-muted-foreground font-normal">/{item.unit}</span></p>
               </div>
-              <div className="flex items-center border border-border rounded-lg shrink-0">
-                <button onClick={() => updateQty(item.id, -1)} className="p-2 text-foreground hover:bg-muted transition"><Minus className="w-3 h-3" /></button>
-                <span className="px-3 text-sm font-medium text-foreground">{item.qty}</span>
-                <button onClick={() => updateQty(item.id, 1)} className="p-2 text-foreground hover:bg-muted transition"><Plus className="w-3 h-3" /></button>
+              <div className="flex shrink-0 items-center overflow-hidden rounded-full border border-border/80">
+                <button type="button" onClick={() => updateQty(item.id, -1)} className="p-2.5 text-foreground transition hover:bg-muted">
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <span className="min-w-[2rem] px-2 text-center text-sm font-semibold text-foreground">{item.qty}</span>
+                <button type="button" onClick={() => updateQty(item.id, 1)} className="p-2.5 text-foreground transition hover:bg-muted">
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
               </div>
               <p className="font-bold text-card-foreground text-sm shrink-0 w-24 text-right">R$ {(item.price * item.qty).toFixed(2)}</p>
-              <button onClick={() => removeItem(item.id)} className="p-2 text-muted-foreground hover:text-destructive transition shrink-0"><Trash2 className="w-4 h-4" /></button>
+              <button
+                type="button"
+                onClick={() => removeItem(item.id)}
+                className="shrink-0 rounded-full p-2.5 text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
             </div>
           ))}
         </div>
 
-        <div className="bg-card rounded-xl border border-border p-6 h-fit sticky top-24">
-          <h2 className="text-lg font-bold text-card-foreground mb-4">Resumo</h2>
+        <div className="h-fit rounded-2xl border border-border/50 bg-card p-5 shadow-app sm:rounded-3xl sm:p-6 lg:sticky lg:top-24">
+          <h2 className="mb-4 font-heading text-lg font-bold text-card-foreground">Resumo</h2>
           <div className="space-y-3 mb-6">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Subtotal ({totalItems} itens)</span>
@@ -129,16 +157,19 @@ export default function CartPage() {
           <button
             type="button"
             onClick={() => void finalizeWhatsApp()}
-            className="flex w-full items-center justify-center gap-2 py-3.5 bg-[#25d366] text-white rounded-xl font-semibold hover:bg-[#20c15c] transition mb-3 shadow-md shadow-[#25d366]/20"
+            className="mb-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-app transition duration-200 hover:scale-[1.02] hover:bg-emerald-600/92 active:scale-[0.98]"
           >
-            <MessageCircle className="w-5 h-5 shrink-0" aria-hidden />
+            <MessageCircle className="h-5 w-5 shrink-0" aria-hidden />
             Finalizar via WhatsApp
           </button>
           <p className="text-[11px] text-muted-foreground text-center mb-3 leading-snug">
             Um código de pedido será gerado para você acompanhar em &quot;Minha conta&quot; e em &quot;Rastrear pedido&quot;.
           </p>
-          <Link href="/" className="block w-full text-center py-3 bg-muted text-muted-foreground rounded-lg font-medium hover:bg-muted/80 transition">
-            Continuar Comprando
+          <Link
+            href="/"
+            className="block w-full rounded-full border border-border/80 py-3 text-center text-sm font-semibold text-foreground transition hover:bg-muted/60"
+          >
+            Continuar comprando
           </Link>
         </div>
       </div>

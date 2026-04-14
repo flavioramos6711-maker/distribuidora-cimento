@@ -1,12 +1,13 @@
 "use client"
 
+import type { ComponentType } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Truck, ShieldCheck, Award, Headphones } from "lucide-react"
+import { ArrowRight, Truck, ShieldCheck, Award, Headphones, LayoutGrid, Sparkles, Tag } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SITE, waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
@@ -31,19 +32,55 @@ async function fetchHome() {
 function HomeSkeleton() {
   return (
     <div className="animate-in fade-in duration-300">
-      <Skeleton className="w-full min-h-[220px] max-h-[50vh] h-[40vh] rounded-none bg-muted" />
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-36 rounded-xl bg-muted" />
+      <div className="px-3 pt-3 sm:px-4">
+        <Skeleton className="mx-auto h-[min(42vw,320px)] max-w-7xl rounded-2xl bg-muted shadow-app sm:rounded-3xl" />
+      </div>
+      <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">
+        <div className="flex gap-3 overflow-hidden pb-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-24 min-w-[220px] shrink-0 rounded-2xl bg-muted" />
           ))}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8">
+        <div className="flex gap-3">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-20 rounded-xl bg-muted" />
+            <Skeleton key={i} className="h-36 w-[42vw] max-w-[200px] shrink-0 rounded-2xl bg-muted" />
           ))}
         </div>
       </div>
+    </div>
+  )
+}
+
+function SectionHeader({
+  title,
+  subtitle,
+  href,
+  linkLabel,
+  icon: Icon,
+}: {
+  title: string
+  subtitle?: string
+  href?: string
+  linkLabel?: string
+  icon?: ComponentType<{ className?: string }>
+}) {
+  return (
+    <div className="mb-5 flex flex-col gap-4 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="h-5 w-5 shrink-0 text-primary" aria-hidden />}
+          <h2 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl md:text-3xl">{title}</h2>
+        </div>
+        {subtitle && <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">{subtitle}</p>}
+      </div>
+      {href && (
+        <Link
+          href={href}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 self-start rounded-full border border-border/80 bg-background px-4 text-sm font-semibold text-primary shadow-sm transition duration-200 hover:scale-[1.03] hover:border-primary/25 hover:bg-muted/30 active:scale-[0.98] sm:self-auto"
+        >
+          {linkLabel || "Ver mais"} <ArrowRight className="h-4 w-4" />
+        </Link>
+      )}
     </div>
   )
 }
@@ -55,29 +92,31 @@ export default function HomePage() {
     return <HomeSkeleton />
   }
 
+  const trustItems = [
+    { icon: Truck, title: "Entrega ágil", desc: "Logística obra e revenda" },
+    { icon: ShieldCheck, title: "Compra segura", desc: "Atendimento consultivo" },
+    { icon: Award, title: "Marcas confiáveis", desc: "Qualidade certificada" },
+    { icon: Headphones, title: "Suporte direto", desc: "Canal comercial" },
+  ]
+
   return (
-    <div>
+    <div className="pb-6 sm:pb-10">
       <HeroBanner />
 
-      <section className="border-b border-border bg-card">
-        <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[
-              { icon: Truck, title: "Entrega ágil", desc: "Logística para obra e revenda" },
-              { icon: ShieldCheck, title: "Compra segura", desc: "Atendimento consultivo" },
-              { icon: Award, title: "Marcas confiáveis", desc: "Materiais de qualidade" },
-              { icon: Headphones, title: "Suporte direto", desc: "WhatsApp comercial" },
-            ].map((item) => (
+      <section className="border-b border-border/40 bg-card/80">
+        <div className="mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-7">
+          <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4 sm:gap-4">
+            {trustItems.map((item) => (
               <div
                 key={item.title}
-                className="flex items-start gap-3 rounded-xl border border-border/60 bg-muted/20 p-4 transition hover:border-primary/25 hover:bg-muted/40"
+                className="flex min-w-[min(78vw,280px)] shrink-0 snap-center items-start gap-3 rounded-2xl border border-border/50 bg-muted/20 p-4 shadow-sm transition duration-200 hover:border-emerald-500/20 hover:shadow-app sm:min-w-0"
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                  <item.icon className="h-5 w-5 text-primary" aria-hidden />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
+                  <item.icon className="h-5 w-5 text-emerald-600" aria-hidden />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-snug">{item.desc}</p>
+                  <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -86,40 +125,43 @@ export default function HomePage() {
       </section>
 
       {data?.categories && data.categories.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-          <div className="text-center mb-8 md:mb-10">
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Categorias</h2>
-            <p className="text-muted-foreground mt-2 text-sm md:text-base max-w-xl mx-auto">
-              Linhas de produto para obra, indústria e revenda
-            </p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
+        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+          <SectionHeader
+            title="Categorias"
+            subtitle="Toque para explorar — deslize no celular"
+            href="/produtos"
+            linkLabel="Ver tudo"
+            icon={LayoutGrid}
+          />
+          <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-3 sm:overflow-visible md:grid-cols-4 lg:grid-cols-6 sm:gap-4">
             {data.categories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categoria/${cat.slug}`}
-                className="group flex flex-col rounded-xl border border-border bg-card overflow-hidden transition hover:border-primary/35 hover:shadow-md"
+                className="group flex w-[min(42vw,200px)] shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-app transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-app-lg active:scale-[0.98] sm:w-auto"
               >
-                <div className="relative h-[88px] sm:h-[96px] w-full bg-muted/50 flex items-center justify-center p-2 sm:p-3">
+                <div className="relative flex aspect-[4/3] w-full items-center justify-center bg-gradient-to-b from-muted/40 to-muted/10 p-3">
                   {cat.image_url ? (
                     <div className="relative h-full w-full">
                       <Image
                         src={cat.image_url}
                         alt=""
                         fill
-                        sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 16vw"
-                        className="object-contain object-center transition duration-300 group-hover:opacity-95"
+                        sizes="(max-width:640px) 42vw, (max-width:1024px) 25vw, 16vw"
+                        className="object-contain object-center transition duration-300 group-hover:scale-[1.04]"
                       />
                     </div>
                   ) : (
-                    <span className="text-2xl font-heading font-bold text-primary/35">{cat.name.charAt(0)}</span>
+                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-heading text-2xl font-bold text-primary/50">
+                      {cat.name.charAt(0)}
+                    </span>
                   )}
                 </div>
-                <div className="p-3 text-center border-t border-border/60">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 min-h-[2.5rem]">
+                <div className="border-t border-border/40 p-3 text-center">
+                  <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug text-foreground transition group-hover:text-primary">
                     {cat.name}
                   </p>
-                  <p className="text-[11px] text-muted-foreground mt-1">{cat.products?.length || 0} produtos</p>
+                  <p className="mt-1 text-[11px] font-medium text-muted-foreground">{cat.products?.length || 0} produtos</p>
                 </div>
               </Link>
             ))}
@@ -128,21 +170,15 @@ export default function HomePage() {
       )}
 
       {data?.featured && data.featured.length > 0 && (
-        <section className="bg-muted/25 border-y border-border/80">
-          <div className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-              <div>
-                <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Produtos em destaque</h2>
-                <p className="text-muted-foreground mt-2 text-sm">Seleção comercial — pronta para orçamento</p>
-              </div>
-              <Link
-                href="/produtos"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline shrink-0"
-              >
-                Ver catálogo <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <section className="border-y border-border/40 bg-gradient-to-b from-muted/30 to-background">
+          <div className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+            <SectionHeader
+              title="Em destaque"
+              subtitle="Seleção comercial — pronta para orçamento"
+              href="/produtos"
+              icon={Sparkles}
+            />
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
               {data.featured.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -152,17 +188,9 @@ export default function HomePage() {
       )}
 
       {data?.newProducts && data.newProducts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Novidades</h2>
-              <p className="text-muted-foreground mt-2 text-sm">Últimos lançamentos no portfólio</p>
-            </div>
-            <Link href="/produtos" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
-              Ver todos <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+          <SectionHeader title="Novidades" subtitle="Últimos lançamentos" href="/produtos" linkLabel="Catálogo" icon={Sparkles} />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
             {data.newProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -170,14 +198,14 @@ export default function HomePage() {
         </section>
       )}
 
-      <section className="bg-secondary overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 py-12 md:py-16 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="text-center lg:text-left max-w-xl">
-            <h2 className="font-heading text-2xl md:text-4xl font-bold text-secondary-foreground text-balance">
-              Orçamento corporativo e prazos de obra
+      <section className="mx-3 overflow-hidden rounded-2xl bg-secondary shadow-app sm:mx-4 sm:rounded-3xl">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-5 py-10 text-center sm:flex-row sm:justify-between sm:gap-8 sm:px-8 sm:py-12 sm:text-left">
+          <div className="max-w-lg">
+            <h2 className="text-balance font-heading text-2xl font-bold text-secondary-foreground sm:text-3xl md:text-4xl">
+              Orçamento para obra e revenda
             </h2>
-            <p className="text-secondary-foreground/70 mt-4 text-sm md:text-base">
-              Fale com a equipe {SITE.shortName} no WhatsApp. Atendimento para construtoras, lojistas e consumidor final.
+            <p className="mt-3 text-sm leading-relaxed text-secondary-foreground/75 sm:text-base">
+              Fale com a equipe {SITE.shortName} no WhatsApp. Resposta ágil para construtoras, lojistas e consumidor.
             </p>
           </div>
           <a
@@ -185,25 +213,29 @@ export default function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackWhatsAppClick("hero_banner", "/")}
-            className="inline-flex items-center justify-center px-8 py-4 min-h-[52px] rounded-xl bg-primary text-primary-foreground font-semibold text-base shadow-lg shadow-primary/30 hover:bg-primary/90 transition w-full sm:w-auto min-w-[220px]"
+            className="inline-flex min-h-12 w-full min-w-[200px] max-w-xs items-center justify-center rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-app transition duration-200 hover:scale-[1.03] hover:bg-primary/92 active:scale-[0.98] sm:w-auto"
           >
-            Falar no WhatsApp
+            WhatsApp comercial
           </a>
         </div>
       </section>
 
       {data?.discounts && data.discounts.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 py-10 md:py-14">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Ofertas</h2>
-              <p className="text-muted-foreground mt-2 text-sm">Condições especiais por tempo limitado</p>
-            </div>
-            <Link href="/produtos" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
-              Ver todos <ArrowRight className="w-4 h-4" />
-            </Link>
+        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+          <div className="mb-5 flex flex-wrap items-center gap-2 sm:mb-6">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
+              <Tag className="h-3.5 w-3.5" />
+              Promoções
+            </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+          <SectionHeader
+            title="Ofertas"
+            subtitle="Condições especiais — aproveite no orçamento"
+            href="/produtos"
+            linkLabel="Ver ofertas"
+            icon={Tag}
+          />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
             {data.discounts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

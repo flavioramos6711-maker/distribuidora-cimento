@@ -29,7 +29,12 @@
   --chart-3: #f59e0b;
   --chart-4: #3b82f6;
   --chart-5: #10b981;
-  --radius: 0.625rem;
+  /* Marketplace / app: cantos mais generosos */
+  --radius: 0.875rem;
+  --app-shadow: 0 4px 24px -4px rgb(15 23 42 / 0.08), 0 2px 8px -2px rgb(15 23 42 / 0.04);
+  --app-shadow-lg: 0 12px 40px -8px rgb(15 23 42 / 0.12), 0 4px 16px -4px rgb(15 23 42 / 0.06);
+  --success: #059669;
+  --success-foreground: #ffffff;
   --sidebar: #0c1a2e;
   --sidebar-foreground: #f8fafc;
   --sidebar-primary: #ea580c;
@@ -141,5 +146,21 @@
 @layer utilities {
   .font-heading {
     font-family: var(--font-heading);
+  }
+  .shadow-app {
+    box-shadow: var(--app-shadow);
+  }
+  .shadow-app-lg {
+    box-shadow: var(--app-shadow-lg);
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .tap-scale {
+    @apply transition-transform duration-200 active:scale-[0.97];
   }
 }

@@ -62,15 +62,15 @@ export default function StoreSearch() {
         autoComplete="off"
         value={q}
         onChange={(e) => handleChange(e.target.value)}
-        placeholder="Buscar materiais, marcas, categorias..."
-        className="w-full rounded-xl border border-border/80 bg-background/60 pl-4 pr-12 py-2.5 sm:py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/15"
+        placeholder="Buscar produtos..."
+        className="h-11 w-full rounded-full border border-border/50 bg-muted/40 pl-4 pr-12 text-sm text-foreground shadow-inner placeholder:text-muted-foreground outline-none transition duration-200 focus:border-primary/35 focus:bg-background focus:shadow-app"
       />
       <button
         type="submit"
-        className="absolute right-1 top-1/2 -translate-y-1/2 rounded-lg bg-primary p-2 text-primary-foreground hover:bg-primary/90 transition"
+        className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition duration-200 hover:scale-[1.05] hover:bg-primary/92 active:scale-[0.95]"
         aria-label="Buscar"
       >
-        <Search className="w-4 h-4" />
+        <Search className="h-4 w-4" />
       </button>
     </form>
   )

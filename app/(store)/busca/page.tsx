@@ -34,33 +34,39 @@ function SearchResults() {
   }, [allProducts, qLower])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 sm:py-10">
       <Link
         href="/"
-        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition mb-6"
+        className="mb-5 inline-flex min-h-10 items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary"
       >
-        <ArrowLeft className="w-4 h-4" /> Voltar
+        <ArrowLeft className="h-4 w-4 shrink-0" /> Voltar
       </Link>
-      <div className="flex items-center gap-2 mb-8">
-        <Search className="w-5 h-5 text-primary shrink-0" />
-        <h1 className="text-2xl font-bold text-foreground">
-          {q ? `Resultados para “${q}”` : "Buscar produtos"}
-        </h1>
+      <div className="mb-6 flex items-center gap-3 sm:mb-8">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Search className="h-5 w-5" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl md:text-3xl">
+            {q ? `“${q}”` : "Buscar produtos"}
+          </h1>
+          {q ? <p className="text-sm text-muted-foreground">Resultados da busca</p> : null}
+        </div>
       </div>
 
       {!q ? (
-        <p className="text-center text-muted-foreground py-12 rounded-2xl border border-dashed border-border/80 bg-muted/20">
-          Digite no campo de busca do topo para encontrar produtos por nome ou descrição. Os resultados atualizam
-          em tempo real.
+        <p className="rounded-2xl border border-dashed border-border/80 bg-card/80 px-4 py-12 text-center text-sm leading-relaxed text-muted-foreground shadow-app">
+          Digite no campo de busca do topo. Os resultados atualizam em tempo real conforme você digita.
         </p>
       ) : isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+        <div className="flex items-center justify-center py-16">
+          <div className="h-9 w-9 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       ) : !products.length ? (
-        <p className="text-center text-muted-foreground py-12">Nenhum produto encontrado para sua busca.</p>
+        <p className="rounded-2xl border border-border/50 bg-muted/20 py-12 text-center text-muted-foreground">
+          Nenhum produto encontrado para sua busca.
+        </p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
