@@ -74,9 +74,16 @@ export default function StoreHeader() {
     : "bg-background/80 border-border/40"
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 shrink-0">
+    <header
+      className={
+        "z-50 shrink-0 border-b border-transparent " +
+        /* Mobile: fixed evita sobreposição do 1º bloco (banner) com layout flex+sticky; desktop: sticky no fluxo */
+        "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bg-background max-lg:pt-[env(safe-area-inset-top,0px)] " +
+        "lg:sticky lg:top-0 lg:bg-transparent lg:pt-0"
+      }
+    >
       <div
-        className={`${barSurface} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-200 ease-out`}
+        className={`${barSurface} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-200 ease-out max-lg:bg-background/95`}
       >
         <div className="mx-auto max-w-7xl px-3 sm:px-4">
           <div className="hidden sm:flex items-center justify-between gap-3 py-2 text-[11px] text-muted-foreground border-b border-border/25">

@@ -43,6 +43,8 @@ export default function CategoriasPage() {
     try {
       const fd = new FormData()
       fd.append("file", file)
+      fd.append("bucket", "produtos")
+      fd.append("path_prefix", "categorias")
       const res = await fetch("/api/upload", { method: "POST", body: fd })
       const data = await res.json()
       if (data.url) {

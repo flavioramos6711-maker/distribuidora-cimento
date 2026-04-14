@@ -33,6 +33,7 @@ export default function BannersPage() {
     try {
       const fd = new FormData()
       fd.append("file", file)
+      fd.append("bucket", "banners")
       const res = await fetch("/api/upload", { method: "POST", body: fd })
       const data = await res.json()
       if (data.url) {

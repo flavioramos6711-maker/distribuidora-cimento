@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { createRouteHandlerSupabase } from "@/lib/supabase/route-handler"
 import { isAdmin } from "@/lib/auth/admin"
 import { createAdminClient, isAdminServerConfigured } from "@/lib/supabase/admin"
+import { isStorageBucketId, type StorageBucketId, STORAGE_BUCKETS } from "@/lib/storage-buckets"
 
 const MAX_BYTES = 8 * 1024 * 1024
 
-/** Bucket no Supabase Storage (crie como público para leitura ou use URL assinada). Padrão: uploads */
-const BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || "uploads"
+/** Prefixo opcional de pasta dentro do bucket (ex.: categorias → produtos/categorias/...) */
+const PREFIX_RE = /^[a-z0-9_-]{1,40}$/
 
 function extFromMime(mime: string): string {
   const m: Record<string, string> = {
@@ -17,6 +18,23 @@ function extFromMime(mime: string): string {
     "image/gif": "gif",
   }
   return m[mime.toLowerCase()] || "jpg"
+}
+
+function resolveBucket(formData: FormData): StorageBucketId {
+  const raw = formData.get("bucket")
+  const s = typeof raw === "string" ? raw.trim().toLowerCase() : ""
+  if (isStorageBucketId(s)) return s
+  const env = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET?.trim().toLowerCase()
+  if (env && isStorageBucketId(env)) return env
+  return STORAGE_BUCKETS.produtos
+}
+
+function resolvePathPrefix(formData: FormData): string {
+  const raw = formData.get("path_prefix")
+  if (typeof raw !== "string") return ""
+  const t = raw.trim().toLowerCase()
+  if (!t || !PREFIX_RE.test(t)) return ""
+  return t
 }
 
 export async function POST(request: NextRequest) {
@@ -60,28 +78,36 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Envie apenas imagens (JPEG, PNG, WebP ou GIF)." }, { status: 400 })
   }
 
+  const bucket = resolveBucket(formData)
+  const prefix = resolvePathPrefix(formData)
   const admin = createAdminClient()
   const ext = extFromMime(file.type)
-  const path = `site/${Date.now()}-${crypto.randomUUID()}.${ext}`
+  const fileName = `${Date.now()}-${crypto.randomUUID()}.${ext}`
+  const path = prefix ? `${prefix}/${fileName}` : fileName
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  const { error } = await admin.storage.from(BUCKET).upload(path, buffer, {
+  const { error } = await admin.storage.from(bucket).upload(path, buffer, {
     contentType: file.type,
     cacheControl: "31536000",
     upsert: false,
   })
 
   if (error) {
+    const isBucketMissing =
+      error.message.toLowerCase().includes("bucket not found") ||
+      error.message.toLowerCase().includes("not found")
     return NextResponse.json(
       {
         error: error.message,
-        hint:
-          `Verifique se o bucket "${BUCKET}" existe no Supabase Storage e se as políticas permitem upload (service role).`,
+        bucket,
+        hint: isBucketMissing
+          ? `Crie os buckets "${STORAGE_BUCKETS.produtos}" e "${STORAGE_BUCKETS.banners}" no Supabase (rode scripts/010_supabase_storage_whatsapp_production.sql no SQL Editor).`
+          : "Verifique permissões do Storage e variável SUPABASE_SERVICE_ROLE_KEY.",
       },
       { status: 500 },
     )
   }
 
-  const { data: pub } = admin.storage.from(BUCKET).getPublicUrl(path)
-  return jsonWithSession({ url: pub.publicUrl })
+  const { data: pub } = admin.storage.from(bucket).getPublicUrl(path)
+  return jsonWithSession({ url: pub.publicUrl, bucket, path })
 }

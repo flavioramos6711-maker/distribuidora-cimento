@@ -34,7 +34,15 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("whatsapp_clicks insert", error.message)
-      return NextResponse.json({ ok: false }, { status: 500 })
+      return NextResponse.json(
+        {
+          ok: false,
+          error: error.message,
+          hint:
+            "Execute scripts/010_supabase_storage_whatsapp_production.sql no Supabase (colunas page, device_type, browser, os).",
+        },
+        { status: 500 },
+      )
     }
 
     return NextResponse.json({ ok: true })

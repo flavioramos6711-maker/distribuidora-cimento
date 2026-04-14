@@ -1,4 +1,5 @@
 -- Analytics de cliques WhatsApp (executar no SQL Editor do Supabase)
+-- Produção / buckets / colunas faltantes: use também scripts/010_supabase_storage_whatsapp_production.sql
 -- A leitura no admin usa a service role via API; inserts públicos via API com service role.
 
 CREATE TABLE IF NOT EXISTS public.whatsapp_clicks (

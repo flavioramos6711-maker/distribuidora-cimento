@@ -55,7 +55,7 @@ export default function HeroBanner() {
 
   if (!banners?.length) {
     return (
-      <section className="w-full px-3 pt-3 sm:px-4 sm:pt-4" aria-label="Destaque">
+      <section className="w-full px-3 pt-1 sm:px-4 sm:pt-4" aria-label="Destaque">
         <div
           className={`${shellClass} mx-auto max-w-7xl rounded-2xl shadow-app sm:rounded-3xl`}
           onTouchStart={onTouchStart}
@@ -92,7 +92,7 @@ export default function HeroBanner() {
   }
 
   return (
-    <section className="w-full px-3 pt-3 sm:px-4 sm:pt-4" aria-label="Banners">
+    <section className="w-full px-3 pt-1 sm:px-4 sm:pt-4" aria-label="Banners">
       <div
         className={`${shellClass} mx-auto max-w-7xl rounded-2xl shadow-app sm:rounded-3xl`}
         onTouchStart={onTouchStart}

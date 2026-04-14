@@ -80,6 +80,7 @@ export default function ProdutosPage() {
     for (const file of Array.from(files)) {
       const fd = new FormData()
       fd.append("file", file)
+      fd.append("bucket", "produtos")
       try {
         const res = await fetch("/api/upload", { method: "POST", body: fd })
         const data = await res.json()
