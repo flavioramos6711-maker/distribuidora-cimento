@@ -25,6 +25,7 @@ function Stars({ n }: { n: number }) {
 export default function TestimonialsCarousel() {
   const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
   const items = resolveTestimonials(row ?? null)
+  const [paused, setPaused] = useState(false)
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -57,8 +58,42 @@ export default function TestimonialsCarousel() {
     emblaApi?.reInit()
   }, [emblaApi, items.length])
 
+  useEffect(() => {
+    if (!emblaApi) return
+
+    // Pausa enquanto o usuário interage (drag/tap), para não "brigar" com o autoplay.
+    const onDown = () => setPaused(true)
+    const onUp = () => setPaused(false)
+    emblaApi.on("pointerDown", onDown)
+    emblaApi.on("pointerUp", onUp)
+    return () => {
+      emblaApi.off("pointerDown", onDown)
+      emblaApi.off("pointerUp", onUp)
+    }
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi || items.length <= 1) return
+    if (typeof window === "undefined") return
+
+    const reduced =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (reduced) return
+
+    const id = window.setInterval(() => {
+      if (paused) return
+      emblaApi.scrollNext()
+    }, 6000)
+
+    return () => window.clearInterval(id)
+  }, [emblaApi, items.length, paused])
+
   return (
-    <section className="bg-muted/25 py-10 sm:py-14">
+    <section
+      className="bg-muted/25 py-10 sm:py-14"
+      onPointerEnter={() => setPaused(true)}
+      onPointerLeave={() => setPaused(false)}
+    >
       <div className="mx-auto max-w-7xl px-3 sm:px-4">
         <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <div className="min-w-0">

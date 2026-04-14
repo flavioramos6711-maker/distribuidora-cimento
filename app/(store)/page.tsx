@@ -1,6 +1,7 @@
 "use client"
 
 import type { ComponentType } from "react"
+import { useEffect, useRef, useState } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
@@ -95,11 +96,39 @@ export default function HomePage() {
   }
 
   const trustItems = [
-    { icon: Truck, title: "Entrega ágil", desc: "Logística obra e revenda" },
-    { icon: ShieldCheck, title: "Compra segura", desc: "Atendimento consultivo" },
-    { icon: Award, title: "Marcas confiáveis", desc: "Qualidade certificada" },
-    { icon: Headphones, title: "Suporte direto", desc: "Canal comercial" },
+    { icon: Truck, title: "Entrega Ágil", desc: "Logística para obra e revenda" },
+    { icon: ShieldCheck, title: "Compra Segura", desc: "Atendimento consultivo e transparência" },
+    { icon: Headphones, title: "Suporte Direto", desc: "Canal comercial para resolver rápido" },
+    { icon: Award, title: "Atendimento Profissional", desc: "Experiência no setor e qualidade" },
   ]
+
+  const trustScrollerRef = useRef<HTMLDivElement | null>(null)
+  const [trustAutoPaused, setTrustAutoPaused] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const el = trustScrollerRef.current
+    if (!el) return
+
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    if (reduced) return
+
+    // No desktop (>=640px) a seção vira grid; não precisamos de autoplay.
+    const desktop = window.matchMedia && window.matchMedia("(min-width: 640px)").matches
+    if (desktop) return
+
+    const id = window.setInterval(() => {
+      if (trustAutoPaused) return
+
+      const maxLeft = el.scrollWidth - el.clientWidth
+      if (maxLeft <= 0) return
+
+      const next = el.scrollLeft + el.clientWidth * 0.85
+      el.scrollTo({ left: next >= maxLeft - 2 ? 0 : next, behavior: "smooth" })
+    }, 5200)
+
+    return () => window.clearInterval(id)
+  }, [trustAutoPaused])
 
   return (
     <div className="pb-6 sm:pb-10">
@@ -107,7 +136,14 @@ export default function HomePage() {
 
       <section className="border-b border-border/40 bg-card/80">
         <div className="mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-7">
-          <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4 sm:gap-4">
+          <div
+            ref={trustScrollerRef}
+            className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4 sm:gap-4"
+            onPointerEnter={() => setTrustAutoPaused(true)}
+            onPointerDown={() => setTrustAutoPaused(true)}
+            onPointerLeave={() => setTrustAutoPaused(false)}
+            onPointerUp={() => setTrustAutoPaused(false)}
+          >
             {trustItems.map((item) => (
               <div
                 key={item.title}
@@ -128,8 +164,6 @@ export default function HomePage() {
 
       <InstitutionalSection />
 
-      <TestimonialsCarousel />
-
       {data?.categories && data.categories.length > 0 && (
         <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
           <SectionHeader
@@ -146,15 +180,15 @@ export default function HomePage() {
                 href={`/categoria/${cat.slug}`}
                 className="group flex w-[min(42vw,200px)] shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-app transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-app-lg active:scale-[0.98] sm:w-auto"
               >
-                <div className="relative flex aspect-[4/3] w-full items-center justify-center bg-gradient-to-b from-muted/40 to-muted/10 p-3">
+                <div className="relative flex aspect-square w-full items-center justify-center bg-gradient-to-b from-muted/40 to-muted/10 p-3">
                   {cat.image_url ? (
-                    <div className="relative h-full w-full">
+                    <div className="relative h-full w-full overflow-hidden rounded-full">
                       <Image
                         src={cat.image_url}
                         alt=""
                         fill
                         sizes="(max-width:640px) 42vw, (max-width:1024px) 25vw, 16vw"
-                        className="object-contain object-center transition duration-300 group-hover:scale-[1.04]"
+                        className="object-contain object-center transition duration-300 group-hover:scale-[1.03]"
                       />
                     </div>
                   ) : (
@@ -192,6 +226,8 @@ export default function HomePage() {
           </div>
         </section>
       )}
+
+      <TestimonialsCarousel />
 
       {data?.newProducts && data.newProducts.length > 0 && (
         <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">

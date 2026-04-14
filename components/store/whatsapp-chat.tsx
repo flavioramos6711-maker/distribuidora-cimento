@@ -18,7 +18,7 @@ export default function WhatsAppChat() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed right-6 z-50 bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
       {/* Chat Panel */}
       {open && (
         <div className="absolute bottom-16 right-0 w-80 bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-in slide-in-from-bottom-2 duration-300">
@@ -79,7 +79,9 @@ export default function WhatsAppChat() {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-600/25 bg-emerald-600 text-white shadow-md shadow-emerald-900/10 transition hover:bg-emerald-600/92 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 active:scale-[0.97]"
+        className={`flex h-12 w-12 items-center justify-center rounded-full border border-emerald-600/25 bg-emerald-600 text-white shadow-md shadow-emerald-900/10 transition hover:bg-emerald-600/92 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 active:scale-[0.97] ${
+          !open ? "motion-safe:animate-pulse" : ""
+        }`}
         aria-label="Abrir WhatsApp"
       >
         {open ? <X className="w-5 h-5" /> : (

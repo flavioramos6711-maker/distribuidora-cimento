@@ -75,8 +75,8 @@ function SlideVisual({
         className="object-cover object-center transition duration-700 ease-out"
       />
       {(banner.title || banner.subtitle) && (
-        <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/75 via-black/25 to-transparent sm:items-center sm:bg-gradient-to-r sm:from-black/60 sm:via-black/20">
-          <div className="w-full max-w-7xl px-4 pb-8 pt-16 sm:px-8 sm:pb-0 sm:pt-0">
+        <div className="absolute inset-0 flex items-center bg-gradient-to-t from-black/75 via-black/25 to-transparent sm:items-end sm:bg-gradient-to-r sm:from-black/60 sm:via-black/20">
+          <div className="w-full max-w-7xl px-4 py-10 sm:px-8 sm:pb-8 sm:pt-0">
             {banner.title && (
               <h2 className="max-w-xl text-balance font-heading text-xl font-bold text-white sm:text-3xl md:text-4xl">
                 {banner.title}
@@ -149,7 +149,8 @@ export default function HeroBanner() {
   }, [emblaApi, slides.length])
 
   const shellClass =
-    "relative w-full overflow-hidden bg-secondary min-h-[200px] max-h-[68vh] h-[min(42vw,320px)] sm:h-[min(38vw,400px)] md:h-[min(36vw,480px)]"
+    // Evita corte no mobile: sem altura fixa/max-height, o conteúdo cresce naturalmente.
+    "relative w-full bg-secondary min-h-[240px] sm:min-h-[320px] md:min-h-[420px]"
 
   const imgSizes = "(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
 
@@ -194,7 +195,7 @@ export default function HeroBanner() {
   return (
     <section className="w-full px-3 pt-1 sm:px-4 sm:pt-4" aria-label="Banners">
       <div className={`${shellClass} mx-auto max-w-7xl rounded-2xl shadow-app sm:rounded-3xl`}>
-        <div className="embla h-full overflow-hidden" ref={emblaRef}>
+        <div className="embla h-full overflow-visible" ref={emblaRef}>
           <div className="flex h-full touch-pan-y">
             {slides.map((banner, i) => (
               <div
