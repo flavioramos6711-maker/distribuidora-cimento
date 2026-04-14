@@ -91,10 +91,6 @@ function SectionHeader({
 export default function HomePage() {
   const { data, isLoading } = useSWR("store-home", fetchHome)
 
-  if (isLoading) {
-    return <HomeSkeleton />
-  }
-
   const trustItems = [
     { icon: Truck, title: "Entrega Ágil", desc: "Logística para obra e revenda" },
     { icon: ShieldCheck, title: "Compra Segura", desc: "Atendimento consultivo e transparência" },
@@ -129,6 +125,10 @@ export default function HomePage() {
 
     return () => window.clearInterval(id)
   }, [trustAutoPaused])
+
+  if (isLoading) {
+    return <HomeSkeleton />
+  }
 
   return (
     <div className="pb-6 sm:pb-10">
