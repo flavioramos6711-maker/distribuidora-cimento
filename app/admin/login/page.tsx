@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
             <Lock className="w-8 h-8 text-primary-foreground" />
           </div>
           <h1 className="text-2xl font-bold text-secondary-foreground">Painel Administrativo</h1>
-          <p className="text-secondary-foreground/60 mt-1">Atacado Cimento & Cal</p>
+          <p className="text-secondary-foreground/60 mt-1">Atacado de Construção</p>
         </div>
         <form onSubmit={handleSubmit} className="bg-card rounded-xl p-8 shadow-2xl">
           {error && (

@@ -90,22 +90,22 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
         )}
       </Link>
 
-      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-3">
-        <Link href={`/produto/${product.slug}`} className="min-h-[2.75rem]">
+      <div className="p-4 sm:p-5 flex flex-col flex-1 gap-3 min-h-0">
+        <Link href={`/produto/${product.slug}`} className="min-h-[2.75rem] shrink-0">
           <h3 className="text-sm sm:text-[15px] font-semibold text-card-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        <div className="mt-auto space-y-3">
+        <div className="mt-auto flex flex-col gap-3 pt-1">
           {product.original_price && product.original_price > product.price && (
             <p className="text-xs text-muted-foreground line-through">
               R$ {Number(product.original_price).toFixed(2).replace(".", ",")}
             </p>
           )}
-          <div>
+          <div className="space-y-0.5">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">A partir de</p>
-            <p className="text-2xl sm:text-[1.65rem] font-heading font-bold text-primary leading-tight">
+            <p className="text-xl sm:text-2xl font-heading font-bold text-primary leading-tight tabular-nums">
               R$ {Number(product.price).toFixed(2).replace(".", ",")}
             </p>
             <p className="text-xs text-muted-foreground">por {product.unit}</p>
@@ -114,9 +114,9 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
           <button
             type="button"
             onClick={() => addToCart(product)}
-            className="w-full flex items-center justify-center gap-2 py-3.5 min-h-[48px] rounded-xl bg-primary text-primary-foreground text-sm font-bold shadow-md shadow-primary/20 hover:bg-primary/92 active:scale-[0.98] transition-all"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/15 transition hover:bg-primary/92 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 active:scale-[0.99]"
           >
-            <ShoppingCart className="w-4 h-4 shrink-0" />
+            <ShoppingCart className="w-4 h-4 shrink-0" aria-hidden />
             Adicionar ao orçamento
           </button>
 
@@ -125,9 +125,9 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackWhatsAppClick("product_page", `/produto/${product.slug}`)}
-            className="w-full flex items-center justify-center gap-2 py-3 min-h-[46px] rounded-xl border-2 border-[#25d366] bg-[#25d366]/5 text-[#0d9488] text-sm font-bold hover:bg-[#25d366]/10 transition-colors"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border/80 bg-background px-4 py-2.5 text-sm font-medium text-muted-foreground transition hover:border-emerald-500/35 hover:bg-emerald-500/[0.06] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/25"
           >
-            <MessageCircle className="w-4 h-4 shrink-0 text-[#25d366]" />
+            <MessageCircle className="w-4 h-4 shrink-0 text-emerald-600" aria-hidden />
             WhatsApp
           </a>
         </div>

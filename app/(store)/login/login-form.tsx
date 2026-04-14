@@ -59,7 +59,7 @@ export default function LoginForm() {
       <div className="text-center mb-8">
         <h1 className="font-heading text-2xl font-bold text-foreground">Entrar na sua conta</h1>
         <p className="text-muted-foreground mt-2 text-sm">Acompanhe pedidos e dados da {` `}
-          <span className="text-foreground font-medium">Cimento &amp; Cal Distribuidora</span>
+          <span className="text-foreground font-medium">Atacado de Construção</span>
         </p>
       </div>
       <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-border p-8 shadow-sm">

@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { Search, ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn } from "lucide-react"
+import { ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import BrandLogo from "@/components/store/brand-logo"
+import StoreSearch from "@/components/store/store-search"
 import { SITE } from "@/lib/site-config"
 
 const supabase = createClient()
@@ -15,7 +16,6 @@ export default function StoreHeader() {
   const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([])
   const [user, setUser] = useState<{ email: string; name?: string } | null>(null)
   const [cartCount, setCartCount] = useState(0)
-  const [search, setSearch] = useState("")
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12)
@@ -94,41 +94,21 @@ export default function StoreHeader() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3 py-2.5 sm:py-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 py-2.5 sm:py-3">
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="lg:hidden p-2 rounded-xl text-foreground hover:bg-foreground/5 -ml-1"
+              className="order-1 lg:hidden p-2 rounded-xl text-foreground hover:bg-foreground/5 -ml-1"
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             >
               {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
 
-            <Link href="/" className="shrink-0 min-w-0 mr-1">
+            <Link href="/" className="order-2 shrink-0 min-w-0 mr-1">
               <BrandLogo variant="full" />
             </Link>
 
-            <form
-              action={`/busca?q=${encodeURIComponent(search)}`}
-              className="flex-1 min-w-0 max-w-2xl mx-auto hidden md:flex relative"
-            >
-              <input
-                type="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar materiais, marcas, categorias..."
-                className="w-full rounded-xl border border-border/80 bg-background/60 pl-4 pr-12 py-2.5 text-sm text-foreground placeholder:text-muted-foreground outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/15"
-              />
-              <button
-                type="submit"
-                className="absolute right-1 top-1/2 -translate-y-1/2 rounded-lg bg-primary p-2 text-primary-foreground hover:bg-primary/90 transition"
-                aria-label="Buscar"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-            </form>
-
-            <div className="flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
+            <div className="order-3 flex items-center gap-1 sm:gap-2 ml-auto shrink-0 md:order-4">
               <Link
                 href={user ? "/minha-conta" : "/login"}
                 className="group flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/[0.07] px-2.5 sm:px-3 py-2 text-foreground transition hover:bg-primary/15 hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
@@ -157,25 +137,16 @@ export default function StoreHeader() {
                 )}
               </Link>
             </div>
-          </div>
 
-          <div className="pb-3 md:hidden">
-            <form action={`/busca?q=${encodeURIComponent(search)}`} className="relative">
-              <input
-                type="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar produtos..."
-                className="w-full rounded-xl border border-border/80 bg-background/70 pl-4 pr-12 py-3 text-sm outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/15"
-              />
-              <button
-                type="submit"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg bg-primary p-2.5 text-primary-foreground"
-                aria-label="Buscar"
-              >
-                <Search className="w-4 h-4" />
-              </button>
-            </form>
+            <Suspense
+              fallback={
+                <div className="order-4 h-11 w-full basis-full min-w-0 rounded-xl bg-muted/60 animate-pulse border border-border/40 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto" />
+              }
+            >
+              <div className="order-4 w-full basis-full min-w-0 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto">
+                <StoreSearch />
+              </div>
+            </Suspense>
           </div>
 
           <nav className="hidden lg:block border-t border-border/40">

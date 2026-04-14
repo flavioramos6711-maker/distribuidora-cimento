@@ -3,6 +3,7 @@ import { Inter, Poppins } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import { SITE } from '@/lib/site-config'
+import { BRANDING } from '@/lib/branding'
 import './globals.css'
 
 const inter = Inter({
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
   },
   description: SITE.tagline,
   icons: {
-    icon: [{ url: '/icon.svg', type: 'image/svg+xml', sizes: 'any' }],
+    icon: [{ url: BRANDING.faviconPath, type: 'image/png', sizes: '32x32' }],
   },
 }
 

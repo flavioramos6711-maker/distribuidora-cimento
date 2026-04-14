@@ -12,7 +12,7 @@ export default function ContatoPage() {
   return (
     <InstitutionalLayout
       title="Contato"
-      subtitle="Fale com a equipe comercial e logística da Cimento & Cal Distribuidora."
+      subtitle="Fale com a equipe comercial e logística do Atacado de Construção."
     >
       <p>
         Atendemos construtoras, revendas e obras de todos os portes. Para orçamentos, prazos de entrega e

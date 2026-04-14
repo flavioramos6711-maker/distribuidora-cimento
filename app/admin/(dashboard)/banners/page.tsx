@@ -35,9 +35,17 @@ export default function BannersPage() {
       fd.append("file", file)
       const res = await fetch("/api/upload", { method: "POST", body: fd })
       const data = await res.json()
-      if (data.url) setForm((f) => ({ ...f, image_url: data.url }))
-    } catch { toast.error("Erro ao fazer upload") }
+      if (data.url) {
+        setForm((f) => ({ ...f, image_url: data.url }))
+        toast.success("Imagem enviada!")
+      } else {
+        toast.error(data.error || data.hint || "Falha no upload")
+      }
+    } catch {
+      toast.error("Erro ao fazer upload")
+    }
     setUploading(false)
+    e.target.value = ""
   }
 
   async function handleSave() {

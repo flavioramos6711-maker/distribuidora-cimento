@@ -104,7 +104,7 @@ export default function BrandLogo({
             mono && "text-inherit",
           )}
         >
-          Cimento <span className="text-primary">&amp;</span> Cal
+          {SITE.shortName}
         </p>
         <p
           className={cn(

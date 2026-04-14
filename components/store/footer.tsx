@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { MapPin, Phone, Mail, Globe, Facebook, Instagram, Linkedin } from "lucide-react"
+import { MapPin, Phone, Mail, Globe } from "lucide-react"
 import BrandLogo from "@/components/store/brand-logo"
 import { SITE } from "@/lib/site-config"
 import { createClient } from "@/lib/supabase/client"
@@ -32,35 +32,6 @@ export default function StoreFooter() {
             <p className="text-sm text-secondary-foreground/75 leading-relaxed max-w-sm">
               {SITE.tagline}
             </p>
-            <div className="flex items-center gap-3 pt-2">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground transition"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground transition"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-secondary-foreground/80 hover:bg-primary hover:text-primary-foreground transition"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           <div className="lg:col-span-2">
@@ -119,6 +90,11 @@ export default function StoreFooter() {
               <li>
                 <Link href="/formas-de-pagamento" className="hover:text-white transition">
                   Formas de pagamento
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculadora" className="hover:text-white transition">
+                  Calculadora de materiais
                 </Link>
               </li>
             </ul>

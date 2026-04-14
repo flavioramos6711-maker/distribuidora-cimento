@@ -10,7 +10,7 @@ export default function WhatsAppCta({
   source,
   page,
   userId,
-  text = "Olá! Gostaria de falar com a Cimento & Cal Distribuidora.",
+  text = "Olá! Gostaria de falar com o Atacado de Construção.",
   label = "Falar no WhatsApp",
   className,
   variant = "solid",
@@ -32,14 +32,18 @@ export default function WhatsAppCta({
       rel="noopener noreferrer"
       onClick={() => trackWhatsAppClick(source, page, userId)}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition",
-        variant === "solid" && "bg-[#25d366] text-white hover:bg-[#20c15c] shadow-md shadow-[#25d366]/25",
+        "inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30",
+        variant === "solid" &&
+          "border border-emerald-600/30 bg-emerald-600 text-white shadow-sm hover:bg-emerald-600/90 active:scale-[0.99]",
         variant === "outline" &&
-          "border-2 border-[#25d366] text-[#128C7E] bg-white hover:bg-[#25d366]/10",
+          "border border-border bg-background text-foreground hover:border-emerald-500/35 hover:bg-emerald-500/[0.06]",
         className,
       )}
     >
-      <MessageCircle className="w-5 h-5 shrink-0" aria-hidden />
+      <MessageCircle
+        className={cn("w-4 h-4 shrink-0", variant === "solid" ? "text-white/95" : "text-emerald-600")}
+        aria-hidden
+      />
       {label}
     </a>
   )

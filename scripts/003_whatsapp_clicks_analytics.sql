@@ -21,3 +21,16 @@ ALTER TABLE public.whatsapp_clicks ADD COLUMN IF NOT EXISTS page TEXT;
 ALTER TABLE public.whatsapp_clicks ADD COLUMN IF NOT EXISTS device_type TEXT;
 ALTER TABLE public.whatsapp_clicks ADD COLUMN IF NOT EXISTS browser TEXT;
 ALTER TABLE public.whatsapp_clicks ADD COLUMN IF NOT EXISTS os TEXT;
+
+-- Leitura no painel admin sem service role: usuários em public.admins podem SELECT.
+-- Inserts da API pública continuam com service role (ignora RLS).
+ALTER TABLE public.whatsapp_clicks ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "whatsapp_clicks_select_admins" ON public.whatsapp_clicks;
+CREATE POLICY "whatsapp_clicks_select_admins"
+  ON public.whatsapp_clicks
+  FOR SELECT
+  TO authenticated
+  USING (
+    EXISTS (SELECT 1 FROM public.admins WHERE id = auth.uid())
+  );

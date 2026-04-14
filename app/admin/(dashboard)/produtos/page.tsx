@@ -87,7 +87,7 @@ export default function ProdutosPage() {
           newImages.push(data.url)
           toast.success(`Imagem "${file.name}" enviada!`)
         } else {
-          toast.error(`Erro: ${data.error || "Falha no upload"}`)
+          toast.error(data.error || data.hint || "Falha no upload")
         }
       } catch {
         toast.error("Erro ao fazer upload")

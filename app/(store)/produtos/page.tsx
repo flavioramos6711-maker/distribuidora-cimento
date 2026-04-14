@@ -5,7 +5,7 @@ import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
-import { ArrowLeft, SlidersHorizontal } from "lucide-react"
+import { ArrowLeft, SlidersHorizontal, Search } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const supabase = createClient()
@@ -27,6 +27,7 @@ type Product = {
 
 export default function ProductsPage() {
   const [categoryId, setCategoryId] = useState<string | "all">("all")
+  const [nameQuery, setNameQuery] = useState("")
 
   const { data: categories } = useSWR("product-filters-cats", async () => {
     const { data } = await supabase.from("categories").select("id, name, slug").eq("active", true).order("sort_order")
@@ -40,9 +41,12 @@ export default function ProductsPage() {
 
   const filtered = useMemo(() => {
     if (!products) return []
-    if (categoryId === "all") return products
-    return products.filter((p) => p.category_id === categoryId)
-  }, [products, categoryId])
+    const byCat =
+      categoryId === "all" ? products : products.filter((p) => p.category_id === categoryId)
+    const q = nameQuery.trim().toLowerCase()
+    if (!q) return byCat
+    return byCat.filter((p) => p.name.toLowerCase().includes(q))
+  }, [products, categoryId, nameQuery])
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 md:py-10">
@@ -92,9 +96,20 @@ export default function ProductsPage() {
 
         <div className="flex-1 min-w-0">
           <h1 className="font-heading text-2xl md:text-3xl font-bold text-foreground">Catálogo de produtos</h1>
-          <p className="text-sm text-muted-foreground mt-2 mb-6 md:mb-8">
+          <p className="text-sm text-muted-foreground mt-2 mb-4">
             {isLoading ? "Carregando..." : `${filtered.length} produtos disponíveis`}
           </p>
+          <div className="relative mb-6 md:mb-8 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="search"
+              value={nameQuery}
+              onChange={(e) => setNameQuery(e.target.value)}
+              placeholder="Filtrar por nome (atualização imediata)..."
+              className="w-full rounded-xl border border-border/80 bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary/40 focus:ring-2 focus:ring-primary/15"
+              aria-label="Filtrar produtos por nome"
+            />
+          </div>
 
           {isLoading ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">

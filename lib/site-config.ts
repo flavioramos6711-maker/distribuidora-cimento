@@ -1,12 +1,12 @@
-/** Dados da loja — ajuste CNPJ/e-mail conforme necessário */
+/** Dados da loja — e-mail e site alinhados ao domínio oficial */
 export const SITE = {
-  legalName: "Cimento & Cal Distribuidora",
-  shortName: "Cimento & Cal",
+  legalName: "Atacado de Construção",
+  shortName: "Atacado de Construção",
   tagline: "Materiais de construção com força, confiança e logística profissional.",
   whatsappE164: "5516996447972",
   phoneDisplay: "(16) 9 9644-7972",
-  email: "contato@cimentoecaldistribuidora.com.br",
-  website: "https://www.cimentoecaldistribuidora.com.br",
+  email: "contato@atacadodeconstrucao.com",
+  website: "https://www.atacadodeconstrucao.com",
   address: {
     street: "Rua Igarapava, 73",
     district: "Vila Albertina",

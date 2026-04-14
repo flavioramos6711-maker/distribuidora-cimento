@@ -26,8 +26,17 @@ type Period = "all" | "today" | "7d" | "30d"
 
 const fetcher = async () => {
   const res = await fetch("/api/admin/whatsapp-analytics", { credentials: "include" })
-  if (!res.ok) throw new Error("Falha ao carregar")
-  const json = await res.json()
+  const json = (await res.json()) as {
+    rows?: Row[]
+    error?: string
+    hint?: string
+    code?: string
+  }
+  if (!res.ok) {
+    const parts = [json.error || `Erro HTTP ${res.status}`]
+    if (json.hint) parts.push(json.hint)
+    throw new Error(parts.join(" — "))
+  }
   return (json.rows || []) as Row[]
 }
 
@@ -118,8 +127,17 @@ export default function AnalyticsWhatsAppPage() {
 
   if (error) {
     return (
-      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive">
-        Erro ao carregar analytics. Confirme se a tabela whatsapp_clicks existe e se SUPABASE_SERVICE_ROLE_KEY está no .env
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6 space-y-3 text-sm">
+        <p className="font-semibold text-destructive">Não foi possível carregar o analytics do WhatsApp</p>
+        <p className="text-destructive/90 whitespace-pre-wrap break-words">{error.message}</p>
+        <ul className="list-disc pl-5 text-muted-foreground space-y-1.5">
+          <li>
+            Crie a tabela executando <code className="rounded bg-muted px-1 py-0.5 text-xs">scripts/003_whatsapp_clicks_analytics.sql</code> no SQL do Supabase.
+          </li>
+          <li>
+            Em produção, defina <code className="rounded bg-muted px-1 py-0.5 text-xs">SUPABASE_SERVICE_ROLE_KEY</code> (Settings → API → service role) ou use a política RLS do mesmo script para leitura como admin logado.
+          </li>
+        </ul>
       </div>
     )
   }
