@@ -2,6 +2,7 @@
 export const STORAGE_BUCKETS = {
   produtos: "produtos",
   banners: "banners",
+  logos: "logos",
 } as const
 
 export type StorageBucketId = (typeof STORAGE_BUCKETS)[keyof typeof STORAGE_BUCKETS]

@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Plus, Pencil, Trash2, X, Upload, ImageIcon, Package, Search } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
+import { uploadImage } from "@/lib/upload-image"
 
 const supabase = createClient()
 
@@ -78,17 +79,13 @@ export default function ProdutosPage() {
     setUploading(true)
     const newImages: string[] = []
     for (const file of Array.from(files)) {
-      const fd = new FormData()
-      fd.append("file", file)
-      fd.append("bucket", "produtos")
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: fd })
-        const data = await res.json()
-        if (data.url) {
+        const data = await uploadImage(file, "produtos")
+        if (data?.url) {
           newImages.push(data.url)
           toast.success(`Imagem "${file.name}" enviada!`)
         } else {
-          toast.error(data.error || data.hint || "Falha no upload")
+          toast.error("Falha no upload")
         }
       } catch {
         toast.error("Erro ao fazer upload")

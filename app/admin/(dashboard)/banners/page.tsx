@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Plus, Pencil, Trash2, X, Upload } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
+import { uploadImage } from "@/lib/upload-image"
 
 const supabase = createClient()
 const fetcher = async () => {
@@ -31,16 +32,12 @@ export default function BannersPage() {
     if (!file) return
     setUploading(true)
     try {
-      const fd = new FormData()
-      fd.append("file", file)
-      fd.append("bucket", "banners")
-      const res = await fetch("/api/upload", { method: "POST", body: fd })
-      const data = await res.json()
-      if (data.url) {
+      const data = await uploadImage(file, "banners")
+      if (data?.url) {
         setForm((f) => ({ ...f, image_url: data.url }))
         toast.success("Imagem enviada!")
       } else {
-        toast.error(data.error || data.hint || "Falha no upload")
+        toast.error("Falha no upload")
       }
     } catch {
       toast.error("Erro ao fazer upload")

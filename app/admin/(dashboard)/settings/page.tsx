@@ -29,6 +29,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react"
+import { uploadImage } from "@/lib/upload-image"
 
 const supabase = createClient()
 
@@ -51,15 +52,6 @@ const initialForm = (): FormState => ({
   banner_images: [],
   testimonials: DEFAULT_TESTIMONIALS.map((t) => ({ ...t })),
 })
-
-async function uploadImage(file: File, bucket: string, pathPrefix?: string) {
-  const fd = new FormData()
-  fd.append("file", file)
-  fd.append("bucket", bucket)
-  if (pathPrefix) fd.append("path_prefix", pathPrefix)
-  const res = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" })
-  return res.json() as Promise<{ url?: string; error?: string; hint?: string }>
-}
 
 export default function AdminSiteSettingsPage() {
   const [form, setForm] = useState<FormState>(initialForm)
@@ -132,14 +124,14 @@ export default function AdminSiteSettingsPage() {
     e.target.value = ""
     if (!file) return
     setUploadKey(kind)
-    const data = await uploadImage(file, "produtos", "cms")
+    const data = await uploadImage(file, "logos")
     setUploadKey(null)
-    if (data.url) {
-      if (kind === "logo") setForm((f) => ({ ...f, logo_url: data.url! }))
-      else setForm((f) => ({ ...f, favicon_url: data.url! }))
+    if (data?.url) {
+      if (kind === "logo") setForm((f) => ({ ...f, logo_url: data.url }))
+      else setForm((f) => ({ ...f, favicon_url: data.url }))
       toast.success(kind === "logo" ? "Logo enviada!" : "Favicon enviado!")
     } else {
-      toast.error(data.error || data.hint || "Falha no upload")
+      toast.error("Falha no upload")
     }
   }
 
@@ -148,15 +140,15 @@ export default function AdminSiteSettingsPage() {
     e.target.value = ""
     if (!file) return
     const data = await uploadImage(file, "banners")
-    if (data.url) {
+    if (data?.url) {
       setForm((f) => {
         const next = [...f.banner_images]
-        next[index] = { ...next[index], image_url: data.url! }
+        next[index] = { ...next[index], image_url: data.url }
         return { ...f, banner_images: next }
       })
       toast.success("Imagem do slide atualizada")
     } else {
-      toast.error(data.error || data.hint || "Falha no upload")
+      toast.error("Falha no upload")
     }
   }
 
