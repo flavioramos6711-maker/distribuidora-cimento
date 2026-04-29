@@ -57,10 +57,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         src="https://www.googletagmanager.com/gtag/js?id=AW-16526087847"
         strategy="afterInteractive"
       />
-      <Script id="google-ads" strategy="afterInteractive">
+      <Script id="google-tags" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
+gtag('config', 'GT-T5JVDZPM');
 gtag('config', 'AW-16526087847');`}
       </Script>
       <body className="font-sans antialiased">
