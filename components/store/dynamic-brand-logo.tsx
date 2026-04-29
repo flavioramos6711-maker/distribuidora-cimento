@@ -19,7 +19,8 @@ export default function DynamicBrandLogo({
   inverted?: boolean
 }) {
   const { data: row, isLoading } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  const logoUrl = row?.logo_url?.trim()
+  // Usa logo do dashboard, ou o logo padrão salvo em public/images/logo.png
+  const logoUrl = row?.logo_url?.trim() || "/images/logo.png"
 
   const h = variant === "compact" ? 36 : 44
   const wMax = variant === "compact" ? 160 : 220
@@ -36,23 +37,7 @@ export default function DynamicBrandLogo({
     )
   }
 
-  // Se nao houver logo cadastrado, mostra apenas o nome do site como texto
-  if (!logoUrl) {
-    return (
-      <Link href="/" className={cn("flex items-center", className)}>
-        <span
-          className={cn(
-            "font-heading font-bold text-lg sm:text-xl tracking-tight",
-            inverted ? "text-white" : "text-foreground",
-          )}
-        >
-          {SITE.shortName}
-        </span>
-      </Link>
-    )
-  }
-
-  // Mostra apenas a imagem do logo carregada pelo dashboard
+  // Mostra a imagem do logo (dashboard ou padrão)
   return (
     <Link href="/" className={cn("flex items-center", className)}>
       <Image
