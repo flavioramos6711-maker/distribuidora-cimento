@@ -2,8 +2,8 @@
 
 import useSWR from "swr"
 import Image from "next/image"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
-import BrandLogo from "@/components/store/brand-logo"
 import { SITE } from "@/lib/site-config"
 import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
 
@@ -18,55 +18,52 @@ export default function DynamicBrandLogo({
   className?: string
   inverted?: boolean
 }) {
-  const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  const url = row?.logo_url?.trim()
-
-  if (!url) {
-    return <BrandLogo variant={variant} className={className} inverted={inverted} />
-  }
+  const { data: row, isLoading } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
+  const logoUrl = row?.logo_url?.trim()
 
   const h = variant === "compact" ? 36 : 44
-  const wMax = variant === "compact" ? 140 : 200
+  const wMax = variant === "compact" ? 160 : 220
 
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className={cn("flex items-center", className)}>
+        <div 
+          className="animate-pulse rounded bg-muted" 
+          style={{ width: wMax * 0.7, height: h }}
+        />
+      </div>
+    )
+  }
+
+  // Se nao houver logo cadastrado, mostra apenas o nome do site como texto
+  if (!logoUrl) {
+    return (
+      <Link href="/" className={cn("flex items-center", className)}>
+        <span
+          className={cn(
+            "font-heading font-bold text-lg sm:text-xl tracking-tight",
+            inverted ? "text-white" : "text-foreground",
+          )}
+        >
+          {SITE.shortName}
+        </span>
+      </Link>
+    )
+  }
+
+  // Mostra apenas a imagem do logo carregada pelo dashboard
   return (
-    <div
-      className={cn(
-        "flex items-center gap-2.5",
-        variant === "mono" && "text-foreground",
-        inverted && "text-white",
-        className,
-      )}
-    >
+    <Link href="/" className={cn("flex items-center", className)}>
       <Image
-        src={url}
+        src={logoUrl}
         alt={SITE.shortName}
         width={wMax}
         height={h}
         unoptimized
-        className="h-9 w-auto max-w-[min(100%,var(--logo-max,200px))] object-contain object-left sm:h-11"
-        style={{ ["--logo-max" as string]: `${wMax}px` }}
+        className="h-9 w-auto max-w-[160px] object-contain object-left sm:h-11 sm:max-w-[220px]"
         priority
       />
-      {variant !== "compact" && (
-        <div className="leading-tight hidden sm:block">
-          <p
-            className={cn(
-              "font-heading font-bold text-[15px] sm:text-base tracking-tight",
-              inverted ? "text-white" : "text-foreground",
-            )}
-          >
-            {SITE.shortName}
-          </p>
-          <p
-            className={cn(
-              "text-[10px] font-semibold uppercase tracking-[0.14em]",
-              inverted ? "text-white/60" : "text-muted-foreground",
-            )}
-          >
-            Distribuidora
-          </p>
-        </div>
-      )}
-    </div>
+    </Link>
   )
 }
