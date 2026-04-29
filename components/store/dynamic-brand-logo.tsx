@@ -22,8 +22,8 @@ export default function DynamicBrandLogo({
   // Usa logo do dashboard, ou o logo padrão gerado
   const logoUrl = row?.logo_url?.trim() || "/images/logo-cimentoecal.jpg"
 
-  const h = variant === "compact" ? 36 : 44
-  const wMax = variant === "compact" ? 160 : 220
+  const h = variant === "compact" ? 48 : 56
+  const wMax = variant === "compact" ? 200 : 280
 
   // Loading skeleton
   if (isLoading) {
@@ -46,7 +46,7 @@ export default function DynamicBrandLogo({
         width={wMax}
         height={h}
         unoptimized
-        className="h-9 w-auto max-w-[160px] object-contain object-left sm:h-11 sm:max-w-[220px]"
+        className="h-12 w-auto max-w-[200px] object-contain object-left sm:h-14 sm:max-w-[280px]"
         priority
       />
     </Link>
