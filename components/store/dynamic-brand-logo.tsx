@@ -19,8 +19,8 @@ export default function DynamicBrandLogo({
   inverted?: boolean
 }) {
   const { data: row, isLoading } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  // Usa logo do dashboard, ou o logo padrão salvo em public/images/logo.png
-  const logoUrl = row?.logo_url?.trim() || "/images/logo.png"
+  // Usa logo do dashboard, ou o logo padrão gerado
+  const logoUrl = row?.logo_url?.trim() || "/images/logo-cimentoecal.jpg"
 
   const h = variant === "compact" ? 36 : 44
   const wMax = variant === "compact" ? 160 : 220
