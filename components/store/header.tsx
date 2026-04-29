@@ -128,12 +128,9 @@ export default function StoreHeader() {
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link
-              href="/"
-              className="order-2 flex min-w-0 shrink-0 items-center transition hover:opacity-90 active:scale-[0.98]"
-            >
-              <DynamicBrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
-            </Link>
+            <div className="order-2 shrink-0">
+              <DynamicBrandLogo variant="full" />
+            </div>
 
             <div className="order-3 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:order-4">
               <Link
