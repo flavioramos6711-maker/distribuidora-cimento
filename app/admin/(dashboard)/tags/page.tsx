@@ -125,8 +125,34 @@ const emptyTag = (): EditingTag => ({
   conversion_label: "",
 })
 
+// Tags já instaladas no código (layout.tsx)
+const INSTALLED_TAGS: Tag[] = [
+  {
+    id: "installed-gtm",
+    type: "gtm",
+    name: "Google Tag Manager",
+    tag_id: "GTM-MLK62TBK",
+    enabled: true,
+  },
+  {
+    id: "installed-gtag",
+    type: "google_analytics",
+    name: "Google Tag",
+    tag_id: "GT-T5JVDZPM",
+    enabled: true,
+  },
+  {
+    id: "installed-gads",
+    type: "google_ads",
+    name: "Google Ads",
+    tag_id: "AW-16526087847",
+    enabled: true,
+    conversion_label: "oaK8CIry9L4aEJbA05c_",
+  },
+]
+
 export default function TagsPage() {
-  const [tags, setTags] = useState<Tag[]>([])
+  const [tags, setTags] = useState<Tag[]>(INSTALLED_TAGS)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -146,10 +172,11 @@ export default function TagsPage() {
 
     if (error) {
       console.error("Erro ao carregar tags:", error)
-      // Se a tabela nao existir, mostra lista vazia
-      setTags([])
+      // Se a tabela nao existir, mostra apenas as instaladas
+      setTags(INSTALLED_TAGS)
     } else {
-      setTags(data || [])
+      // Combina tags instaladas com tags do banco
+      setTags([...INSTALLED_TAGS, ...(data || [])])
     }
     setLoading(false)
   }
@@ -282,6 +309,25 @@ export default function TagsPage() {
         </button>
       </div>
 
+      {/* Informativo */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+        <div className="flex gap-3">
+          <Code2 className="mt-0.5 h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
+          <div className="text-sm">
+            <p className="font-medium text-blue-800 dark:text-blue-200">
+              Tags instaladas no codigo
+            </p>
+            <p className="mt-1 text-blue-700 dark:text-blue-300">
+              As tags com badge &quot;No codigo&quot; estao configuradas diretamente no arquivo{" "}
+              <code className="rounded bg-blue-100 px-1 py-0.5 font-mono text-xs dark:bg-blue-900">
+                app/layout.tsx
+              </code>
+              . Para alteracoes definitivas, edite este arquivo.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Lista de Tags */}
       {tags.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
@@ -318,10 +364,16 @@ export default function TagsPage() {
                       <Icon className="h-6 w-6" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className="font-semibold text-card-foreground">
                           {tag.name || typeInfo.name}
                         </h3>
+                        {tag.id.startsWith("installed-") && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
+                            <Code2 className="h-3 w-3" />
+                            No codigo
+                          </span>
+                        )}
                         {tag.enabled ? (
                           <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
                             <CheckCircle2 className="h-3 w-3" />

@@ -9,8 +9,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { SITE, waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
-import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
-import { cmsBannerSlides, type CmsBannerSlide } from "@/lib/site-settings"
 
 const supabase = createClient()
 
@@ -33,16 +31,6 @@ type HeroSlide = {
   link?: string | null
   title?: string | null
   subtitle?: string | null
-}
-
-function mapCmsToSlides(slides: CmsBannerSlide[]): HeroSlide[] {
-  return slides.map((s, i) => ({
-    key: `cms-${i}`,
-    image_url: s.image_url,
-    link: s.link,
-    title: s.title,
-    subtitle: s.subtitle,
-  }))
 }
 
 function mapDbToSlides(banners: DbBanner[]): HeroSlide[] {
@@ -102,19 +90,13 @@ function SlideVisual({
 }
 
 export default function HeroBanner() {
-  const { data: settings } = useSWR("site-settings-public", getSiteSettingsPublic, {
-    revalidateOnFocus: false,
-  })
-  const cms = useMemo(() => cmsBannerSlides(settings ?? null), [settings])
-
-  const { data: dbBanners } = useSWR(cms.length > 0 ? null : "store-banners", fetchBanners, {
+  const { data: dbBanners } = useSWR("store-banners", fetchBanners, {
     revalidateOnFocus: false,
   })
 
   const slides = useMemo(() => {
-    if (cms.length > 0) return mapCmsToSlides(cms)
     return mapDbToSlides((dbBanners || []) as DbBanner[])
-  }, [cms, dbBanners])
+  }, [dbBanners])
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: slides.length > 1,
