@@ -61,6 +61,23 @@ export default function CartPage() {
       total,
       itemsSummary: summary,
     })
+    
+    // Google Ads Conversion Tracking
+    if (typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", "conversion", {
+        send_to: "AW-16526087847/purchase",
+        transaction_id: code,
+        value: total,
+        currency: "BRL",
+        items: cart.map((i) => ({
+          id: i.id,
+          name: i.name,
+          price: i.price,
+          quantity: i.qty,
+        })),
+      })
+    }
+    
     const msg = `Olá! Quero finalizar o pedido *${code}*:\n\n${summary}\n\n*Total:* R$ ${total.toFixed(2)}`
     trackWhatsAppClick("checkout_finalize", "/carrinho")
     window.open(waLink(msg), "_blank", "noopener,noreferrer")
