@@ -25,19 +25,39 @@ export function trackWhatsAppClick(
   
   const currentPage = page ?? window.location.pathname
   
-  // 1. Dispara evento no dataLayer para o GTM (Click to Chat)
+  // 1. Dispara evento no dataLayer para o GTM
+  // Compatível com acionadores: "Click to Chat", "Acionador wa.me", "Acionador WhatsApp"
   window.dataLayer = window.dataLayer || []
+  
+  // Push de variáveis primeiro (para GTM capturar)
+  window.dataLayer.push({
+    transactionId: options?.transactionId || "",
+    transactionTotal: options?.value || 0,
+    transactionCurrency: options?.currency || "BRL",
+    userEmail: options?.email || "",
+    clickSource: source,
+    clickPage: currentPage,
+  })
+  
+  // Push do evento "Click to Chat" (compatível com seu acionador)
   window.dataLayer.push({
     event: "Click to Chat",
     eventCategory: "WhatsApp",
     eventAction: "click",
     eventLabel: source,
-    page: currentPage,
-    transactionId: options?.transactionId,
-    transactionValue: options?.value,
-    transactionCurrency: options?.currency || "BRL",
-    userEmail: options?.email,
   })
+  
+  // Push de evento "whatsapp_conversion" para conversões
+  if (options?.transactionId) {
+    window.dataLayer.push({
+      event: "whatsapp_conversion",
+      ecommerce: {
+        transaction_id: options.transactionId,
+        value: options.value,
+        currency: options.currency || "BRL",
+      },
+    })
+  }
   
   // 2. Dispara conversão direta do Google Ads (backup caso GTM falhe)
   if (typeof window.gtag === "function" && options?.transactionId) {
