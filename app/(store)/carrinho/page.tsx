@@ -61,8 +61,17 @@ export default function CartPage() {
       total,
       itemsSummary: summary,
     })
+    
     const msg = `Olá! Quero finalizar o pedido *${code}*:\n\n${summary}\n\n*Total:* R$ ${total.toFixed(2)}`
-    trackWhatsAppClick("checkout_finalize", "/carrinho")
+    
+    // Track WhatsApp click com dados de conversão para GTM e Google Ads
+    trackWhatsAppClick("checkout_finalize", "/carrinho", email, {
+      transactionId: code,
+      value: total,
+      currency: "BRL",
+      email: email,
+    })
+    
     window.open(waLink(msg), "_blank", "noopener,noreferrer")
   }
 

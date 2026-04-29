@@ -21,6 +21,7 @@ import {
   PieChart,
   User,
   Settings,
+  Code2,
 } from "lucide-react"
 
 const menuItems = [
@@ -35,6 +36,7 @@ const menuItems = [
   { label: "Avaliacoes", href: "/admin/avaliacoes", icon: Star },
   { label: "Banners", href: "/admin/banners", icon: ImageIcon },
   { label: "CMS / Aparência", href: "/admin/settings", icon: Settings },
+  { label: "Tags Marketing", href: "/admin/tags", icon: Code2 },
 ] as const
 
 type Props = {

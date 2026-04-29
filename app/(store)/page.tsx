@@ -14,6 +14,7 @@ import { ArrowRight, Truck, ShieldCheck, Award, Headphones, LayoutGrid, Sparkles
 import { Skeleton } from "@/components/ui/skeleton"
 import { SITE, waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
+import CategoriesCarousel from "@/components/store/categories-carousel"
 
 const supabase = createClient()
 
@@ -168,44 +169,12 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
           <SectionHeader
             title="Categorias"
-            subtitle="Toque para explorar — deslize no celular"
+            subtitle="Toque para explorar — deslize para ver mais"
             href="/produtos"
             linkLabel="Ver tudo"
             icon={LayoutGrid}
           />
-          <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-3 sm:overflow-visible md:grid-cols-4 lg:grid-cols-6 sm:gap-4">
-            {data.categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categoria/${cat.slug}`}
-                className="group flex w-[min(42vw,200px)] shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-app transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-app-lg active:scale-[0.98] sm:w-auto"
-              >
-                <div className="relative flex aspect-square w-full items-center justify-center bg-gradient-to-b from-muted/40 to-muted/10 p-3">
-                  {cat.image_url ? (
-                    <div className="relative h-full w-full overflow-hidden rounded-full">
-                      <Image
-                        src={cat.image_url}
-                        alt=""
-                        fill
-                        sizes="(max-width:640px) 42vw, (max-width:1024px) 25vw, 16vw"
-                        className="object-contain object-center transition duration-300 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                  ) : (
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-heading text-2xl font-bold text-primary/50">
-                      {cat.name.charAt(0)}
-                    </span>
-                  )}
-                </div>
-                <div className="border-t border-border/40 p-3 text-center">
-                  <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug text-foreground transition group-hover:text-primary">
-                    {cat.name}
-                  </p>
-                  <p className="mt-1 text-[11px] font-medium text-muted-foreground">{cat.products?.length || 0} produtos</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <CategoriesCarousel categories={data.categories} />
         </section>
       )}
 

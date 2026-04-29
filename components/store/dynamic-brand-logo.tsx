@@ -2,8 +2,8 @@
 
 import useSWR from "swr"
 import Image from "next/image"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
-import BrandLogo from "@/components/store/brand-logo"
 import { SITE } from "@/lib/site-config"
 import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
 
@@ -18,55 +18,31 @@ export default function DynamicBrandLogo({
   className?: string
   inverted?: boolean
 }) {
-  const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  const url = row?.logo_url?.trim()
+  const { data: row, isLoading } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
+  // Usa logo do dashboard, ou o logo padrão gerado
+  const logoUrl = row?.logo_url?.trim() || "/images/logo-cimentoecal.jpg"
 
-  if (!url) {
-    return <BrandLogo variant={variant} className={className} inverted={inverted} />
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className={cn("flex items-center", className)}>
+        <div className="animate-pulse rounded bg-muted h-10 w-40 sm:h-12 sm:w-52" />
+      </div>
+    )
   }
 
-  const h = variant === "compact" ? 36 : 44
-  const wMax = variant === "compact" ? 140 : 200
-
+  // Mostra a imagem do logo (dashboard ou padrão)
   return (
-    <div
-      className={cn(
-        "flex items-center gap-2.5",
-        variant === "mono" && "text-foreground",
-        inverted && "text-white",
-        className,
-      )}
-    >
+    <Link href="/" className={cn("flex items-center shrink-0", className)}>
       <Image
-        src={url}
+        src={logoUrl}
         alt={SITE.shortName}
-        width={wMax}
-        height={h}
+        width={320}
+        height={80}
         unoptimized
-        className="h-9 w-auto max-w-[min(100%,var(--logo-max,200px))] object-contain object-left sm:h-11"
-        style={{ ["--logo-max" as string]: `${wMax}px` }}
+        className="h-10 w-auto object-contain object-left sm:h-12 md:h-14 lg:h-16"
         priority
       />
-      {variant !== "compact" && (
-        <div className="leading-tight hidden sm:block">
-          <p
-            className={cn(
-              "font-heading font-bold text-[15px] sm:text-base tracking-tight",
-              inverted ? "text-white" : "text-foreground",
-            )}
-          >
-            {SITE.shortName}
-          </p>
-          <p
-            className={cn(
-              "text-[10px] font-semibold uppercase tracking-[0.14em]",
-              inverted ? "text-white/60" : "text-muted-foreground",
-            )}
-          >
-            Distribuidora
-          </p>
-        </div>
-      )}
-    </div>
+    </Link>
   )
 }

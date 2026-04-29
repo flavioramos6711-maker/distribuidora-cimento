@@ -7,10 +7,6 @@ import { createClient } from "@/lib/supabase/client"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { SITE, waLink } from "@/lib/site-config"
-import { trackWhatsAppClick } from "@/lib/track-whatsapp"
-import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
-import { cmsBannerSlides, type CmsBannerSlide } from "@/lib/site-settings"
 
 const supabase = createClient()
 
@@ -23,98 +19,16 @@ type DbBanner = {
   id: string
   image_url: string
   link?: string | null
-  title?: string | null
-  subtitle?: string | null
-}
-
-type HeroSlide = {
-  key: string
-  image_url: string
-  link?: string | null
-  title?: string | null
-  subtitle?: string | null
-}
-
-function mapCmsToSlides(slides: CmsBannerSlide[]): HeroSlide[] {
-  return slides.map((s, i) => ({
-    key: `cms-${i}`,
-    image_url: s.image_url,
-    link: s.link,
-    title: s.title,
-    subtitle: s.subtitle,
-  }))
-}
-
-function mapDbToSlides(banners: DbBanner[]): HeroSlide[] {
-  return banners.map((b) => ({
-    key: b.id,
-    image_url: b.image_url,
-    link: b.link,
-    title: b.title,
-    subtitle: b.subtitle,
-  }))
-}
-
-function SlideVisual({
-  banner,
-  priority,
-  imgSizes,
-}: {
-  banner: HeroSlide
-  priority: boolean
-  imgSizes: string
-}) {
-  const inner = (
-    <>
-      <Image
-        src={banner.image_url}
-        alt={banner.title || "Banner"}
-        fill
-        priority={priority}
-        sizes={imgSizes}
-        className="object-cover object-center transition duration-700 ease-out"
-      />
-      {(banner.title || banner.subtitle) && (
-        <div className="absolute inset-0 flex items-center bg-gradient-to-t from-black/75 via-black/25 to-transparent sm:items-end sm:bg-gradient-to-r sm:from-black/60 sm:via-black/20">
-          <div className="w-full max-w-7xl px-4 py-10 sm:px-8 sm:pb-8 sm:pt-0">
-            {banner.title && (
-              <h2 className="max-w-xl text-balance font-heading text-xl font-bold text-white sm:text-3xl md:text-4xl">
-                {banner.title}
-              </h2>
-            )}
-            {banner.subtitle && (
-              <p className="mt-2 max-w-lg text-sm text-white/90 sm:text-lg">{banner.subtitle}</p>
-            )}
-          </div>
-        </div>
-      )}
-    </>
-  )
-
-  if (banner.link) {
-    return (
-      <Link href={banner.link} className="relative block size-full">
-        {inner}
-      </Link>
-    )
-  }
-  return <div className="relative size-full">{inner}</div>
 }
 
 export default function HeroBanner() {
-  const { data: settings } = useSWR("site-settings-public", getSiteSettingsPublic, {
-    revalidateOnFocus: false,
-  })
-  const cms = useMemo(() => cmsBannerSlides(settings ?? null), [settings])
-
-  const { data: dbBanners } = useSWR(cms.length > 0 ? null : "store-banners", fetchBanners, {
+  const { data: dbBanners, isLoading } = useSWR("store-banners", fetchBanners, {
     revalidateOnFocus: false,
   })
 
   const slides = useMemo(() => {
-    if (cms.length > 0) return mapCmsToSlides(cms)
-    return mapDbToSlides((dbBanners || []) as DbBanner[])
-  }, [cms, dbBanners])
+    return (dbBanners || []) as DbBanner[]
+  }, [dbBanners])
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: slides.length > 1,
@@ -148,61 +62,58 @@ export default function HeroBanner() {
     return () => clearInterval(id)
   }, [emblaApi, slides.length])
 
-  const shellClass =
-    // Evita corte no mobile: sem altura fixa/max-height, o conteúdo cresce naturalmente.
-    "relative w-full bg-secondary min-h-[240px] sm:min-h-[320px] md:min-h-[420px]"
+  // Aspect ratio: 1920x430 = ~4.47:1
+  // Responsive: 100% width, height auto based on aspect ratio
+  const aspectRatio = "aspect-[1920/430]"
+  const imgSizes = "(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
 
-  const imgSizes = "(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+  // Nao exibe nada se nao houver banners cadastrados
+  if (!isLoading && slides.length === 0) {
+    return null
+  }
 
-  if (slides.length === 0) {
+  // Loading skeleton
+  if (isLoading) {
     return (
-      <section className="w-full px-3 pt-1 sm:px-4 sm:pt-4" aria-label="Destaque">
-        <div className={`${shellClass} mx-auto max-w-7xl rounded-2xl shadow-app sm:rounded-3xl`}>
-          <div className="absolute inset-0 bg-gradient-to-br from-secondary via-[#132947] to-secondary" />
-          <div className="relative z-10 flex h-full flex-col items-center justify-center px-5 py-10 text-center">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-primary sm:text-xs">
-              {SITE.shortName}
-            </p>
-            <h1 className="max-w-xl text-balance font-heading text-2xl font-bold leading-tight text-secondary-foreground sm:text-3xl md:text-4xl">
-              Materiais de construção para obra e revenda
-            </h1>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-secondary-foreground/75 sm:text-base">
-              {SITE.tagline}
-            </p>
-            <div className="mt-8 flex w-full max-w-sm flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
-              <Link
-                href="/produtos"
-                className="inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-app transition duration-200 hover:scale-[1.03] active:scale-[0.98]"
-              >
-                Ver catálogo
-              </Link>
-              <a
-                href={waLink("Olá! Gostaria de um orçamento.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackWhatsAppClick("hero_banner", "/")}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-sm transition duration-200 hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                Orçamento no WhatsApp
-              </a>
-            </div>
-          </div>
-        </div>
+      <section className="w-full" aria-label="Banner">
+        <div className={`${aspectRatio} w-full animate-pulse bg-muted`} />
       </section>
     )
   }
 
   return (
-    <section className="w-full px-3 pt-1 sm:px-4 sm:pt-4" aria-label="Banners">
-      <div className={`${shellClass} mx-auto max-w-7xl rounded-2xl shadow-app sm:rounded-3xl`}>
-        <div className="embla h-full overflow-visible" ref={emblaRef}>
-          <div className="flex h-full touch-pan-y">
+    <section className="w-full" aria-label="Banners">
+      <div className={`relative w-full ${aspectRatio} overflow-hidden`}>
+        <div className="embla h-full w-full" ref={emblaRef}>
+          <div className="flex h-full w-full touch-pan-y">
             {slides.map((banner, i) => (
               <div
-                className="relative h-full min-h-[200px] min-w-0 shrink-0 grow-0 basis-full"
-                key={banner.key}
+                className="relative h-full min-w-0 shrink-0 grow-0 basis-full"
+                key={banner.id}
               >
-                <SlideVisual banner={banner} priority={i === 0} imgSizes={imgSizes} />
+                {banner.link ? (
+                  <Link href={banner.link} className="relative block size-full">
+                    <Image
+                      src={banner.image_url}
+                      alt={`Banner ${i + 1}`}
+                      fill
+                      priority={i === 0}
+                      sizes={imgSizes}
+                      className="object-cover object-center"
+                    />
+                  </Link>
+                ) : (
+                  <div className="relative size-full">
+                    <Image
+                      src={banner.image_url}
+                      alt={`Banner ${i + 1}`}
+                      fill
+                      priority={i === 0}
+                      sizes={imgSizes}
+                      className="object-cover object-center"
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -213,7 +124,7 @@ export default function HeroBanner() {
             <button
               type="button"
               onClick={scrollPrev}
-              className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white shadow-app backdrop-blur-md transition duration-200 hover:scale-[1.06] hover:bg-white/30 active:scale-[0.95] sm:left-4 sm:h-11 sm:w-11"
+              className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white shadow-lg backdrop-blur-sm transition duration-200 hover:bg-black/50 active:scale-95 sm:left-4 sm:h-10 sm:w-10"
               aria-label="Slide anterior"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -221,8 +132,8 @@ export default function HeroBanner() {
             <button
               type="button"
               onClick={scrollNext}
-              className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white shadow-app backdrop-blur-md transition duration-200 hover:scale-[1.06] hover:bg-white/30 active:scale-[0.95] sm:right-4 sm:h-11 sm:w-11"
-              aria-label="Próximo slide"
+              className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/30 text-white shadow-lg backdrop-blur-sm transition duration-200 hover:bg-black/50 active:scale-95 sm:right-4 sm:h-10 sm:w-10"
+              aria-label="Proximo slide"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
@@ -232,8 +143,8 @@ export default function HeroBanner() {
                   key={i}
                   type="button"
                   onClick={() => emblaApi?.scrollTo(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === selected ? "w-7 bg-primary" : "w-1.5 bg-white/45 hover:bg-white/70"
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    i === selected ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/70"
                   }`}
                   aria-label={`Ir para slide ${i + 1}`}
                 />

@@ -70,12 +70,19 @@ export default function BannersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{banners?.length || 0} banners cadastrados</p>
-        <button onClick={openNew} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Banners da Home</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Gerencie os banners do carrossel principal. Dimensoes: <strong>1920 x 430px</strong>
+          </p>
+        </div>
+        <button onClick={openNew} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90">
           <Plus className="w-4 h-4" /> Novo Banner
         </button>
       </div>
+      
+      <p className="text-sm text-muted-foreground">{banners?.length || 0} banners cadastrados</p>
 
       {showForm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -99,11 +106,12 @@ export default function BannersPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-1">Imagem*</label>
+                <p className="text-xs text-muted-foreground mb-2">Dimensoes recomendadas: <strong>1920 x 430 pixels</strong> (PNG ou JPEG)</p>
                 {form.image_url && <Image src={form.image_url} alt="Banner" width={400} height={150} className="rounded-lg mb-2 object-cover w-full h-32" />}
                 <label className="flex items-center gap-2 px-4 py-3 border border-dashed border-border rounded-lg cursor-pointer hover:bg-muted transition">
                   <Upload className="w-5 h-5 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">{uploading ? "Enviando..." : "Selecionar imagem"}</span>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                  <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleImageUpload} className="hidden" />
                 </label>
               </div>
               <div className="flex items-center gap-2">

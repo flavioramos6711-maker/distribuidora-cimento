@@ -85,25 +85,38 @@ export default function StoreHeader() {
       <div
         className={`${barSurface} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-200 ease-out max-lg:bg-background/95`}
       >
-        <div className="mx-auto max-w-7xl px-3 sm:px-4">
-          <div className="hidden sm:flex items-center justify-between gap-3 py-2 text-[11px] text-muted-foreground border-b border-border/25">
-            <div className="flex items-center gap-2 min-w-0">
-              <Phone className="w-3 h-3 text-emerald-600 shrink-0" aria-hidden />
-              <a href={`tel:+${SITE.whatsappE164}`} className="hover:text-foreground transition truncate">
-                {SITE.phoneDisplay}
-              </a>
-              <span className="text-border hidden md:inline">|</span>
-              <span className="hidden md:inline truncate">Entrega e atacado</span>
-            </div>
-            <div className="flex items-center gap-4 shrink-0">
-              <Link href="/rastrear-pedido" className="hover:text-foreground transition">
-                Rastrear
-              </Link>
-              <Link href="/contato" className="hover:text-foreground transition">
-                Contato
-              </Link>
+        {/* Top Bar - Barra superior profissional */}
+        <div className="hidden sm:block bg-[#0c1829]">
+          <div className="mx-auto max-w-7xl px-3 sm:px-4">
+            <div className="flex items-center justify-between py-2 text-xs text-white">
+              <div className="flex items-center gap-4">
+                <a 
+                  href={`tel:+${SITE.whatsappE164}`} 
+                  className="flex items-center gap-2 hover:text-orange-400 transition font-medium"
+                >
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-orange-500">
+                    <Phone className="w-3 h-3 text-white" aria-hidden />
+                  </span>
+                  {SITE.phoneDisplay}
+                </a>
+                <span className="w-px h-4 bg-white/20" />
+                <span className="text-white/70 hidden md:block">
+                  Entrega e atacado
+                </span>
+              </div>
+              <div className="flex items-center gap-5 text-white/80">
+                <Link href="/rastrear-pedido" className="hover:text-orange-400 transition">
+                  Rastrear
+                </Link>
+                <Link href="/contato" className="hover:text-orange-400 transition">
+                  Contato
+                </Link>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div className="mx-auto max-w-7xl px-3 sm:px-4">
 
           <div className="flex flex-wrap items-center gap-2 py-2.5 sm:py-3">
             <button
@@ -115,12 +128,9 @@ export default function StoreHeader() {
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <Link
-              href="/"
-              className="order-2 flex min-w-0 shrink-0 items-center transition hover:opacity-90 active:scale-[0.98]"
-            >
-              <DynamicBrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
-            </Link>
+            <div className="order-2 shrink-0">
+              <DynamicBrandLogo variant="full" />
+            </div>
 
             <div className="order-3 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:order-4">
               <Link
