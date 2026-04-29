@@ -241,14 +241,15 @@ export default function AdminSiteSettingsPage() {
           <div className="mt-6 grid gap-8 sm:grid-cols-2">
             <div>
               <p className="text-sm font-medium">Logo (header)</p>
+              <p className="text-xs text-muted-foreground">PNG ou JPEG. Recomendado: 220x44px</p>
               <div className="mt-2 flex flex-wrap items-center gap-4">
                 {form.logo_url ? (
                   <div className="relative h-16 w-40 overflow-hidden rounded-xl border bg-muted/30">
                     <Image src={form.logo_url} alt="Logo" fill unoptimized className="object-contain p-2" />
                   </div>
                 ) : (
-                  <div className="flex h-16 w-40 items-center justify-center rounded-xl border border-dashed text-xs text-muted-foreground">
-                    Padrão SVG
+                  <div className="flex h-16 w-40 items-center justify-center rounded-xl border border-dashed border-orange-300 bg-orange-50 text-xs text-orange-600">
+                    Nenhum logo
                   </div>
                 )}
                 <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted/50">
@@ -256,31 +257,34 @@ export default function AdminSiteSettingsPage() {
                   {uploadKey === "logo" ? "Enviando…" : "Enviar logo"}
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/png,image/jpeg,image/webp"
                     className="hidden"
                     onChange={(e) => onLogoUpload(e, "logo")}
                     disabled={uploadKey !== null}
                   />
                 </label>
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs text-muted-foreground underline"
-                onClick={() => setForm((f) => ({ ...f, logo_url: "" }))}
-              >
-                Usar logo padrão do site
-              </button>
+              {form.logo_url && (
+                <button
+                  type="button"
+                  className="mt-2 text-xs text-red-600 underline hover:text-red-700"
+                  onClick={() => setForm((f) => ({ ...f, logo_url: "" }))}
+                >
+                  Remover logo
+                </button>
+              )}
             </div>
             <div>
               <p className="text-sm font-medium">Favicon</p>
+              <p className="text-xs text-muted-foreground">PNG ou ICO. Recomendado: 32x32px ou 64x64px</p>
               <div className="mt-2 flex flex-wrap items-center gap-4">
                 {form.favicon_url ? (
                   <div className="relative h-14 w-14 overflow-hidden rounded-xl border bg-muted/30">
                     <Image src={form.favicon_url} alt="Favicon" fill unoptimized className="object-cover" />
                   </div>
                 ) : (
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-dashed text-[10px] text-muted-foreground text-center px-1">
-                    /icon
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-dashed border-orange-300 bg-orange-50 text-[10px] text-orange-600 text-center px-1">
+                    Nenhum
                   </div>
                 )}
                 <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted/50">
@@ -288,29 +292,42 @@ export default function AdminSiteSettingsPage() {
                   {uploadKey === "favicon" ? "Enviando…" : "Enviar favicon"}
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/png,image/x-icon,image/jpeg"
                     className="hidden"
                     onChange={(e) => onLogoUpload(e, "favicon")}
                     disabled={uploadKey !== null}
                   />
                 </label>
               </div>
-              <button
-                type="button"
-                className="mt-2 text-xs text-muted-foreground underline"
-                onClick={() => setForm((f) => ({ ...f, favicon_url: "" }))}
-              >
-                Usar favicon padrão
-              </button>
+              {form.favicon_url && (
+                <button
+                  type="button"
+                  className="mt-2 text-xs text-red-600 underline hover:text-red-700"
+                  onClick={() => setForm((f) => ({ ...f, favicon_url: "" }))}
+                >
+                  Remover favicon
+                </button>
+              )}
             </div>
           </div>
         </TabsContent>
 
         <TabsContent value="hero" className="rounded-2xl border border-border bg-card p-5 shadow-sm">
-          <h2 className="text-lg font-semibold">Slides da home (CMS)</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Se houver pelo menos um slide com imagem aqui, a home usa <strong>só</strong> esta lista. Deixe vazio para voltar aos banners da
-            tabela <code className="text-xs">banners</code> (menu Banners).
+          <h2 className="text-lg font-semibold">Banners da Home</h2>
+          <div className="mt-2 rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              <strong>Os banners sao gerenciados no menu Banners.</strong> Acesse{" "}
+              <Link href="/admin/banners" className="underline hover:text-blue-600">
+                Banners
+              </Link>{" "}
+              para adicionar, editar ou remover imagens do carrossel.
+            </p>
+            <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">
+              Dimensoes recomendadas: <strong>1920 x 430 pixels</strong> (PNG ou JPEG)
+            </p>
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Os slides abaixo sao opcionais e sobrepoem os banners da tabela principal quando configurados.
           </p>
           <button
             type="button"
