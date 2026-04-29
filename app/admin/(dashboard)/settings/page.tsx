@@ -28,6 +28,7 @@ import {
   MessageSquareQuote,
   ChevronDown,
   ChevronUp,
+  MessageCircle,
 } from "lucide-react"
 import { uploadImage } from "@/lib/upload-image"
 
@@ -42,6 +43,8 @@ type FormState = {
   institutional_body: string
   banner_images: CmsBannerSlide[]
   testimonials: CmsTestimonial[]
+  chat_avatar_url: string
+  chat_agent_name: string
 }
 
 const initialForm = (): FormState => ({
@@ -51,6 +54,8 @@ const initialForm = (): FormState => ({
   institutional_body: DEFAULT_INSTITUTIONAL_BODY,
   banner_images: [],
   testimonials: DEFAULT_TESTIMONIALS.map((t) => ({ ...t })),
+  chat_avatar_url: "",
+  chat_agent_name: "Atendente",
 })
 
 export default function AdminSiteSettingsPage() {
@@ -83,6 +88,8 @@ export default function AdminSiteSettingsPage() {
         institutional_body: data.institutional_body?.trim() || DEFAULT_INSTITUTIONAL_BODY,
         banner_images: parseBannerImages(data.banner_images),
         testimonials: t.length > 0 ? t : DEFAULT_TESTIMONIALS.map((x) => ({ ...x })),
+        chat_avatar_url: data.chat_avatar_url || "",
+        chat_agent_name: data.chat_agent_name || "Atendente",
       })
       setLoading(false)
     })()
@@ -230,6 +237,9 @@ export default function AdminSiteSettingsPage() {
           </TabsTrigger>
           <TabsTrigger value="catalogo" className="gap-1.5">
             <Package className="h-4 w-4" /> Catálogo
+          </TabsTrigger>
+          <TabsTrigger value="chat" className="gap-1.5">
+            <MessageCircle className="h-4 w-4" /> Chat
           </TabsTrigger>
         </TabsList>
 
@@ -582,6 +592,77 @@ export default function AdminSiteSettingsPage() {
             >
               <Package className="h-4 w-4" /> Produtos
             </Link>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="chat" className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <h2 className="text-lg font-semibold">Chat de Atendimento</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Personalize o avatar e nome do atendente no botao de chat flutuante.
+          </p>
+          <div className="mt-6 grid gap-8 sm:grid-cols-2">
+            <div>
+              <p className="text-sm font-medium">Avatar do atendente</p>
+              <p className="text-xs text-muted-foreground">PNG ou JPEG. Recomendado: 200x200px (circular)</p>
+              <div className="mt-3 flex flex-wrap items-center gap-4">
+                {form.chat_avatar_url ? (
+                  <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-primary/20 bg-muted/30">
+                    <Image src={form.chat_avatar_url} alt="Avatar" fill unoptimized className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-orange-300 bg-orange-50 text-xs text-orange-600">
+                    Nenhum
+                  </div>
+                )}
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted/50">
+                  <Upload className="h-4 w-4" />
+                  Enviar avatar
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      try {
+                        const url = await uploadImage(file, "produtos", "cms/chat-avatar")
+                        setForm((f) => ({ ...f, chat_avatar_url: url }))
+                        toast.success("Avatar enviado!")
+                      } catch (err) {
+                        toast.error("Erro ao enviar avatar")
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+              {form.chat_avatar_url && (
+                <button
+                  type="button"
+                  className="mt-2 text-xs text-red-600 underline hover:text-red-700"
+                  onClick={() => setForm((f) => ({ ...f, chat_avatar_url: "" }))}
+                >
+                  Remover avatar
+                </button>
+              )}
+            </div>
+            <div>
+              <p className="text-sm font-medium">Nome do atendente</p>
+              <p className="text-xs text-muted-foreground">Exibido no cabecalho do chat</p>
+              <input
+                type="text"
+                value={form.chat_agent_name}
+                onChange={(e) => setForm((f) => ({ ...f, chat_agent_name: e.target.value }))}
+                placeholder="Ex: Atendente, Julia, Vendas..."
+                className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm"
+              />
+            </div>
+          </div>
+          
+          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/30">
+            <p className="text-sm text-blue-800 dark:text-blue-200">
+              <strong>Visualizacao:</strong> O avatar aparece no botao flutuante e no cabecalho do chat.
+              Se nenhum avatar for enviado, usara a imagem padrao do sistema.
+            </p>
           </div>
         </TabsContent>
       </Tabs>
