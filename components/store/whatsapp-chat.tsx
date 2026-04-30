@@ -1,94 +1,112 @@
 "use client"
 
-import { useState } from "react"
-import { X, Send, MessageCircle } from "lucide-react"
-import { SITE, waLink } from "@/lib/site-config"
-import { trackWhatsAppClick } from "@/lib/track-whatsapp"
+import { useState, useEffect, useRef } from "react"
+import { MessageCircle, X, Send } from "lucide-react"
+import Image from "next/image"
+import { SITE } from "@/lib/site-config"
+import { cn } from "@/lib/utils"
 
 export default function WhatsAppChat() {
-  const [open, setOpen] = useState(false)
-  const [message, setMessage] = useState("")
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const salespersonImg = "/atendente-vendas.jpg"
 
-  function sendMessage() {
-    const text = message.trim() || "Olá! Gostaria de mais informações."
-    trackWhatsAppClick("floating_button")
-    window.open(waLink(text), "_blank", "noopener,noreferrer")
-    setMessage("")
-    setOpen(false)
-  }
+  const departments = [
+    { label: "Quero fazer um orcamento", msg: "Olá! Gostaria de fazer um orçamento." },
+    { label: "Duvida sobre produtos", msg: "Olá! Tenho uma dúvida sobre produtos." },
+    { label: "Informacoes de entrega", msg: "Olá! Gostaria de informações sobre entrega." },
+  ]
+
+  const waLink = (msg: string) => `https://wa.me/${SITE.whatsappE164}?text=${encodeURIComponent(msg)}`
 
   return (
-    <div className="fixed right-6 z-50 bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))]">
-      {/* Chat Panel */}
-      {open && (
-        <div className="absolute bottom-16 right-0 w-80 bg-card rounded-2xl shadow-2xl border border-border overflow-hidden animate-in slide-in-from-bottom-2 duration-300">
-          {/* Header */}
-          <div className="bg-[#075e54] text-white p-4 flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-              <MessageCircle className="w-5 h-5" />
+    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4 font-sans">
+      {/* 1:1 Clone of the requested style */}
+      {isOpen && (
+        <div className="mb-2 w-[calc(100vw-3rem)] sm:w-[380px] overflow-hidden rounded-[2rem] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-5 duration-300 flex flex-col border border-slate-100">
+          {/* Orange Header */}
+          <div className="bg-[#F47920] p-4 text-white flex items-center gap-3">
+            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 bg-white/10">
+              <Image src={salespersonImg} alt="Atendente" fill className="object-cover" />
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#F47920] rounded-full" />
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-sm">{SITE.legalName}</p>
-              <p className="text-xs text-white/70">Online agora</p>
+              <h4 className="font-bold text-sm leading-none">Atendente</h4>
+              <p className="text-[10px] opacity-80 mt-1">Online agora</p>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+            <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-all">
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Messages area */}
-          <div className="p-4 bg-[#ece5dd] min-h-[180px]">
-            <div className="bg-white rounded-lg p-3 shadow-sm max-w-[85%] mb-3">
-              <p className="text-sm text-gray-800">Olá! Bem-vindo à {SITE.shortName}.</p>
-              <p className="text-sm text-gray-800 mt-1">Como podemos ajudar hoje?</p>
-              <p className="text-[10px] text-gray-400 mt-1 text-right">Agora</p>
+          {/* Chat Content */}
+          <div className="flex-1 p-5 space-y-6 bg-slate-50/30">
+            {/* Initial Message Bubble */}
+            <div className="flex items-start gap-2.5">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-1">
+                 <Image src={salespersonImg} alt="Atendente" fill className="object-cover" />
+              </div>
+              <div className="space-y-1">
+                <div className="bg-white p-4 rounded-[1.2rem] rounded-tl-none shadow-sm border border-slate-100">
+                  <p className="text-[13px] leading-relaxed text-slate-700">
+                    Olá! Bem-vindo a {SITE.shortName}.<br />
+                    Como posso ajudar você hoje?
+                  </p>
+                </div>
+                <span className="text-[10px] text-slate-400 ml-1">Agora</span>
+              </div>
             </div>
-            <div className="space-y-2">
-              {["Quero fazer um orçamento", "Dúvida sobre produtos", "Informações de entrega"].map((q) => (
-                <button
-                  key={q}
-                  onClick={() => setMessage(q)}
-                  className="block w-full text-left px-3 py-2 bg-white/80 rounded-lg text-xs text-gray-700 hover:bg-white transition border border-gray-200"
-                >
-                  {q}
-                </button>
-              ))}
+
+            {/* Quick Options */}
+            <div className="space-y-3">
+              <p className="text-[11px] text-slate-400 font-medium ml-1">Selecione ou digite:</p>
+              <div className="flex flex-col gap-2">
+                {departments.map((dept, i) => (
+                  <button
+                    key={i}
+                    onClick={() => window.open(waLink(dept.msg), "_blank")}
+                    className="w-full p-3.5 text-left bg-white border border-slate-200 rounded-2xl hover:border-[#F47920]/50 hover:bg-slate-50 transition-all text-[13px] font-medium text-slate-600"
+                  >
+                    {dept.label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* Input */}
-          <div className="p-3 bg-[#f0f0f0] flex items-center gap-2">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Digite sua mensagem..."
-              className="flex-1 px-4 py-2 rounded-full border border-gray-200 bg-white text-sm text-gray-800 outline-none focus:ring-1 focus:ring-[#075e54]"
-            />
-            <button
-              onClick={sendMessage}
-              className="w-10 h-10 bg-[#25d366] rounded-full flex items-center justify-center text-white hover:bg-[#20c15c] transition shrink-0"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+          {/* Footer Input Area */}
+          <div className="p-5 bg-white border-t border-slate-100">
+            <div className="relative flex items-center gap-2 bg-slate-50 rounded-full px-5 py-2.5 border border-slate-100">
+              <input 
+                type="text" 
+                placeholder="Digite sua mensagem..." 
+                className="flex-1 bg-transparent text-[13px] outline-none text-slate-600 placeholder:text-slate-400"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && e.currentTarget.value) {
+                    window.open(waLink(e.currentTarget.value), "_blank")
+                  }
+                }}
+              />
+              <button 
+                onClick={() => {
+                  const input = document.querySelector('input[placeholder="Digite sua mensagem..."]') as HTMLInputElement
+                  if (input?.value) window.open(waLink(input.value), "_blank")
+                }}
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F47920] text-white shadow-lg active:scale-95 transition-all"
+              >
+                <Send className="w-4 h-4 ml-0.5" />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {/* FAB */}
+      {/* Floating Trigger (Standard Rounded) */}
       <button
-        onClick={() => setOpen(!open)}
-        className={`flex h-12 w-12 items-center justify-center rounded-full border border-emerald-600/25 bg-emerald-600 text-white shadow-md shadow-emerald-900/10 transition hover:bg-emerald-600/92 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 active:scale-[0.97] ${
-          !open ? "motion-safe:animate-pulse" : ""
-        }`}
-        aria-label="Abrir WhatsApp"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-16 h-16 rounded-full bg-[#F47920] text-white shadow-[0_10px_30px_rgba(244,121,32,0.3)] flex items-center justify-center transition-all hover:scale-110 active:scale-90"
       >
-        {open ? <X className="w-5 h-5" /> : (
-          <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current" aria-hidden>
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-          </svg>
-        )}
+        {isOpen ? <X className="w-8 h-8" /> : <MessageCircle className="w-8 h-8 fill-current" />}
       </button>
     </div>
   )

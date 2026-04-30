@@ -38,8 +38,7 @@ export async function POST(request: NextRequest) {
         {
           ok: false,
           error: error.message,
-          hint:
-            "Execute scripts/010_supabase_storage_whatsapp_production.sql no Supabase (colunas page, device_type, browser, os).",
+            "Execute scripts/012_fix_db_schema.sql no Supabase para corrigir as tabelas.",
         },
         { status: 500 },
       )

@@ -6,15 +6,6 @@ DROP TABLE IF EXISTS public.banners CASCADE;
 DROP TABLE IF EXISTS public.products CASCADE;
 DROP TABLE IF EXISTS public.subcategories CASCADE;
 DROP TABLE IF EXISTS public.categories CASCADE;
-DROP TABLE IF EXISTS public.admin_users CASCADE;
-
-CREATE TABLE public.admin_users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL,
-  name TEXT,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
 
 CREATE TABLE public.categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -51,6 +42,8 @@ CREATE TABLE public.products (
   stock INT DEFAULT 0,
   active BOOLEAN DEFAULT true,
   featured BOOLEAN DEFAULT false,
+  is_new BOOLEAN DEFAULT false,
+  is_discount BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 

@@ -1,165 +1,104 @@
-"use client"
-
-import { useEffect, useState } from "react"
+import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, ShieldCheck, CreditCard } from "lucide-react"
 import Link from "next/link"
-import { MapPin, Phone, Mail, Globe } from "lucide-react"
-import BrandLogo from "@/components/store/brand-logo"
+import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import { SITE } from "@/lib/site-config"
-import { createClient } from "@/lib/supabase/client"
-
-const supabase = createClient()
 
 export default function StoreFooter() {
-  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([])
-
-  useEffect(() => {
-    supabase
-      .from("categories")
-      .select("id, name, slug")
-      .eq("active", true)
-      .order("sort_order")
-      .then(({ data }) => {
-        if (data) setCategories(data.slice(0, 8))
-      })
-  }, [])
+  const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="mt-auto rounded-t-[1.75rem] bg-secondary text-secondary-foreground shadow-[0_-8px_40px_-12px_rgb(0,0,0,0.15)] border-t border-white/5 sm:rounded-t-3xl">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:py-14 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
-          <div className="lg:col-span-4 space-y-4">
-            <BrandLogo variant="compact" inverted className="mb-2" />
-            <p className="text-sm text-secondary-foreground/75 leading-relaxed max-w-sm">
-              {SITE.tagline}
+    <footer className="bg-[#002D5B] text-white pt-16 pb-8">
+      <div className="mx-auto max-w-7xl px-4">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand & Social */}
+          <div className="space-y-6">
+            <DynamicBrandLogo variant="full" className="h-10 w-auto brightness-0 invert" />
+            <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+              Sua parceira de confiança em materiais de construção. Preço de atacado, entrega ágil e atendimento especializado para sua obra.
             </p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Facebook className="w-5 h-5" /></a>
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Instagram className="w-5 h-5" /></a>
+              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Youtube className="w-5 h-5" /></a>
+            </div>
           </div>
 
-          <div className="lg:col-span-2">
-            <h3 className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-              Institucional
-            </h3>
-            <ul className="space-y-2.5 text-sm text-secondary-foreground/75">
-              <li>
-                <Link href="/sobre-nos" className="hover:text-white transition">
-                  Sobre nós
-                </Link>
+          {/* Links: Institucional */}
+          <div>
+            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Institucional</h4>
+            <ul className="space-y-4 text-sm font-medium text-white/70">
+              <li><Link href="/sobre" className="hover:text-white transition-colors">Sobre a {SITE.shortName}</Link></li>
+              <li><Link href="/nossas-lojas" className="hover:text-white transition-colors">Nossas Lojas</Link></li>
+              <li><Link href="/trabalhe-conosco" className="hover:text-white transition-colors">Trabalhe Conosco</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition-colors">Blog & Dicas</Link></li>
+              <li><Link href="/politica-de-privacidade" className="hover:text-white transition-colors">Privacidade</Link></li>
+            </ul>
+          </div>
+
+          {/* Links: Atendimento */}
+          <div>
+            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Atendimento</h4>
+            <ul className="space-y-4 text-sm font-medium text-white/70">
+              <li className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-[#F47920] shrink-0" />
+                <div>
+                   <p className="text-white font-bold">{SITE.phoneDisplay}</p>
+                   <p className="text-[10px]">Seg a Sex: 08h às 18h</p>
+                </div>
               </li>
-              <li>
-                <Link href="/politica-de-privacidade" className="hover:text-white transition">
-                  Política de privacidade
-                </Link>
+              <li className="flex items-start gap-3">
+                <Mail className="w-5 h-5 text-[#F47920] shrink-0" />
+                <p>{SITE.email}</p>
               </li>
-              <li>
-                <Link href="/termos-de-uso" className="hover:text-white transition">
-                  Termos de uso
-                </Link>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-[#F47920] shrink-0" />
+                <p>São Paulo, SP - Brasil</p>
               </li>
             </ul>
           </div>
 
-          <div className="lg:col-span-2">
-            <h3 className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-              Atendimento
-            </h3>
-            <ul className="space-y-2.5 text-sm text-secondary-foreground/75">
-              <li>
-                <Link href="/fale-conosco" className="hover:text-white transition">
-                  Fale conosco
-                </Link>
-              </li>
-              <li>
-                <Link href="/contato" className="hover:text-white transition">
-                  Contato
-                </Link>
-              </li>
-              <li>
-                <Link href="/rastrear-pedido" className="hover:text-white transition">
-                  Rastrear pedido
-                </Link>
-              </li>
-              <li>
-                <Link href="/trocas-e-devolucoes" className="hover:text-white transition">
-                  Trocas e devoluções
-                </Link>
-              </li>
-              <li>
-                <Link href="/politica-de-frete" className="hover:text-white transition">
-                  Política de frete
-                </Link>
-              </li>
-              <li>
-                <Link href="/formas-de-pagamento" className="hover:text-white transition">
-                  Formas de pagamento
-                </Link>
-              </li>
-              <li>
-                <Link href="/calculadora" className="hover:text-white transition">
-                  Calculadora de materiais
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div className="lg:col-span-2">
-            <h3 className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-              Categorias
-            </h3>
-            <ul className="space-y-2.5 text-sm text-secondary-foreground/75">
-              <li>
-                <Link href="/produtos" className="hover:text-white transition font-medium">
-                  Ver todo o catálogo
-                </Link>
-              </li>
-              {categories.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/categoria/${c.slug}`} className="hover:text-white transition line-clamp-1">
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="lg:col-span-2">
-            <h3 className="font-heading text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">
-              Contato
-            </h3>
-            <ul className="space-y-3 text-sm text-secondary-foreground/75">
-              <li className="flex gap-2.5">
-                <MapPin className="w-4 h-4 shrink-0 mt-0.5 text-primary" aria-hidden />
-                <span className="leading-snug">
-                  {SITE.address.street}
-                  <br />
-                  {SITE.address.district}, {SITE.address.city}
-                  <br />
-                  {SITE.address.zip}
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 shrink-0 text-primary" aria-hidden />
-                <a href={`tel:+${SITE.whatsappE164}`} className="hover:text-white transition">
-                  {SITE.phoneDisplay}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 shrink-0 text-primary" aria-hidden />
-                <a href={`mailto:${SITE.email}`} className="hover:text-white transition break-all">
-                  {SITE.email}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Globe className="w-4 h-4 shrink-0 text-primary" aria-hidden />
-                <a href={SITE.website} target="_blank" rel="noopener noreferrer" className="hover:text-white transition break-all">
-                  {SITE.website.replace(/^https?:\/\//, "")}
-                </a>
-              </li>
-            </ul>
+          {/* Help / Security */}
+          <div>
+            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Segurança</h4>
+            <div className="space-y-6">
+              <div className="flex flex-wrap gap-3">
+                <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                   <span className="text-[10px] font-black uppercase">Site Seguro</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
+                   <CreditCard className="w-5 h-5 text-[#F47920]" />
+                   <span className="text-[10px] font-black uppercase">Pagamento SSL</span>
+                </div>
+              </div>
+              <div className="pt-4 border-t border-white/10">
+                 <p className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-40">Formas de Pagamento</p>
+                 <div className="flex flex-wrap gap-2 opacity-80">
+                    <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
+                    <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
+                    <img src="https://img.icons8.com/color/48/pix.png" alt="Pix" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
+                    <img src="https://img.icons8.com/color/48/barcode.png" alt="Boleto" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
+                 </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-secondary-foreground/45">
-          <p>© {new Date().getFullYear()} {SITE.legalName}. Todos os direitos reservados.</p>
-          <p className="text-secondary-foreground/35">CNPJ e razão social conforme contrato social.</p>
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+          <div className="space-y-1">
+            <p className="text-[11px] font-medium text-white/40">
+              © {currentYear} {SITE.name}. Todos os direitos reservados.
+            </p>
+            <p className="text-[10px] text-white/20">
+              CNPJ: 00.000.000/0001-00 | Rua Exemplo, 123 - São Paulo/SP
+            </p>
+          </div>
+          <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/40">
+            <Link href="/termos" className="hover:text-white transition-colors">Termos de Uso</Link>
+            <Link href="/politica-de-cookies" className="hover:text-white transition-colors">Cookies</Link>
+          </div>
         </div>
       </div>
     </footer>

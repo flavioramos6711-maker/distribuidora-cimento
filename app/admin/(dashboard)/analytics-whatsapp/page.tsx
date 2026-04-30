@@ -131,9 +131,7 @@ export default function AnalyticsWhatsAppPage() {
         <p className="font-semibold text-destructive">Não foi possível carregar o analytics do WhatsApp</p>
         <p className="text-destructive/90 whitespace-pre-wrap break-words">{error.message}</p>
         <ul className="list-disc pl-5 text-muted-foreground space-y-1.5">
-          <li>
-            Crie a tabela executando <code className="rounded bg-muted px-1 py-0.5 text-xs">scripts/003_whatsapp_clicks_analytics.sql</code> no SQL do Supabase.
-          </li>
+            Corrija o banco executando <code className="rounded bg-muted px-1 py-0.5 text-xs">scripts/012_fix_db_schema.sql</code> no SQL do Supabase.
           <li>
             Em produção, defina <code className="rounded bg-muted px-1 py-0.5 text-xs">SUPABASE_SERVICE_ROLE_KEY</code> (Settings → API → service role) ou use a política RLS do mesmo script para leitura como admin logado.
           </li>

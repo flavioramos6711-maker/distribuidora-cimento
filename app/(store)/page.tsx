@@ -5,12 +5,14 @@ import { useEffect, useRef, useState } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
+import CategoriesCarousel from "@/components/store/categories-carousel"
 import InstitutionalSection from "@/components/store/institutional-section"
 import TestimonialsCarousel from "@/components/store/testimonials-carousel"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight, Truck, ShieldCheck, Award, Headphones, LayoutGrid, Sparkles, Tag } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { SITE, waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
@@ -60,28 +62,43 @@ function SectionHeader({
   href,
   linkLabel,
   icon: Icon,
+  className,
 }: {
   title: string
   subtitle?: string
   href?: string
   linkLabel?: string
   icon?: ComponentType<{ className?: string }>
+  className?: string
 }) {
   return (
-    <div className="mb-5 flex flex-col gap-4 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          {Icon && <Icon className="h-5 w-5 shrink-0 text-primary" aria-hidden />}
-          <h2 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl md:text-3xl">{title}</h2>
+    <div className={cn("mb-12 flex flex-col gap-8 sm:mb-16 sm:flex-row sm:items-end sm:justify-between", className)}>
+      <div className="min-w-0 space-y-4">
+        <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-1">
+                <div className="w-8 h-1.5 bg-[#F47920] rounded-full" />
+                <div className="w-12 h-1.5 bg-[#002D5B] rounded-full" />
+            </div>
+            <h2 className="text-3xl font-black tracking-tight text-[#002D5B] sm:text-4xl md:text-5xl uppercase">
+                {title}
+            </h2>
         </div>
-        {subtitle && <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">{subtitle}</p>}
+        {subtitle && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-100 rounded-lg">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F47920]" />
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    {subtitle}
+                </p>
+            </div>
+        )}
       </div>
       {href && (
         <Link
           href={href}
-          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 self-start rounded-full border border-border/80 bg-background px-4 text-sm font-semibold text-primary shadow-sm transition duration-200 hover:scale-[1.03] hover:border-primary/25 hover:bg-muted/30 active:scale-[0.98] sm:self-auto"
+          className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-xl bg-white border border-slate-200 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-[#002D5B] transition-all hover:border-[#002D5B] hover:shadow-xl active:scale-95 sm:self-auto"
         >
-          {linkLabel || "Ver mais"} <ArrowRight className="h-4 w-4" />
+          {linkLabel || "Explorar Tudo"} 
+          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       )}
     </div>
@@ -92,133 +109,66 @@ export default function HomePage() {
   const { data, isLoading } = useSWR("store-home", fetchHome)
 
   const trustItems = [
-    { icon: Truck, title: "Entrega Ágil", desc: "Logística para obra e revenda" },
-    { icon: ShieldCheck, title: "Compra Segura", desc: "Atendimento consultivo e transparência" },
-    { icon: Headphones, title: "Suporte Direto", desc: "Canal comercial para resolver rápido" },
-    { icon: Award, title: "Atendimento Profissional", desc: "Experiência no setor e qualidade" },
+    { icon: Truck, title: "Entrega Ágil", desc: "Logística especializada" },
+    { icon: ShieldCheck, title: "Compra Segura", desc: "Ambiente protegido" },
+    { icon: Headphones, title: "Suporte Direto", desc: "Vendedores online" },
+    { icon: Award, title: "Qualidade Premium", desc: "Produtos certificados" },
   ]
-
-  const trustScrollerRef = useRef<HTMLDivElement | null>(null)
-  const [trustAutoPaused, setTrustAutoPaused] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    const el = trustScrollerRef.current
-    if (!el) return
-
-    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) return
-
-    // No desktop (>=640px) a seção vira grid; não precisamos de autoplay.
-    const desktop = window.matchMedia && window.matchMedia("(min-width: 640px)").matches
-    if (desktop) return
-
-    const id = window.setInterval(() => {
-      if (trustAutoPaused) return
-
-      const maxLeft = el.scrollWidth - el.clientWidth
-      if (maxLeft <= 0) return
-
-      const next = el.scrollLeft + el.clientWidth * 0.85
-      el.scrollTo({ left: next >= maxLeft - 2 ? 0 : next, behavior: "smooth" })
-    }, 5200)
-
-    return () => window.clearInterval(id)
-  }, [trustAutoPaused])
 
   if (isLoading) {
     return <HomeSkeleton />
   }
 
   return (
-    <div className="pb-6 sm:pb-10">
-      <HeroBanner />
+    <div className="pb-12 sm:pb-20">
+      <div className="px-0 sm:px-4 lg:px-6">
+        <HeroBanner />
+      </div>
 
-      <section className="border-b border-border/40 bg-card/80">
-        <div className="mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-7">
-          <div
-            ref={trustScrollerRef}
-            className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible lg:grid-cols-4 sm:gap-4"
-            onPointerEnter={() => setTrustAutoPaused(true)}
-            onPointerDown={() => setTrustAutoPaused(true)}
-            onPointerLeave={() => setTrustAutoPaused(false)}
-            onPointerUp={() => setTrustAutoPaused(false)}
-          >
-            {trustItems.map((item) => (
-              <div
-                key={item.title}
-                className="flex min-w-[min(78vw,280px)] shrink-0 snap-center items-start gap-3 rounded-2xl border border-border/50 bg-muted/20 p-4 shadow-sm transition duration-200 hover:border-emerald-500/20 hover:shadow-app sm:min-w-0"
-              >
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
-                  <item.icon className="h-5 w-5 text-emerald-600" aria-hidden />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-foreground">{item.title}</p>
-                  <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{item.desc}</p>
-                </div>
+
+
+      {/* Benefits Bar */}
+      <section className="relative z-20 -mt-8 sm:-mt-10 mx-auto max-w-7xl px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-xl bg-white shadow-lg border border-slate-100">
+          {trustItems.map((item) => (
+            <div key={item.title} className="flex items-center gap-4 p-5 rounded-lg hover:bg-slate-50 transition-colors">
+              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#002D5B] text-white shadow-sm shrink-0">
+                <item.icon className="w-6 h-6" />
               </div>
-            ))}
-          </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-bold text-slate-800 uppercase tracking-tight truncate">{item.title}</p>
+                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider truncate">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      <InstitutionalSection />
-
+      {/* Categories */}
       {data?.categories && data.categories.length > 0 && (
-        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+        <section className="py-16 sm:py-24">
           <SectionHeader
-            title="Categorias"
-            subtitle="Toque para explorar — deslize no celular"
+            title="Departamentos"
+            subtitle="Explore nossa linha completa por categoria"
             href="/produtos"
-            linkLabel="Ver tudo"
             icon={LayoutGrid}
+            className="mx-auto max-w-7xl px-4"
           />
-          <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-3 sm:overflow-visible md:grid-cols-4 lg:grid-cols-6 sm:gap-4">
-            {data.categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categoria/${cat.slug}`}
-                className="group flex w-[min(42vw,200px)] shrink-0 snap-center flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-app transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-app-lg active:scale-[0.98] sm:w-auto"
-              >
-                <div className="relative flex aspect-square w-full items-center justify-center bg-gradient-to-b from-muted/40 to-muted/10 p-3">
-                  {cat.image_url ? (
-                    <div className="relative h-full w-full overflow-hidden rounded-full">
-                      <Image
-                        src={cat.image_url}
-                        alt=""
-                        fill
-                        sizes="(max-width:640px) 42vw, (max-width:1024px) 25vw, 16vw"
-                        className="object-contain object-center transition duration-300 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                  ) : (
-                    <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-heading text-2xl font-bold text-primary/50">
-                      {cat.name.charAt(0)}
-                    </span>
-                  )}
-                </div>
-                <div className="border-t border-border/40 p-3 text-center">
-                  <p className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug text-foreground transition group-hover:text-primary">
-                    {cat.name}
-                  </p>
-                  <p className="mt-1 text-[11px] font-medium text-muted-foreground">{cat.products?.length || 0} produtos</p>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <CategoriesCarousel categories={data.categories} />
         </section>
       )}
 
+      {/* Featured Products */}
       {data?.featured && data.featured.length > 0 && (
-        <section className="border-y border-border/40 bg-gradient-to-b from-muted/30 to-background">
-          <div className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
+        <section className="py-16 sm:py-24 bg-muted/20">
+          <div className="mx-auto max-w-7xl px-4">
             <SectionHeader
-              title="Em destaque"
-              subtitle="Seleção comercial — pronta para orçamento"
+              title="Em Destaque"
+              subtitle="Os produtos mais procurados para sua obra"
               href="/produtos"
               icon={Sparkles}
             />
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
               {data.featured.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -227,60 +177,75 @@ export default function HomePage() {
         </section>
       )}
 
-      <TestimonialsCarousel />
-
+      {/* New Products */}
       {data?.newProducts && data.newProducts.length > 0 && (
-        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
-          <SectionHeader title="Novidades" subtitle="Últimos lançamentos" href="/produtos" linkLabel="Catálogo" icon={Sparkles} />
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
-            {data.newProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        <section className="py-16 sm:py-24">
+          <div className="mx-auto max-w-7xl px-4">
+            <SectionHeader 
+              title="Novidades" 
+              subtitle="As últimas soluções e lançamentos do setor" 
+              href="/produtos" 
+              icon={Sparkles} 
+            />
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              {data.newProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      <section className="mx-3 overflow-hidden rounded-2xl bg-secondary shadow-app sm:mx-4 sm:rounded-3xl">
-        <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 px-5 py-10 text-center sm:flex-row sm:justify-between sm:gap-8 sm:px-8 sm:py-12 sm:text-left">
-          <div className="max-w-lg">
-            <h2 className="text-balance font-heading text-2xl font-bold text-secondary-foreground sm:text-3xl md:text-4xl">
-              Orçamento para obra e revenda
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-secondary-foreground/75 sm:text-base">
-              Fale com a equipe {SITE.shortName} no WhatsApp. Resposta ágil para construtoras, lojistas e consumidor.
-            </p>
+      {/* Institutional Brief - Moved Further Down for Credibility after Products */}
+      <InstitutionalSection />
+
+      {/* Testimonials */}
+      <div className="bg-[#002D5B] py-20 my-10">
+         <TestimonialsCarousel />
+      </div>
+
+      {/* Offer Banner / CTA */}
+      <section className="mx-auto max-w-7xl px-4 py-16">
+        <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#002D5B] to-[#003d7a] p-10 lg:p-16 text-white shadow-2xl">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#F47920] opacity-10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12 text-center lg:text-left">
+            <div className="flex-1 space-y-6">
+               <h2 className="text-4xl lg:text-6xl font-black leading-tight">
+                 Preço de atacado<br/>
+                 <span className="text-[#F47920]">para sua obra</span>
+               </h2>
+               <p className="text-lg text-white/70 max-w-xl font-medium">
+                 Seja para reforma residencial ou grandes empreendimentos, temos a logística e o preço que você precisa.
+               </p>
+            </div>
+            <a
+              href={waLink("Olá! Gostaria de fazer um orçamento.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex h-20 min-w-[300px] items-center justify-center gap-4 rounded-3xl bg-[#F47920] text-xl font-black text-white shadow-xl transition-all hover:scale-105 active:scale-95"
+            >
+              FALAR COM VENDEDOR
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </a>
           </div>
-          <a
-            href={waLink("Olá! Gostaria de fazer um orçamento.")}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => trackWhatsAppClick("hero_banner", "/")}
-            className="inline-flex min-h-12 w-full min-w-[200px] max-w-xs items-center justify-center rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-app transition duration-200 hover:scale-[1.03] hover:bg-primary/92 active:scale-[0.98] sm:w-auto"
-          >
-            WhatsApp comercial
-          </a>
         </div>
       </section>
 
+      {/* Discounts / Monthly Offers */}
       {data?.discounts && data.discounts.length > 0 && (
-        <section className="mx-auto max-w-7xl px-3 py-8 sm:px-4 sm:py-12">
-          <div className="mb-5 flex flex-wrap items-center gap-2 sm:mb-6">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-              <Tag className="h-3.5 w-3.5" />
-              Promoções
-            </span>
-          </div>
-          <SectionHeader
-            title="Ofertas"
-            subtitle="Condições especiais — aproveite no orçamento"
-            href="/produtos"
-            linkLabel="Ver ofertas"
-            icon={Tag}
-          />
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 md:gap-5">
-            {data.discounts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+        <section id="promocoes" className="py-16 sm:py-24 bg-slate-50/50">
+          <div className="mx-auto max-w-7xl px-4">
+            <SectionHeader
+              title="Ofertas do Mês"
+              subtitle="Condições exclusivas para compras imediatas"
+              href="/produtos"
+              icon={Tag}
+            />
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              {data.discounts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
         </section>
       )}

@@ -6,7 +6,7 @@ export async function getSiteSettingsServer(): Promise<SiteSettingsRow | null> {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from("site_settings")
-      .select("favicon_url")
+      .select("*")
       .eq("id", SITE_SETTINGS_ROW_ID)
       .maybeSingle()
 

@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
   id TEXT PRIMARY KEY DEFAULT 'default' CHECK (id = 'default'),
   logo_url TEXT,
   favicon_url TEXT,
+  chat_header_url TEXT,
   banner_images JSONB NOT NULL DEFAULT '[]'::jsonb,
   institutional_title TEXT,
   institutional_body TEXT,

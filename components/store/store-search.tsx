@@ -2,13 +2,10 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Search } from "lucide-react"
+import { Search, Sparkles } from "lucide-react"
 
 const DEBOUNCE_MS = 280
 
-/**
- * Campo único de busca: no mobile ocupa a linha inteira abaixo da barra principal (order + basis-full no header).
- */
 export default function StoreSearch() {
   const pathname = usePathname()
   const router = useRouter()
@@ -47,7 +44,7 @@ export default function StoreSearch() {
     <form
       method="get"
       action="/busca"
-      className="relative w-full min-w-0 md:flex-1 md:max-w-2xl md:mx-auto"
+      className="relative w-full"
       onSubmit={(e) => {
         if (onBusca) {
           e.preventDefault()
@@ -56,22 +53,24 @@ export default function StoreSearch() {
         }
       }}
     >
-      <input
-        type="search"
-        name="q"
-        autoComplete="off"
-        value={q}
-        onChange={(e) => handleChange(e.target.value)}
-        placeholder="Buscar produtos..."
-        className="h-11 w-full rounded-full border border-border/50 bg-muted/40 pl-4 pr-12 text-sm text-foreground shadow-inner placeholder:text-muted-foreground outline-none transition duration-200 focus:border-primary/35 focus:bg-background focus:shadow-app"
-      />
-      <button
-        type="submit"
-        className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground transition duration-200 hover:scale-[1.05] hover:bg-primary/92 active:scale-[0.95]"
-        aria-label="Buscar"
-      >
-        <Search className="h-4 w-4" />
-      </button>
+          <div className="group relative flex items-center">
+        <input
+          type="search"
+          name="q"
+          autoComplete="off"
+          value={q}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="O que você está procurando hoje?"
+          className="h-12 w-full rounded-lg border border-slate-200 bg-white pl-5 pr-20 text-sm font-medium text-slate-700 placeholder:text-slate-400 outline-none transition-all focus:border-[#002D5B] focus:ring-1 focus:ring-[#002D5B]/10"
+        />
+        <button
+          type="submit"
+          className="absolute right-0 h-12 w-14 flex items-center justify-center rounded-r-lg bg-gradient-to-br from-[#F47920] to-[#e06b10] text-white transition-all hover:brightness-110 active:scale-95 group/search"
+          aria-label="Buscar"
+        >
+          <Search className="h-5 w-5 group-hover/search:scale-110 transition-transform" />
+        </button>
+      </div>
     </form>
   )
 }

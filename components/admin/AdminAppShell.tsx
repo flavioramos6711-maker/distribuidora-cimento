@@ -67,7 +67,7 @@ export default function AdminAppShell({ children, adminEmail, adminName }: Props
           <div>
             <h2 className="text-lg font-bold text-sidebar-foreground">Painel</h2>
             <p className="text-xs text-sidebar-foreground/60 truncate max-w-[11rem]" title={adminEmail}>
-              {adminName || adminEmail}
+              {adminName ? `Olá, ${adminName.split(" ")[0]}` : adminEmail}
             </p>
           </div>
           <button
@@ -140,7 +140,7 @@ export default function AdminAppShell({ children, adminEmail, adminName }: Props
           </div>
           <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground max-w-[220px] truncate">
             <User className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{adminEmail}</span>
+            <span className="truncate">{adminName || adminEmail}</span>
           </div>
         </header>
         <main className="flex-1 p-4 lg:p-6 overflow-y-auto">{children}</main>

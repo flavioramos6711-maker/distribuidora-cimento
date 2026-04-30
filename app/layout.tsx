@@ -1,5 +1,4 @@
-import type { Metadata } from 'next'
-import { Inter, Poppins } from 'next/font/google'
+import { Outfit, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import { SITE } from '@/lib/site-config'
@@ -7,16 +6,16 @@ import { BRANDING } from '@/lib/branding'
 import { getSiteSettingsServer } from '@/lib/site-settings-server'
 import './globals.css'
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-heading',
   display: 'swap',
+  weight: ['400', '700', '900'],
 })
 
-const poppins = Poppins({
-  weight: ['500', '600', '700'],
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-poppins',
+  variable: '--font-sans',
   display: 'swap',
 })
 
@@ -42,7 +41,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="pt-BR" className={`${outfit.variable} ${inter.variable}`}>
       <body className="font-sans antialiased">
         {children}
         <Toaster position="top-right" richColors />

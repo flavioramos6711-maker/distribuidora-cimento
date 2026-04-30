@@ -19,6 +19,7 @@ export type SiteSettingsRow = {
   id: string
   logo_url: string | null
   favicon_url: string | null
+  chat_header_url: string | null
   banner_images: CmsBannerSlide[] | unknown
   institutional_title: string | null
   institutional_body: string | null

@@ -56,6 +56,12 @@ export async function PATCH(request: NextRequest) {
       : typeof b.institutional_body === "string"
         ? b.institutional_body
         : null
+  const chat_header_url =
+    b.chat_header_url === null || b.chat_header_url === ""
+      ? null
+      : typeof b.chat_header_url === "string"
+        ? b.chat_header_url
+        : null
 
   if (!Array.isArray(b.banner_images)) {
     return jsonWithSession({ error: "banner_images deve ser um array." }, { status: 400 })
@@ -85,6 +91,7 @@ export async function PATCH(request: NextRequest) {
     favicon_url,
     institutional_title,
     institutional_body,
+    chat_header_url,
     banner_images,
     testimonials,
     updated_at: new Date().toISOString(),
@@ -100,10 +107,9 @@ export async function PATCH(request: NextRequest) {
     return jsonWithSession(
       {
         error: error.message,
-        hint:
-          'Crie a tabela com scripts/011_site_settings_cms.sql no Supabase (tabela "site_settings").',
+        hint: "Crie ou corrija a tabela com scripts/012_fix_db_schema.sql no Supabase.",
       },
-      { status: 500 },
+      { status: 500 }
     )
   }
 

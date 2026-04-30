@@ -38,6 +38,7 @@ const MAX_BANNERS = 6
 type FormState = {
   logo_url: string
   favicon_url: string
+  chat_header_url: string
   institutional_title: string
   institutional_body: string
   banner_images: CmsBannerSlide[]
@@ -47,6 +48,7 @@ type FormState = {
 const initialForm = (): FormState => ({
   logo_url: "",
   favicon_url: "",
+  chat_header_url: "",
   institutional_title: DEFAULT_INSTITUTIONAL_TITLE,
   institutional_body: DEFAULT_INSTITUTIONAL_BODY,
   banner_images: [],
@@ -57,7 +59,7 @@ export default function AdminSiteSettingsPage() {
   const [form, setForm] = useState<FormState>(initialForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [uploadKey, setUploadKey] = useState<"logo" | "favicon" | null>(null)
+  const [uploadKey, setUploadKey] = useState<"logo" | "favicon" | "chat" | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -79,6 +81,7 @@ export default function AdminSiteSettingsPage() {
       setForm({
         logo_url: data.logo_url || "",
         favicon_url: data.favicon_url || "",
+        chat_header_url: data.chat_header_url || "",
         institutional_title: data.institutional_title?.trim() || DEFAULT_INSTITUTIONAL_TITLE,
         institutional_body: data.institutional_body?.trim() || DEFAULT_INSTITUTIONAL_BODY,
         banner_images: parseBannerImages(data.banner_images),
@@ -101,6 +104,7 @@ export default function AdminSiteSettingsPage() {
         body: JSON.stringify({
           logo_url: form.logo_url || null,
           favicon_url: form.favicon_url || null,
+          chat_header_url: form.chat_header_url || null,
           institutional_title: form.institutional_title || null,
           institutional_body: form.institutional_body || null,
           banner_images: form.banner_images,
@@ -119,17 +123,18 @@ export default function AdminSiteSettingsPage() {
     setSaving(false)
   }
 
-  async function onLogoUpload(e: React.ChangeEvent<HTMLInputElement>, kind: "logo" | "favicon") {
+  async function onLogoUpload(e: React.ChangeEvent<HTMLInputElement>, kind: "logo" | "favicon" | "chat") {
     const file = e.target.files?.[0]
     e.target.value = ""
     if (!file) return
     setUploadKey(kind)
-    const data = await uploadImage(file, "logos")
+    const data = await uploadImage(file, kind === "chat" ? "banners" : "logos")
     setUploadKey(null)
     if (data?.url) {
       if (kind === "logo") setForm((f) => ({ ...f, logo_url: data.url }))
-      else setForm((f) => ({ ...f, favicon_url: data.url }))
-      toast.success(kind === "logo" ? "Logo enviada!" : "Favicon enviado!")
+      else if (kind === "favicon") setForm((f) => ({ ...f, favicon_url: data.url }))
+      else setForm((f) => ({ ...f, chat_header_url: data.url }))
+      toast.success(kind === "logo" ? "Logo enviada!" : kind === "favicon" ? "Favicon enviado!" : "Header do chat enviado!")
     } else {
       toast.error("Falha no upload")
     }
@@ -225,8 +230,11 @@ export default function AdminSiteSettingsPage() {
           <TabsTrigger value="hero" className="gap-1.5">
             <ImageIcon className="h-4 w-4" /> Hero / banners
           </TabsTrigger>
+          <TabsTrigger value="chat" className="gap-1.5">
+            <MessageSquareQuote className="h-4 w-4" /> Chat
+          </TabsTrigger>
           <TabsTrigger value="conteudo" className="gap-1.5">
-            <MessageSquareQuote className="h-4 w-4" /> Institucional & depoimentos
+            <FolderTree className="h-4 w-4" /> Institucional & depoimentos
           </TabsTrigger>
           <TabsTrigger value="catalogo" className="gap-1.5">
             <Package className="h-4 w-4" /> Catálogo
@@ -303,6 +311,56 @@ export default function AdminSiteSettingsPage() {
                 Usar favicon padrão
               </button>
             </div>
+          </div>
+
+          <div className="mt-8 border-t pt-6">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Instruções Recomendadas</h3>
+            <ul className="mt-2 space-y-1 text-sm text-muted-foreground list-disc list-inside">
+              <li>Logo: PNG ou JPEG (300x100px aprox.)</li>
+              <li>Favicon: PNG quadrado (32x32px ou 64x64px)</li>
+            </ul>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="chat" className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <h2 className="text-lg font-semibold">Configuração do Chat</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Personalize o cabeçalho do chat estilo WhatsApp.
+          </p>
+          <div className="mt-6">
+            <p className="text-sm font-medium">Imagem do cabeçalho (Header)</p>
+            <div className="mt-2 flex flex-wrap items-center gap-4">
+              {form.chat_header_url ? (
+                <div className="relative h-20 w-20 overflow-hidden rounded-full border bg-muted/30">
+                  <Image src={form.chat_header_url} alt="Chat Header" fill unoptimized className="object-cover" />
+                </div>
+              ) : (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-dashed text-xs text-muted-foreground">
+                  Sem foto
+                </div>
+              )}
+              <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted/50">
+                <Upload className="h-4 w-4" />
+                {uploadKey === "chat" ? "Enviando…" : "Enviar foto"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => onLogoUpload(e, "chat")}
+                  disabled={uploadKey !== null}
+                />
+              </label>
+              {form.chat_header_url && (
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, chat_header_url: "" }))}
+                  className="text-sm text-destructive hover:underline"
+                >
+                  Remover imagem
+                </button>
+              )}
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">Recomendado: 100x100px ou quadrado.</p>
           </div>
         </TabsContent>
 
@@ -570,7 +628,7 @@ export default function AdminSiteSettingsPage() {
       </Tabs>
 
       <p className="text-center text-xs text-muted-foreground">
-        Primeira vez? Rode <code className="rounded bg-muted px-1">scripts/011_site_settings_cms.sql</code> no Supabase.
+        Primeira vez ou erros? Rode <code className="rounded bg-muted px-1">scripts/012_fix_db_schema.sql</code> no Supabase.
       </p>
     </div>
   )

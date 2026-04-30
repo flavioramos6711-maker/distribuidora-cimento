@@ -11,25 +11,37 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0c1a2e",
-          borderRadius: 8,
+          background: "#002D5B",
+          borderRadius: 6,
+          position: "relative",
         }}
       >
-        <div
-          style={{
+        {/* Triangle / Bag Accent */}
+        <div 
+          style={{ 
+            width: 14, 
+            height: 14, 
+            background: "#F47920", 
+            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
+            marginBottom: -4
+          }} 
+        />
+        {/* Main Logo Body (simplified) */}
+        <div 
+          style={{ 
+            width: 18, 
+            height: 14, 
+            background: "white", 
+            borderRadius: 2,
             display: "flex",
-            flexWrap: "wrap",
-            gap: 3,
-            width: 20,
-            height: 20,
-          }}
+            alignItems: "center",
+            justifyContent: "center"
+          }} 
         >
-          <div style={{ width: 8, height: 8, background: "#ea580c", borderRadius: 2 }} />
-          <div style={{ width: 8, height: 8, background: "#ea580c", borderRadius: 2 }} />
-          <div style={{ width: 8, height: 8, background: "#ea580c", borderRadius: 2 }} />
-          <div style={{ width: 8, height: 8, background: "#ea580c", borderRadius: 2 }} />
+          <div style={{ width: 8, height: 2, background: "#002D5B" }} />
         </div>
       </div>
     ),

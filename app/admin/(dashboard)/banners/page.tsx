@@ -99,6 +99,10 @@ export default function BannersPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-card-foreground mb-1">Imagem*</label>
+                <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-xs flex items-start gap-2">
+                  <span className="font-bold shrink-0">⚠️ Atenção:</span>
+                  <span>A imagem deve ter exatamente <strong>1920x430px</strong> para o layout ideal. Formatos: PNG, JPEG ou WebP.</span>
+                </div>
                 {form.image_url && <Image src={form.image_url} alt="Banner" width={400} height={150} className="rounded-lg mb-2 object-cover w-full h-32" />}
                 <label className="flex items-center gap-2 px-4 py-3 border border-dashed border-border rounded-lg cursor-pointer hover:bg-muted transition">
                   <Upload className="w-5 h-5 text-muted-foreground" />

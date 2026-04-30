@@ -23,8 +23,20 @@ function Stars({ n }: { n: number }) {
 }
 
 export default function TestimonialsCarousel() {
-  const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  const items = resolveTestimonials(row ?? null)
+  const testimonials = [
+    { name: "Carlos M.", role: "Construtora - Obra Residencial", text: "Compra segura e nota fiscal em dia. O cimento chegou lacrado e dentro do prazo — fundamental para passar na fiscalização.", rating: 5 },
+    { name: "Renata S.", role: "Lojista - Revenda", text: "Preço competitivo e fornecimento contínuo. Conseguimos repor estoque rápido e não paramos a loja na alta temporada.", rating: 5 },
+    { name: "Paulo A.", role: "Mestre de Obras - Obra Comercial", text: "Material com procedência e qualidade visível. Menos retrabalho e mais confiança da equipe no canteiro.", rating: 5 },
+    { name: "Fernanda L.", role: "Engenheira - Gerenciamento de Obra", text: "Empresa forte no setor: atendimento técnico, agilidade na logística e respeito aos prazos do cronograma.", rating: 5 },
+    { name: "Marcos V.", role: "Autônomo - Reforma", text: "Entrega rápida na região. Pedi na segunda e usei na obra na quarta — salvou meu prazo com o cliente.", rating: 5 },
+    { name: "Juliana T.", role: "Incorporadora", text: "Parceria de confiança para grandes volumes. Transparência no pedido e rastreio até a entrega na obra.", rating: 5 },
+    { name: "Roberto K.", role: "Depósito - Atacado", text: "Mix completo de construção civil e preço de atacado que fecha com a concorrência. Recomendo para revenda.", rating: 5 },
+    { name: "Amanda R.", role: "Arquiteta", text: "Profissionalismo do time comercial e suporte na escolha de argamassas e impermeabilizantes — credibilidade de verdade.", rating: 5 },
+    { name: "Eduardo P.", role: "Pedreiro - Equipe de Obra", text: "Qualidade do material faz diferença no acabamento. Areia e brita padronizadas, sem surpresa na mistura.", rating: 5 },
+    { name: "Patrícia N.", role: "Indústria - Compras", text: "Segurança na cadeia de fornecimento: documentação correta e fornecedor sólido para compras recorrentes.", rating: 5 },
+    { name: "Lucas H.", role: "Síndico - Condomínio", text: "Confiança para reformas do prédio: entrega organizada, motorista educado e material conforme especificação.", rating: 5 },
+  ]
+  const items = testimonials
   const [paused, setPaused] = useState(false)
 
   const [emblaRef, emblaApi] = useEmblaCarousel({

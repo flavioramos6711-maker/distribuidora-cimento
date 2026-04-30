@@ -2,10 +2,13 @@
 
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn } from "lucide-react"
+import { ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn, Tag, Headset } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import StoreSearch from "@/components/store/store-search"
+import Topbar from "@/components/store/topbar"
+import LocationSelector from "@/components/store/location-selector"
+import ContactPopup from "@/components/store/contact-popup"
 import { SITE } from "@/lib/site-config"
 
 const supabase = createClient()
@@ -13,6 +16,7 @@ const supabase = createClient()
 export default function StoreHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([])
   const [user, setUser] = useState<{ email: string; name?: string } | null>(null)
   const [cartCount, setCartCount] = useState(0)
@@ -31,10 +35,12 @@ export default function StoreHeader() {
     function syncUserFromAuth() {
       supabase.auth.getUser().then(({ data }) => {
         if (data.user) {
-          const meta = data.user.user_metadata as { full_name?: string; name?: string } | undefined
+          const meta = data.user.user_metadata as any
+          const extractedName = meta?.full_name ?? meta?.name ?? meta?.first_name ?? meta?.displayName
+          
           setUser({
             email: data.user.email || "",
-            name: meta?.full_name ?? meta?.name,
+            name: extractedName,
           })
         } else {
           setUser(null)
@@ -62,6 +68,7 @@ export default function StoreHeader() {
       }
     }
     window.addEventListener("cart-updated", handleCartUpdate)
+    setIsMounted(true)
 
     return () => {
       sub.subscription.unsubscribe()
@@ -69,121 +76,133 @@ export default function StoreHeader() {
     }
   }, [])
 
-  const barSurface = scrolled
-    ? "bg-background/92 shadow-app border-border/60"
-    : "bg-background/80 border-border/40"
+  const barSurface = scrolled 
+    ? "bg-white/40 backdrop-blur-2xl border-b border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)]" 
+    : "bg-transparent border-b border-transparent"
 
   return (
     <header
       className={
-        "z-50 shrink-0 border-b border-transparent " +
-        /* Mobile: fixed evita sobreposição do 1º bloco (banner) com layout flex+sticky; desktop: sticky no fluxo */
-        "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:bg-background max-lg:pt-[env(safe-area-inset-top,0px)] " +
-        "lg:sticky lg:top-0 lg:bg-transparent lg:pt-0"
+        "z-50 shrink-0 w-full transition-all duration-500 " +
+        "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 " +
+        "lg:sticky lg:top-0"
       }
     >
-      <div
-        className={`${barSurface} backdrop-blur-xl backdrop-saturate-150 border-b transition-all duration-200 ease-out max-lg:bg-background/95`}
-      >
-        <div className="mx-auto max-w-7xl px-3 sm:px-4">
-          <div className="hidden sm:flex items-center justify-between gap-3 py-2 text-[11px] text-muted-foreground border-b border-border/25">
-            <div className="flex items-center gap-2 min-w-0">
-              <Phone className="w-3 h-3 text-emerald-600 shrink-0" aria-hidden />
-              <a href={`tel:+${SITE.whatsappE164}`} className="hover:text-foreground transition truncate">
-                {SITE.phoneDisplay}
-              </a>
-              <span className="text-border hidden md:inline">|</span>
-              <span className="hidden md:inline truncate">Entrega e atacado</span>
-            </div>
-            <div className="flex items-center gap-4 shrink-0">
-              <Link href="/rastrear-pedido" className="hover:text-foreground transition">
-                Rastrear
-              </Link>
-              <Link href="/contato" className="hover:text-foreground transition">
-                Contato
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 py-2.5 sm:py-3">
+      <Topbar />
+      <div className={`${barSurface} transition-all duration-500`}>
+        <div className="mx-auto max-w-7xl px-4 lg:px-6">
+          {/* Main Bar */}
+          <div className="flex items-center justify-between gap-6 py-4 lg:py-5">
+            {/* Mobile Menu Trigger */}
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="order-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-foreground transition hover:bg-muted/80 hover:scale-[1.03] active:scale-[0.97] lg:hidden"
-              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[#002D5B] lg:hidden"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
+            {/* Logo */}
             <Link
               href="/"
-              className="order-2 flex min-w-0 shrink-0 items-center transition hover:opacity-90 active:scale-[0.98]"
+              className="flex shrink-0 items-center"
             >
-              <DynamicBrandLogo variant="full" className="max-w-[min(100%,200px)] sm:max-w-none" />
+              <DynamicBrandLogo variant="full" className="h-9 lg:h-12 w-auto" />
             </Link>
 
-            <div className="order-3 ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:order-4">
+            {/* Desktop Search */}
+            <div className="hidden lg:flex flex-1 max-w-2xl mx-12">
+              <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-lg bg-slate-50" />}>
+                <StoreSearch />
+              </Suspense>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-4 lg:gap-8">
+              {/* User Account */}
               <Link
                 href={user ? "/minha-conta" : "/login"}
-                className="group flex h-11 min-w-[2.75rem] items-center justify-center gap-2 rounded-full border border-border/60 bg-muted/30 px-2.5 text-foreground transition hover:border-primary/25 hover:bg-muted/60 hover:scale-[1.03] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 sm:px-3"
+                className="hidden sm:flex items-center gap-3 group"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-background text-primary shadow-sm">
-                  {user ? <User className="h-[17px] w-[17px]" strokeWidth={2.2} /> : <LogIn className="h-[17px] w-[17px]" strokeWidth={2.2} />}
-                </span>
-                <span className="hidden lg:flex max-w-[100px] flex-col items-start leading-tight">
-                  <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    {user ? "Conta" : "Entrar"}
+                <User className="h-5 w-5 text-slate-400 group-hover:text-[#F47920] transition-colors" />
+                <div className="hidden lg:flex flex-col items-start leading-tight">
+                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                    {user ? "Bem-vindo," : "Acesse sua"}
                   </span>
-                  <span className="truncate text-xs font-semibold">{user ? user.name || "Perfil" : "Acesso"}</span>
-                </span>
+                  <span className="text-[12px] font-bold text-[#002D5B] truncate max-w-[120px]">
+                    {user ? (user.name || user.email.split("@")[0]) : "Conta"}
+                  </span>
+                </div>
               </Link>
 
+              {/* Desktop Location Selector */}
+              <div className="hidden lg:block border-l border-slate-200 pl-6">
+                <LocationSelector />
+              </div>
+
+              {/* Cart */}
               <Link
                 href="/carrinho"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-border/60 bg-muted/30 text-foreground transition hover:border-primary/25 hover:bg-muted/60 hover:scale-[1.03] active:scale-[0.97]"
-                aria-label="Carrinho"
+                className="group relative flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 text-[#002D5B] hover:border-[#F47920] hover:text-[#F47920] transition-all"
               >
-                <ShoppingCart className="h-[1.15rem] w-[1.15rem]" strokeWidth={2} />
+                <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground shadow-sm">
+                  <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F47920] px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
               </Link>
             </div>
+          </div>
 
-            <Suspense
-              fallback={
-                <div className="order-4 h-11 w-full basis-full min-w-0 animate-pulse rounded-full bg-muted/50 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto" />
-              }
-            >
-              <div className="order-4 w-full basis-full min-w-0 md:order-3 md:flex-1 md:max-w-2xl md:mx-auto md:basis-auto">
-                <StoreSearch />
-              </div>
+          {/* Search Row (Mobile/Tablet Only) */}
+          <div className="pb-3 lg:hidden">
+            <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-lg bg-slate-50" />}>
+              <StoreSearch />
             </Suspense>
           </div>
 
-          <nav className="scrollbar-hide hidden overflow-x-auto border-t border-border/30 lg:block">
-            <ul className="flex min-w-0 flex-nowrap items-center justify-start gap-0.5 py-1">
-              <li className="shrink-0">
+          {/* Streamlined Nav */}
+          <nav className="hidden lg:block border-t border-border/10">
+            <ul className="flex items-center gap-1 py-1">
+              <li>
                 <Link
                   href="/produtos"
-                  className="flex items-center gap-1 rounded-full px-4 py-2.5 text-sm font-semibold text-foreground/85 transition hover:bg-muted/80 hover:text-primary"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B] uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all"
                 >
-                  <ChevronDown className="h-3.5 w-3.5 opacity-45" aria-hidden />
-                  Catálogo
+                  <Menu className="h-4 w-4" />
+                  Todos os Produtos
                 </Link>
               </li>
-              {categories.map((cat) => (
-                <li key={cat.id} className="shrink-0">
-                  <Link
-                    href={`/categoria/${cat.slug}`}
-                    className="block whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-medium text-foreground/80 transition hover:bg-muted/80 hover:text-primary"
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
+              <div className="w-px h-4 bg-border/40 mx-2" />
+              <li>
+                <Link
+                  href="/promocoes"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#F47920] uppercase tracking-wide hover:bg-[#F47920]/10 rounded-xl transition-all"
+                >
+                  <Tag className="h-4 w-4" />
+                  Ofertas do Dia
+                </Link>
+              </li>
+              <div className="w-px h-4 bg-border/40 mx-2" />
+              <li>
+                <Link
+                  href="/rastrear-pedido"
+                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B]/70 uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all"
+                >
+                  Rastrear Pedido
+                </Link>
+              </li>
+              <li className="ml-auto">
+                {isMounted && (
+                  <ContactPopup>
+                    <button className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B] uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all cursor-pointer">
+                      <Headset className="h-4 w-4 text-[#F47920]" />
+                      Atendimento Oficial
+                    </button>
+                  </ContactPopup>
+                )}
+              </li>
             </ul>
           </nav>
         </div>
