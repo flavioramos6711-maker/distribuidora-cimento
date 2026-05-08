@@ -7,6 +7,8 @@ export const WA_CLICK_SOURCES = [
   "contact_page",
   "hero_banner",
   "minha_conta",
+  "home_cta",
+  "product_card",
 ] as const
 
 export type WaClickSource = (typeof WA_CLICK_SOURCES)[number]
@@ -22,4 +24,6 @@ export const WA_SOURCE_LABELS: Record<WaClickSource, string> = {
   contact_page: "Página de contato / institucional",
   hero_banner: "Banner / hero",
   minha_conta: "Minha conta",
+  home_cta: "Banner CTA Inicial",
+  product_card: "Card de Produto",
 }

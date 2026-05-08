@@ -1,20 +1,21 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import useSWR from "swr"
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react"
-import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
-import { resolveTestimonials } from "@/lib/site-settings"
+import { cn } from "@/lib/utils"
 
 function Stars({ n }: { n: number }) {
   const count = Math.min(5, Math.max(1, n))
   return (
-    <div className="flex gap-0.5" aria-label={`${count} de 5 estrelas`}>
+    <div className="flex gap-1" aria-label={`${count} de 5 estrelas`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${i < count ? "fill-amber-400 text-amber-400" : "text-muted-foreground/35"}`}
+          className={cn(
+            "h-4 w-4 transition-transform hover:scale-110",
+            i < count ? "fill-primary text-primary" : "text-white/20"
+          )}
           aria-hidden
         />
       ))}
@@ -30,12 +31,8 @@ export default function TestimonialsCarousel() {
     { name: "Fernanda L.", role: "Engenheira - Gerenciamento de Obra", text: "Empresa forte no setor: atendimento técnico, agilidade na logística e respeito aos prazos do cronograma.", rating: 5 },
     { name: "Marcos V.", role: "Autônomo - Reforma", text: "Entrega rápida na região. Pedi na segunda e usei na obra na quarta — salvou meu prazo com o cliente.", rating: 5 },
     { name: "Juliana T.", role: "Incorporadora", text: "Parceria de confiança para grandes volumes. Transparência no pedido e rastreio até a entrega na obra.", rating: 5 },
-    { name: "Roberto K.", role: "Depósito - Atacado", text: "Mix completo de construção civil e preço de atacado que fecha com a concorrência. Recomendo para revenda.", rating: 5 },
-    { name: "Amanda R.", role: "Arquiteta", text: "Profissionalismo do time comercial e suporte na escolha de argamassas e impermeabilizantes — credibilidade de verdade.", rating: 5 },
-    { name: "Eduardo P.", role: "Pedreiro - Equipe de Obra", text: "Qualidade do material faz diferença no acabamento. Areia e brita padronizadas, sem surpresa na mistura.", rating: 5 },
-    { name: "Patrícia N.", role: "Indústria - Compras", text: "Segurança na cadeia de fornecimento: documentação correta e fornecedor sólido para compras recorrentes.", rating: 5 },
-    { name: "Lucas H.", role: "Síndico - Condomínio", text: "Confiança para reformas do prédio: entrega organizada, motorista educado e material conforme especificação.", rating: 5 },
   ]
+  
   const items = testimonials
   const [paused, setPaused] = useState(false)
 
@@ -44,9 +41,12 @@ export default function TestimonialsCarousel() {
     loop: items.length > 1,
     dragFree: false,
     containScroll: "trimSnaps",
+    duration: 35,
   })
+  
   const [canPrev, setCanPrev] = useState(false)
   const [canNext, setCanNext] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -56,112 +56,113 @@ export default function TestimonialsCarousel() {
     const update = () => {
       setCanPrev(emblaApi.canScrollPrev())
       setCanNext(emblaApi.canScrollNext())
+      setSelectedIndex(emblaApi.selectedScrollSnap())
     }
     emblaApi.on("reInit", update)
     emblaApi.on("select", update)
     update()
-    return () => {
-      emblaApi.off("reInit", update)
-      emblaApi.off("select", update)
-    }
   }, [emblaApi])
 
   useEffect(() => {
-    emblaApi?.reInit()
-  }, [emblaApi, items.length])
-
-  useEffect(() => {
-    if (!emblaApi) return
-
-    // Pausa enquanto o usuário interage (drag/tap), para não "brigar" com o autoplay.
-    const onDown = () => setPaused(true)
-    const onUp = () => setPaused(false)
-    emblaApi.on("pointerDown", onDown)
-    emblaApi.on("pointerUp", onUp)
-    return () => {
-      emblaApi.off("pointerDown", onDown)
-      emblaApi.off("pointerUp", onUp)
-    }
-  }, [emblaApi])
-
-  useEffect(() => {
-    if (!emblaApi || items.length <= 1) return
-    if (typeof window === "undefined") return
-
-    const reduced =
-      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    if (reduced) return
-
-    const id = window.setInterval(() => {
-      if (paused) return
+    if (!emblaApi || items.length <= 1 || paused) return
+    const id = setInterval(() => {
       emblaApi.scrollNext()
     }, 6000)
-
-    return () => window.clearInterval(id)
+    return () => clearInterval(id)
   }, [emblaApi, items.length, paused])
 
   return (
-    <section
-      className="bg-muted/25 py-10 sm:py-14"
-      onPointerEnter={() => setPaused(true)}
-      onPointerLeave={() => setPaused(false)}
+    <div 
+      className="mx-auto max-w-7xl px-6"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
     >
-      <div className="mx-auto max-w-7xl px-3 sm:px-4">
-        <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">Depoimentos</p>
-            <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Quem compra, confia
-            </h2>
-            <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-[15px]">
-              Avaliações reais de clientes que valorizam entrega, segurança e qualidade dos materiais.
-            </p>
+      <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <span className="h-1.5 w-12 rounded-full bg-primary" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">
+              Excelência Comprovada
+            </span>
           </div>
-          <div className="flex gap-2 self-start sm:self-auto">
-            <button
-              type="button"
-              onClick={scrollPrev}
-              disabled={!canPrev}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-background text-foreground shadow-sm transition enabled:hover:border-primary/30 enabled:hover:shadow-app disabled:opacity-40"
-              aria-label="Anterior"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={scrollNext}
-              disabled={!canNext}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/80 bg-background text-foreground shadow-sm transition enabled:hover:border-primary/30 enabled:hover:shadow-app disabled:opacity-40"
-              aria-label="Próximo"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </button>
-          </div>
+          <h2 className="text-4xl font-black tracking-tight text-white sm:text-5xl md:text-6xl">
+            Quem constrói,<br/> 
+            <span className="text-primary">recomenda.</span>
+          </h2>
         </div>
-
-        <div className="overflow-hidden pb-1" ref={emblaRef}>
-          <div className="flex gap-3 sm:gap-4">
-            {items.map((t, idx) => (
-              <div
-                key={`${t.name}-${idx}`}
-                className="min-w-0 shrink-0 grow-0 basis-[min(88vw,340px)] sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(33.333%-0.75rem)]"
-              >
-                <article className="flex h-full flex-col rounded-2xl border border-border/60 bg-card p-5 shadow-app transition duration-300 hover:border-primary/20 hover:shadow-app-lg">
-                  <Quote className="h-8 w-8 text-primary/25" aria-hidden />
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-foreground/90">&ldquo;{t.text}&rdquo;</p>
-                  <div className="mt-5 flex flex-col gap-2 border-t border-border/50 pt-4">
-                    <Stars n={t.rating ?? 5} />
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                      {t.role ? <p className="text-xs text-muted-foreground">{t.role}</p> : null}
-                    </div>
-                  </div>
-                </article>
-              </div>
-            ))}
-          </div>
+        
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={scrollPrev}
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white transition-all hover:bg-white hover:text-secondary disabled:opacity-20"
+            disabled={!canPrev}
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            type="button"
+            onClick={scrollNext}
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white transition-all hover:bg-white hover:text-secondary disabled:opacity-20"
+            disabled={!canNext}
+            aria-label="Próximo"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
         </div>
       </div>
-    </section>
+
+      <div className="overflow-visible" ref={emblaRef}>
+        <div className="flex gap-6 py-4">
+          {items.map((t, idx) => (
+            <div
+              key={idx}
+              className="min-w-0 shrink-0 grow-0 basis-full md:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-16px)]"
+            >
+              <article className="group relative h-full flex flex-col rounded-[2.5rem] bg-white p-8 sm:p-10 shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <div className="absolute top-8 right-10">
+                  <Quote className="h-12 w-12 text-secondary/5 transition-colors group-hover:text-primary/10" />
+                </div>
+                
+                <div className="mb-6">
+                  <Stars n={t.rating} />
+                </div>
+                
+                <p className="flex-1 text-base leading-relaxed text-secondary/80 font-medium italic">
+                  &ldquo;{t.text}&rdquo;
+                </p>
+                
+                <div className="mt-10 flex items-center gap-4 border-t border-slate-100 pt-8">
+                  <div className="h-12 w-12 rounded-2xl bg-secondary flex items-center justify-center text-primary font-black text-xl">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-secondary uppercase tracking-tight">{t.name}</p>
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{t.role}</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress Dots */}
+      <div className="mt-12 flex justify-center gap-2">
+        {items.map((_, i) => (
+          <button
+            key={i}
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-500",
+              i === selectedIndex ? "w-8 bg-primary" : "w-1.5 bg-white/20"
+            )}
+            onClick={() => emblaApi?.scrollTo(i)}
+            aria-label={`Ir para slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
+

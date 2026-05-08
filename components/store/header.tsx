@@ -10,6 +10,7 @@ import Topbar from "@/components/store/topbar"
 import LocationSelector from "@/components/store/location-selector"
 import ContactPopup from "@/components/store/contact-popup"
 import { SITE } from "@/lib/site-config"
+import { cn } from "@/lib/utils"
 
 const supabase = createClient()
 
@@ -88,26 +89,28 @@ export default function StoreHeader() {
         "lg:sticky lg:top-0"
       }
     >
-      <Topbar />
+      <div className="hidden lg:block">
+        <Topbar />
+      </div>
       <div className={`${barSurface} transition-all duration-500`}>
         <div className="mx-auto max-w-7xl px-4 lg:px-6">
           {/* Main Bar */}
           <div className="flex items-center justify-between gap-6 py-3 lg:py-5">
-            {/* Mobile Menu Trigger */}
-            <button
-              type="button"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-900 border border-slate-100 lg:hidden shadow-sm active:scale-90 transition-all"
-            >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+              {/* Mobile Menu Trigger */}
+              <button
+                type="button"
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-secondary border border-slate-100 lg:hidden shadow-sm active:scale-90 transition-all"
+              >
+                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
 
             {/* Logo */}
             <Link
               href="/"
               className="flex shrink-0 items-center hover:opacity-80 transition-opacity"
             >
-              <DynamicBrandLogo variant="full" className="h-9 lg:h-12 w-auto" />
+              <DynamicBrandLogo variant="full" className="h-8 lg:h-12 w-auto" />
             </Link>
 
             {/* Desktop Search */}
@@ -118,24 +121,31 @@ export default function StoreHeader() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-4 lg:gap-8">
-              {/* User Account */}
-              <Link
-                href={user ? "/minha-conta" : "/login"}
-                className="hidden sm:flex items-center gap-3 group"
-              >
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-[#F47920] transition-all">
-                    <User className="h-5 w-5 text-slate-400 group-hover:text-[#F47920] transition-colors" />
-                </div>
-                <div className="hidden lg:flex flex-col items-start leading-tight">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    {user ? "Perfil" : "Entrar"}
-                  </span>
-                  <span className="text-[11px] font-black text-slate-900 truncate max-w-[120px] uppercase tracking-tight">
-                    {user ? (user.name || user.email.split("@")[0]) : "Minha Conta"}
-                  </span>
-                </div>
-              </Link>
+            <div className="flex items-center gap-3 lg:gap-8">
+              {!user ? (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-secondary text-white text-[10px] font-bold uppercase tracking-widest shadow-md hover:bg-secondary/90 active:scale-95 transition-all lg:bg-transparent lg:text-secondary lg:shadow-none lg:p-0"
+                >
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">Entrar</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/minha-conta"
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-primary transition-all">
+                      <User className="h-4 w-4 lg:h-5 lg:w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                  </div>
+                  <div className="hidden lg:flex flex-col items-start leading-tight">
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Meu Perfil</span>
+                    <span className="text-[11px] font-bold text-secondary truncate max-w-[120px] uppercase tracking-tight">
+                      {user.name || user.email.split("@")[0]}
+                    </span>
+                  </div>
+                </Link>
+              )}
 
               {/* Desktop Location Selector */}
               <div className="hidden lg:block border-l border-slate-100 pl-8">
@@ -145,11 +155,11 @@ export default function StoreHeader() {
               {/* Cart */}
               <Link
                 href="/carrinho"
-                className="group relative flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-[#F47920] shadow-lg shadow-blue-900/10 hover:scale-105 active:scale-95 transition-all"
+                className="group relative h-10 w-10 lg:h-11 lg:w-11 flex items-center justify-center rounded-xl bg-slate-50 text-secondary border border-slate-100 hover:border-primary/30 hover:bg-white hover:shadow-lg transition-all active:scale-95"
               >
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5 transition-transform group-hover:scale-110" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-[#F47920] px-1 text-[11px] font-black text-white shadow-xl ring-4 ring-white">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white shadow-lg ring-2 ring-white">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
@@ -170,7 +180,7 @@ export default function StoreHeader() {
               <li>
                 <Link
                   href="/produtos"
-                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-600 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
+                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-bold text-slate-600 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
                 >
                   <Menu className="h-4 w-4" />
                   Catálogo Completo
@@ -180,7 +190,7 @@ export default function StoreHeader() {
               <li>
                 <Link
                   href="/promocoes"
-                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-[#F47920] uppercase tracking-[0.15em] hover:bg-[#F47920]/5 rounded-xl transition-all"
+                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-bold text-[#F47920] uppercase tracking-[0.15em] hover:bg-[#F47920]/5 rounded-xl transition-all"
                 >
                   <Tag className="h-4 w-4" />
                   Ofertas Exclusivas

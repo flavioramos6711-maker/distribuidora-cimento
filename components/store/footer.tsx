@@ -1,106 +1,159 @@
-import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, ShieldCheck, CreditCard } from "lucide-react"
+"use client"
+
+import { Facebook, Instagram, Youtube, Mail, Phone, MapPin, ShieldCheck, CreditCard, ArrowUpRight, Send, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import { SITE } from "@/lib/site-config"
+import { cn } from "@/lib/utils"
 
 export default function StoreFooter() {
   const currentYear = new Date().getFullYear()
 
+  const footerLinks = [
+    {
+      title: "Institucional",
+      links: [
+        { label: `Sobre a ${SITE.shortName}`, href: "/sobre" },
+        { label: "Nossas Lojas", href: "/nossas-lojas" },
+        { label: "Política de Privacidade", href: "/privacidade" },
+        { label: "Termos de Uso", href: "/termos" },
+        { label: "Trabalhe Conosco", href: "/carreiras" },
+      ]
+    },
+    {
+      title: "Atendimento",
+      links: [
+        { label: "Central de Ajuda", href: "/faq" },
+        { label: "Trocas e Devoluções", href: "/devolucoes" },
+        { label: "Prazos de Entrega", href: "/frete" },
+        { label: "Fale Conosco", href: "/contato" },
+        { label: "Rastrear Pedido", href: "/rastreio" },
+      ]
+    }
+  ]
+
   return (
-    <footer className="bg-[#002D5B] text-white pt-16 pb-8">
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          {/* Brand & Social */}
-          <div className="space-y-6">
-            <DynamicBrandLogo variant="full" className="h-10 w-auto" />
-            <p className="text-white/60 text-sm leading-relaxed max-w-xs">
-              Sua parceira de confiança em materiais de construção. Preço de atacado, entrega ágil e atendimento especializado para sua obra.
+    <footer className="relative bg-secondary text-white pt-20 pb-10 overflow-hidden border-t border-white/5">
+      {/* Subtle Background Elements */}
+      <div className="absolute inset-0 pointer-events-none opacity-10">
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        {/* Upper Footer: Branding & Newsletter */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+          <div className="lg:col-span-5 space-y-8">
+            <DynamicBrandLogo variant="full" className="h-10 lg:h-12 w-auto brightness-0 invert" />
+            <p className="text-white/60 text-sm leading-relaxed max-w-md font-medium">
+              Líder em distribuição de materiais básicos e acabamentos. Logística inteligente para o setor da construção civil com condições exclusivas de atacado.
             </p>
-            <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 hover:bg-[#F47920] transition-colors"><Youtube className="w-5 h-5" /></a>
+            <div className="flex gap-3">
+              {[Facebook, Instagram, Youtube].map((Icon, i) => (
+                <a 
+                  key={i} 
+                  href="#" 
+                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:border-primary transition-all group"
+                >
+                  <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Links: Institucional */}
-          <div>
-            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Institucional</h4>
-            <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li><Link href="/sobre" className="hover:text-white transition-colors">Sobre a {SITE.shortName}</Link></li>
-              <li><Link href="/nossas-lojas" className="hover:text-white transition-colors">Nossas Lojas</Link></li>
-              <li><Link href="/trabalhe-conosco" className="hover:text-white transition-colors">Trabalhe Conosco</Link></li>
-              <li><Link href="/blog" className="hover:text-white transition-colors">Blog & Dicas</Link></li>
-              <li><Link href="/politica-de-privacidade" className="hover:text-white transition-colors">Privacidade</Link></li>
-            </ul>
-          </div>
-
-          {/* Links: Atendimento */}
-          <div>
-            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Atendimento</h4>
-            <ul className="space-y-4 text-sm font-medium text-white/70">
-              <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-[#F47920] shrink-0" />
-                <div>
-                   <p className="text-white font-bold">{SITE.phoneDisplay}</p>
-                   <p className="text-[10px]">Seg a Sex: 08h às 18h</p>
+          <div className="lg:col-span-7 lg:pl-12">
+            <div className="bg-white/5 rounded-3xl p-8 border border-white/10 backdrop-blur-sm">
+              <div className="flex flex-col md:flex-row items-center gap-8">
+                <div className="flex-1 space-y-2">
+                  <h4 className="text-lg font-black tracking-tight">Receba Ofertas Exclusivas</h4>
+                  <p className="text-xs text-white/50 font-bold uppercase tracking-widest leading-relaxed">Assine nossa newsletter e receba cotações atualizadas toda semana no seu e-mail.</p>
                 </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-[#F47920] shrink-0" />
-                <p>{SITE.email}</p>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-[#F47920] shrink-0" />
-                <p>São Paulo, SP - Brasil</p>
-              </li>
-            </ul>
-          </div>
-
-          {/* Help / Security */}
-          <div>
-            <h4 className="text-lg font-black uppercase tracking-widest mb-6 text-[#F47920]">Segurança</h4>
-            <div className="space-y-6">
-              <div className="flex flex-wrap gap-3">
-                <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
-                   <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                   <span className="text-[10px] font-black uppercase">Site Seguro</span>
+                <div className="w-full md:w-auto flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10">
+                  <input 
+                    type="email" 
+                    placeholder="Seu melhor e-mail" 
+                    className="bg-transparent px-4 py-2 outline-none text-sm font-bold flex-1 min-w-[200px]"
+                  />
+                  <button className="h-11 px-6 rounded-xl bg-primary text-white text-xs font-black uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all flex items-center gap-2">
+                    <Send className="w-4 h-4" />
+                    Assinar
+                  </button>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
-                   <CreditCard className="w-5 h-5 text-[#F47920]" />
-                   <span className="text-[10px] font-black uppercase">Pagamento SSL</span>
-                </div>
-              </div>
-              <div className="pt-4 border-t border-white/10">
-                 <p className="text-[10px] font-black uppercase tracking-widest mb-3 opacity-40">Formas de Pagamento</p>
-                 <div className="flex flex-wrap gap-2 opacity-80">
-                    <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
-                    <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
-                    <img src="https://img.icons8.com/color/48/pix.png" alt="Pix" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
-                    <img src="https://img.icons8.com/color/48/barcode.png" alt="Boleto" className="h-6 w-auto grayscale hover:grayscale-0 transition-all" />
-                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-          <div className="space-y-1">
-            <p className="text-[11px] font-medium text-white/40">
-              © {currentYear} {SITE.name}. Todos os direitos reservados.
-            </p>
-            <p className="text-[10px] text-white/20">
-              CNPJ: 00.000.000/0001-00 | Rua Exemplo, 123 - São Paulo/SP
-            </p>
+        {/* Middle Footer: Links & Contact */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 py-16">
+          {footerLinks.map((section) => (
+            <div key={section.title}>
+              <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-primary mb-8">{section.title}</h4>
+              <ul className="space-y-4">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-[13px] font-bold text-white/50 hover:text-white transition-colors flex items-center gap-2 group">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/10 group-hover:bg-primary transition-colors" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <div>
+            <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-primary mb-8">Central de Vendas</h4>
+            <div className="space-y-6">
+              <a href={`tel:${SITE.whatsappE164}`} className="block group">
+                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">Televendas</p>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-primary" />
+                  <span className="text-xl font-black tracking-tight group-hover:text-primary transition-colors">{SITE.phoneDisplay}</span>
+                </div>
+              </a>
+              <div className="block">
+                <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">E-mail Corporativo</p>
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-bold text-white/70">{SITE.email}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-emerald-400">
+                <CheckCircle2 className="w-4 h-4" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Estoque Pronta Entrega</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/40">
-            <Link href="/termos" className="hover:text-white transition-colors">Termos de Uso</Link>
-            <Link href="/politica-de-cookies" className="hover:text-white transition-colors">Cookies</Link>
+
+          <div>
+            <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-primary mb-8">Segurança & Certificações</h4>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                <ShieldCheck className="w-6 h-6 text-emerald-500" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-center">Site<br/>Seguro</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                <CreditCard className="w-6 h-6 text-primary" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-center">SSL<br/>Encrypted</span>
+              </div>
+              <div className="col-span-2 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-around">
+                {['visa', 'mastercard', 'pix'].map((icon) => (
+                  <img key={icon} src={`https://img.icons8.com/color/48/${icon}.png`} alt={icon} className="h-5 w-auto grayscale opacity-50" />
+                ))}
+              </div>
+            </div>
           </div>
+        </div>
+
+        {/* Lower Footer: Legal */}
+        <div className="pt-10 border-t border-white/5 flex items-center justify-center">
+          <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.25em] text-center">
+            © {currentYear} {SITE.legalName} • Todos os direitos reservados.
+          </p>
         </div>
       </div>
     </footer>
   )
 }
+

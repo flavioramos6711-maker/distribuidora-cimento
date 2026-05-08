@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Outfit, Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'

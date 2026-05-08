@@ -12,7 +12,7 @@ interface ProductsCarouselProps {
 
 export default function ProductsCarousel({ products, autoplayDelay = 5000 }: ProductsCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: true,
+    loop: products.length > 4,
     align: "start",
     skipSnaps: false,
     dragFree: true
@@ -37,16 +37,6 @@ export default function ProductsCarousel({ products, autoplayDelay = 5000 }: Pro
     emblaApi.on("reInit", onSelect)
   }, [emblaApi, onSelect])
 
-  const [isPaused, setIsPaused] = useState(false)
-
-  useEffect(() => {
-    if (!emblaApi || products.length <= 2 || isPaused) return
-    const interval = setInterval(() => {
-      emblaApi.scrollNext()
-    }, autoplayDelay)
-    return () => clearInterval(interval)
-  }, [emblaApi, products.length, isPaused, autoplayDelay])
-
   if (products.length === 0) return null
 
   return (
@@ -54,16 +44,12 @@ export default function ProductsCarousel({ products, autoplayDelay = 5000 }: Pro
       <div 
         className="overflow-hidden" 
         ref={emblaRef}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
       >
         <div className="flex touch-pan-x -ml-4">
           {products.map((product) => (
             <div
               key={product.id}
-              className="min-w-0 shrink-0 grow-0 pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4"
+              className="min-w-0 shrink-0 grow-0 pl-4 basis-[85%] sm:basis-1/3 lg:basis-1/4"
             >
               <ProductCard product={product} />
             </div>
@@ -75,7 +61,7 @@ export default function ProductsCarousel({ products, autoplayDelay = 5000 }: Pro
       <button
         onClick={scrollPrev}
         disabled={!prevBtnEnabled}
-        className="absolute -left-2 sm:-left-6 top-1/2 flex h-10 w-10 sm:h-12 sm:w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-slate-100 transition-all hover:bg-[#F47920] hover:text-white disabled:pointer-events-none disabled:opacity-0 z-10"
+        className="absolute -left-2 sm:-left-6 top-1/2 hidden sm:flex h-10 w-10 sm:h-12 sm:w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-slate-100 transition-all hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-0 z-10"
         aria-label="Anterior"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -83,7 +69,7 @@ export default function ProductsCarousel({ products, autoplayDelay = 5000 }: Pro
       <button
         onClick={scrollNext}
         disabled={!nextBtnEnabled}
-        className="absolute -right-2 sm:-right-6 top-1/2 flex h-10 w-10 sm:h-12 sm:w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-slate-100 transition-all hover:bg-[#F47920] hover:text-white disabled:pointer-events-none disabled:opacity-0 z-10"
+        className="absolute -right-2 sm:-right-6 top-1/2 hidden sm:flex h-10 w-10 sm:h-12 sm:w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-xl ring-1 ring-slate-100 transition-all hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-0 z-10"
         aria-label="Próximo"
       >
         <ChevronRight className="h-6 w-6" />

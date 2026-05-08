@@ -3,105 +3,111 @@
 import useSWR from "swr"
 import { Building2, ShieldCheck, Truck, Award, CheckCircle2, Warehouse, Timer, Star } from "lucide-react"
 import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
-import { resolveInstitutionalBody, resolveInstitutionalTitle } from "@/lib/site-settings"
 import { cn } from "@/lib/utils"
 
 const pillars = [
   { 
     icon: Warehouse, 
-    label: "Escala e estrutura", 
+    label: "Escala Industrial", 
     desc: "Fornecimento contínuo para obras de todos os portes.",
-    color: "bg-blue-50 text-blue-600"
+    color: "bg-secondary/5 text-secondary"
   },
   { 
     icon: CheckCircle2, 
-    label: "Confiança e segurança", 
+    label: "Certificação ABNT", 
     desc: "Materiais com rastreio e parcerias sólidas no setor.",
-    color: "bg-emerald-50 text-emerald-600"
+    color: "bg-primary/5 text-primary"
   },
   { 
     icon: Timer, 
-    label: "Logística ágil", 
+    label: "Logística Inteligente", 
     desc: "Entregas organizadas para manter seu cronograma em dia.",
-    color: "bg-amber-50 text-amber-600"
+    color: "bg-secondary/5 text-secondary"
   },
   { 
     icon: Star, 
-    label: "Autoridade no setor", 
-    desc: "Experiência em materiais de construção e atacado.",
-    color: "bg-purple-50 text-purple-600"
+    label: "Autoridade Atacadista", 
+    desc: "Mais de 20 anos de experiência no mercado de construção.",
+    color: "bg-primary/5 text-primary"
   },
 ]
 
 export default function InstitutionalSection() {
   const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
 
-  // Prioritize the user's provided text for credibility
-  const title = "Referência em materiais de construção"
-  const body = "A empresa é referência no setor de materiais de construção, oferecendo qualidade, segurança e entrega garantida. Nosso compromisso é com obras seguras, clientes satisfeitos e fornecimento contínuo para construção civil."
+  const title = "Referência em Atacado de Construção"
+  const body = "Somos o parceiro estratégico de construtoras e lojistas em todo o país. Oferecemos uma infraestrutura completa para garantir que sua obra nunca pare, com os melhores preços do mercado e logística própria de alta performance."
 
   return (
-    <section className="relative py-24 overflow-hidden bg-white border-y border-slate-100">
-      {/* Background Decorative Element */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-slate-50 rounded-full blur-3xl -mr-64 -mt-64 opacity-50" />
+    <section className="relative py-24 sm:py-32 overflow-hidden bg-white">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-slate-50 rounded-full blur-[120px] -mr-96 -mt-96 opacity-60" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] -ml-64 -mb-64 opacity-40" />
       
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-16 items-center">
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="flex flex-col lg:flex-row gap-20 items-center">
           {/* Left Column: Text Content */}
-          <div className="flex-1 space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200">
-                <span className="w-2 h-2 rounded-full bg-[#002D5B] animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-[#002D5B]">Institucional</span>
-            </div>
-            
-            <div className="space-y-6">
-                <h2 className="text-4xl md:text-5xl font-black text-[#002D5B] tracking-tight leading-[1.1] italic">
-                    {title}
-                </h2>
-                <p className="text-lg text-slate-500 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                    {body}
-                </p>
+          <div className="flex-1 space-y-10 text-center lg:text-left">
+            <div className="space-y-4">
+              <div className="flex items-center justify-center lg:justify-start gap-3">
+                <span className="h-1.5 w-12 rounded-full bg-primary" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+                  Nossa Identidade
+                </span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-bold text-secondary tracking-tighter leading-[1.05]">
+                Compromisso com a <br/>
+                <span className="text-primary italic">sua produtividade.</span>
+              </h2>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-8 pt-4 grayscale opacity-40">
-                <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5" />
-                    <span className="text-xs font-bold uppercase tracking-widest">Qualidade Garantida</span>
+            <p className="text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
+              {body}
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-10 pt-6">
+                <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary shadow-lg shadow-secondary/10">
+                      <ShieldCheck className="w-6 h-6" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-secondary/60">Segurança de<br/>Ponta a Ponta</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5" />
-                    <span className="text-xs font-bold uppercase tracking-widest">Empresa Certificada</span>
+                <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary text-primary shadow-lg shadow-secondary/10">
+                      <Award className="w-6 h-6" />
+                    </div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-secondary/60">Qualidade<br/>Certificada</span>
                 </div>
             </div>
           </div>
 
           {/* Right Column: Grid of Pillars */}
-          <div className="flex-1 w-full max-w-2xl">
-            <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex-1 w-full">
+            <div className="grid gap-6 sm:grid-cols-2">
               {pillars.map((p, i) => (
                 <div
                   key={p.label}
-                  className="group relative bg-white p-8 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-2xl hover:border-[#002D5B]/10 hover:-translate-y-1 transition-all duration-500"
+                  className="group relative bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-app hover:shadow-app-lg hover:border-primary/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
                 >
                   <div className={cn(
-                    "w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3",
+                    "w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm",
                     p.color
                   )}>
-                    <p.icon className="w-7 h-7" />
+                    <p.icon className="w-8 h-8" />
                   </div>
                   
-                  <div className="space-y-2">
-                    <h3 className="text-base font-bold text-[#002D5B] tracking-tight group-hover:text-[#F47920] transition-colors">
+                  <div className="space-y-4 relative z-10">
+                    <h3 className="text-xl font-bold text-secondary tracking-tight group-hover:text-primary transition-colors">
                         {p.label}
                     </h3>
-                    <p className="text-xs font-medium text-slate-400 leading-relaxed uppercase tracking-wide">
+                    <p className="text-xs font-semibold text-muted-foreground leading-relaxed uppercase tracking-[0.1em]">
                         {p.desc}
                     </p>
                   </div>
 
-                  {/* Corner Accent */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-20 transition-opacity">
-                    <p.icon className="w-12 h-12 rotate-12" />
+                  {/* Corner Accent Illustration */}
+                  <div className="absolute -bottom-6 -right-6 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-500 pointer-events-none">
+                    <p.icon className="w-32 h-32 rotate-12" />
                   </div>
                 </div>
               ))}
