@@ -118,17 +118,19 @@ export default function StoreHeader() {
 
         <div className="mx-auto max-w-7xl px-3 sm:px-4">
 
-          <div className="flex flex-wrap items-center gap-2 py-2.5 sm:py-3">
+          <div className="flex flex-wrap items-center gap-3 py-3 sm:py-4">
+            {/* Menu hamburger - Mobile */}
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="order-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-transparent text-foreground transition hover:bg-muted/80 hover:scale-[1.03] active:scale-[0.97] lg:hidden"
+              className="order-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border/50 bg-muted/30 text-foreground transition hover:bg-muted/60 hover:scale-[1.03] active:scale-[0.97] lg:hidden"
               aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <div className="order-2 shrink-0">
+            {/* Logo principal */}
+            <div className="order-2 shrink-0 mr-auto lg:mr-0">
               <DynamicBrandLogo variant="full" />
             </div>
 

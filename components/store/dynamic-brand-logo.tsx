@@ -12,35 +12,48 @@ type Variant = "full" | "compact" | "mono"
 export default function DynamicBrandLogo({
   variant = "full",
   className,
-  inverted = false,
 }: {
   variant?: Variant
   className?: string
   inverted?: boolean
 }) {
   const { data: row, isLoading } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
-  // Usa logo do dashboard, ou o logo padrão gerado
+  // Usa logo do dashboard, ou o logo padrão
   const logoUrl = row?.logo_url?.trim() || "/images/logo-cimentoecal.jpg"
+  
+  // Tamanhos responsivos baseados na variante
+  const sizeClasses = variant === "compact" 
+    ? "h-8 sm:h-10" // Versão compacta (footer, mobile menu)
+    : "h-11 sm:h-14 md:h-16 lg:h-[70px]" // Versão completa (header principal)
 
   // Loading skeleton
   if (isLoading) {
     return (
       <div className={cn("flex items-center", className)}>
-        <div className="animate-pulse rounded bg-muted h-10 w-40 sm:h-12 sm:w-52" />
+        <div className={cn("animate-pulse rounded-lg bg-muted/60 w-32 sm:w-44 md:w-52", sizeClasses)} />
       </div>
     )
   }
 
-  // Mostra a imagem do logo (dashboard ou padrão)
+  // Mostra a imagem do logo
   return (
-    <Link href="/" className={cn("flex items-center shrink-0", className)}>
+    <Link 
+      href="/" 
+      className={cn(
+        "flex items-center shrink-0 transition-transform hover:scale-[1.02] active:scale-[0.98]",
+        className
+      )}
+    >
       <Image
         src={logoUrl}
         alt={SITE.shortName}
-        width={320}
-        height={80}
+        width={400}
+        height={100}
         unoptimized
-        className="h-10 w-auto object-contain object-left sm:h-12 md:h-14 lg:h-16"
+        className={cn(
+          "w-auto object-contain object-left",
+          sizeClasses
+        )}
         priority
       />
     </Link>
