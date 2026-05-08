@@ -75,13 +75,26 @@ export default function HeroBanner() {
       onTouchEnd={() => setIsPaused(false)}
     >
       <div className="relative mx-auto w-full max-w-[1920px]">
-        <div className="overflow-hidden" ref={emblaRef}>
+        <div className="overflow-hidden sm:rounded-[2.5rem] shadow-app-lg" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {slides.map((banner, i) => (
               <div key={banner.id} className="relative min-w-0 shrink-0 grow-0 basis-full">
-                <div className="relative aspect-[4/3] sm:aspect-[16/6] lg:aspect-[1920/430] w-full overflow-hidden">
+                {/* Responsive Aspect Ratio: Vertical on Mobile, Panoramic on Desktop */}
+                <div className="relative aspect-[3/4] sm:aspect-[16/6] lg:aspect-[1920/500] w-full overflow-hidden bg-slate-100">
                   {banner.link ? (
-                    <Link href={banner.link} className="block size-full">
+                    <Link href={banner.link} className="block size-full group/banner">
+                      <Image
+                        src={banner.image_url}
+                        alt="Banner"
+                        fill
+                        priority={i === 0}
+                        sizes="100vw"
+                        className="object-cover transition-transform duration-[3000ms] group-hover/banner:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-40 group-hover/banner:opacity-60 transition-opacity" />
+                    </Link>
+                  ) : (
+                    <>
                       <Image
                         src={banner.image_url}
                         alt="Banner"
@@ -90,16 +103,8 @@ export default function HeroBanner() {
                         sizes="100vw"
                         className="object-cover"
                       />
-                    </Link>
-                  ) : (
-                    <Image
-                      src={banner.image_url}
-                      alt="Banner"
-                      fill
-                      priority={i === 0}
-                      sizes="100vw"
-                      className="object-cover"
-                    />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-40" />
+                    </>
                   )}
                 </div>
               </div>
