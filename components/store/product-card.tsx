@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingCart, Package, Star, CheckCircle2 } from "lucide-react"
+import { ShoppingCart, Package, Star, CheckCircle2, Heart } from "lucide-react"
 import { toast } from "sonner"
 import { waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
+import { cn } from "@/lib/utils"
 
 export type ProductCardProduct = {
   id: string
@@ -46,20 +47,8 @@ export function addToCart(product: ProductCardProduct, qty = 1) {
 }
 
 export default function ProductCard({ product }: { product: ProductCardProduct }) {
-  const [userCity, setUserCity] = useState("")
-
-  useEffect(() => {
-    const saved = localStorage.getItem("user-location") || ""
-    setUserCity(saved)
-
-    const handleStorage = () => setUserCity(localStorage.getItem("user-location") || "")
-    window.addEventListener("storage", handleStorage)
-    window.addEventListener("user-location-updated", handleStorage)
-    return () => {
-      window.removeEventListener("storage", handleStorage)
-      window.removeEventListener("user-location-updated", handleStorage)
-    }
-  }, [])
+  const [isWishlist, setIsWishlist] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const discount =
     product.original_price && product.original_price > product.price
@@ -71,25 +60,46 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
   )
 
   return (
-    <div className="group relative flex flex-col h-full overflow-hidden rounded-[24px] border border-slate-200/70 bg-white shadow-sm transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] hover:-translate-y-1.5">
-      {/* Floating Badges */}
-      <div className="absolute left-4 top-4 z-10 flex flex-col gap-2 pointer-events-none">
-        {product.is_new && (
-          <div className="flex items-center bg-slate-950 text-white px-3 py-1.5 rounded-xl shadow-md border border-white/10 backdrop-blur-md">
-            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Lançamento</span>
-          </div>
-        )}
-        {discount > 0 && (
-          <div className="flex items-center bg-[#F47920] text-white px-3 py-1.5 rounded-xl shadow-md">
-            <span className="text-[10px] font-black uppercase tracking-widest">-{discount}% OFF</span>
-          </div>
-        )}
+    <div 
+      className="group relative flex flex-col h-full overflow-hidden rounded-[32px] border border-slate-200/60 bg-white transition-all duration-500 hover:shadow-[0_30px_60px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-2"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Floating Actions & Badges */}
+      <div className="absolute inset-x-4 top-4 z-10 flex items-start justify-between pointer-events-none">
+        <div className="flex flex-col gap-2">
+          {product.is_new && (
+            <div className="flex items-center bg-secondary/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full shadow-lg border border-white/20">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">NOVO</span>
+            </div>
+          )}
+          {discount > 0 && (
+            <div className="flex items-center bg-[#F47920] text-white px-3 py-1.5 rounded-full shadow-lg">
+              <span className="text-[10px] font-black uppercase tracking-widest">-{discount}%</span>
+            </div>
+          )}
+        </div>
+        
+        <button 
+          onClick={(e) => {
+            e.preventDefault()
+            setIsWishlist(!isWishlist)
+          }}
+          className={cn(
+            "pointer-events-auto h-10 w-10 flex items-center justify-center rounded-full transition-all duration-300 backdrop-blur-md border",
+            isWishlist 
+              ? "bg-red-500 text-white border-red-500" 
+              : "bg-white/70 text-slate-400 border-white hover:bg-white hover:text-red-500"
+          )}
+        >
+          <Heart className={cn("h-5 w-5", isWishlist && "fill-current")} />
+        </button>
       </div>
 
-      {/* Image Container */}
+      {/* Image Section */}
       <Link
         href={`/produto/${product.slug}`}
-        className="relative block aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-transparent to-slate-50/50"
+        className="relative block aspect-square w-full overflow-hidden bg-slate-50/30"
       >
         {product.image_url ? (
           <Image
@@ -97,79 +107,82 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             alt={product.name}
             fill
             sizes="(max-width:768px) 50vw, 25vw"
-            className="object-contain p-8 transition-transform duration-700 group-hover:scale-110"
+            className="object-contain p-10 transition-all duration-700 group-hover:scale-110 group-hover:rotate-2"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Package className="h-12 w-12 text-slate-200" />
+            <Package className="h-16 w-16 text-slate-100" />
           </div>
         )}
-        {/* Subtle overlay effect */}
-        <div className="absolute inset-0 bg-slate-900/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-multiply" />
+        
+        {/* Rapid Add Overlay */}
+        <div className={cn(
+          "absolute inset-x-4 bottom-4 z-20 transition-all duration-300 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100",
+        )}>
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              addToCart(product)
+            }}
+            className="w-full h-12 bg-white/90 backdrop-blur-xl text-secondary text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl border border-white hover:bg-primary hover:text-white hover:border-primary transition-all active:scale-95 flex items-center justify-center gap-2"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Quick Add
+          </button>
+        </div>
       </Link>
 
-      {/* Content */}
-      <div className="flex flex-1 flex-col p-5">
-        {/* Rating and Stock */}
-        <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100/50">
-                <CheckCircle2 className="w-3 h-3" />
-                Pronta Entrega
+      {/* Info Section */}
+      <div className="flex flex-1 flex-col p-6 pt-2">
+        <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                Disponível
             </div>
-            <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100/50 text-amber-500">
+            <div className="flex items-center gap-1 text-amber-400">
                 <Star className="w-3 h-3 fill-current" />
-                <span className="text-[10px] font-black">5.0</span>
+                <span className="text-[10px] font-black text-slate-400">5.0</span>
             </div>
         </div>
 
-        {/* Title */}
-        <Link href={`/produto/${product.slug}`} className="mb-4">
-          <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-slate-800 transition-colors group-hover:text-[#F47920]">
+        <Link href={`/produto/${product.slug}`} className="mb-6 block group-hover:no-underline">
+          <h3 className="line-clamp-2 text-[16px] font-bold leading-tight text-slate-800 transition-colors group-hover:text-primary">
             {product.name}
           </h3>
         </Link>
 
-        {/* Price and Actions */}
-        <div className="mt-auto space-y-5">
-          <div className="flex flex-col">
-            {product.original_price && product.original_price > product.price ? (
-              <p className="text-[11px] text-slate-400 line-through font-bold mb-0.5">
+        <div className="mt-auto">
+          <div className="flex flex-col mb-6">
+            {product.original_price && product.original_price > product.price && (
+              <p className="text-[11px] text-slate-400 line-through font-bold">
                 R$ {Number(product.original_price).toFixed(2).replace(".", ",")}
               </p>
-            ) : (
-              <div className="h-[18px]" /> /* Spacer if no original price to keep cards same height */
             )}
-            <div className="flex items-baseline gap-1">
-              <span className="text-xs font-bold text-slate-500 mt-1">R$</span>
-              <p className="text-2xl font-black text-slate-900 tracking-tight">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm font-black text-slate-400">R$</span>
+              <p className="text-3xl font-black text-slate-950 tracking-tight">
                 {Number(product.price).toFixed(2).replace(".", ",")}
               </p>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
-                /{product.unit}
-              </span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">/{product.unit}</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-[1fr_auto] gap-2">
-            <button
-              type="button"
-              onClick={() => addToCart(product)}
-              className="group/buy relative flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-950 text-white text-[11px] font-black uppercase tracking-[0.15em] transition-all hover:bg-slate-800 active:scale-95 overflow-hidden"
+          <div className="grid grid-cols-[1fr_auto] gap-3">
+            <Link
+              href={`/produto/${product.slug}`}
+              className="flex h-14 items-center justify-center gap-3 rounded-[20px] bg-secondary text-white text-[11px] font-black uppercase tracking-[0.2em] transition-all hover:bg-slate-800 active:scale-95 shadow-lg shadow-slate-200"
             >
-              <div className="absolute inset-0 translate-x-[-100%] group-hover/buy:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg]" />
-              <ShoppingCart className="h-4 w-4" />
-              <span>Adicionar</span>
-            </button>
+              Ver Detalhes
+            </Link>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/wa relative flex h-12 w-12 items-center justify-center rounded-xl bg-[#25D366] text-white transition-all hover:bg-[#20bd5a] hover:shadow-lg active:scale-95 overflow-hidden"
-              title="Comprar via WhatsApp"
+              className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[#25D366] text-white transition-all hover:bg-[#20bd5a] hover:shadow-xl active:scale-95 shadow-lg shadow-emerald-100"
+              title="Orçar via WhatsApp"
               onClick={() => trackWhatsAppClick("product_card", `/produto/${product.slug}`)}
             >
-              <div className="absolute inset-0 translate-x-[-100%] group-hover/wa:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]" />
-              <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="h-6 w-6 brightness-0 invert" />
+              <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="h-7 w-7 brightness-0 invert" />
             </a>
           </div>
         </div>
