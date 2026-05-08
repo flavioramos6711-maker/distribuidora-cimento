@@ -8,16 +8,35 @@ import { cn } from "@/lib/utils"
 
 export default function WhatsAppChat() {
   const [isOpen, setIsOpen] = useState(false)
+  const [phone, setPhone] = useState(SITE.whatsappE164)
   
-  const salespersonImg = "/atendente-vendas.jpg"
+  useEffect(() => {
+    async function fetchRotation() {
+      const { createClient } = await import("@/lib/supabase/client")
+      const supabase = createClient()
+      const { data } = await supabase
+        .from("whatsapp_numbers")
+        .select("phone")
+        .eq("active", true)
+        .order("sort_order")
+      
+      if (data && data.length > 0) {
+        const randomIdx = Math.floor(Math.random() * data.length)
+        setPhone(data[randomIdx].phone)
+      }
+    }
+    fetchRotation()
+  }, [])
+  
+  const salespersonImg = "/placeholder-user.jpg"
 
   const departments = [
-    { label: "Quero fazer um orcamento", msg: "Olá! Gostaria de fazer um orçamento." },
-    { label: "Duvida sobre produtos", msg: "Olá! Tenho uma dúvida sobre produtos." },
-    { label: "Informacoes de entrega", msg: "Olá! Gostaria de informações sobre entrega." },
+    { label: "Quero fazer um orçamento", msg: "Olá! Gostaria de fazer um orçamento." },
+    { label: "Dúvida sobre produtos", msg: "Olá! Tenho uma dúvida sobre produtos." },
+    { label: "Informações de entrega", msg: "Olá! Gostaria de informações sobre entrega." },
   ]
 
-  const waLink = (msg: string) => `https://wa.me/${SITE.whatsappE164}?text=${encodeURIComponent(msg)}`
+  const waLink = (msg: string) => `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
 
   return (
     <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4 font-sans">
