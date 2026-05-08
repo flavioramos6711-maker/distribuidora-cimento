@@ -128,8 +128,8 @@ export default function HomePage() {
 
 
       {/* Benefits Bar */}
-      <section className="relative z-20 -mt-8 sm:-mt-10 mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-xl bg-white shadow-lg border border-slate-100">
+      <section className="relative z-20 mt-4 sm:-mt-10 mx-auto max-w-7xl px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-xl bg-white shadow-lg border border-slate-100">
           {trustItems.map((item) => (
             <div key={item.title} className="flex items-center gap-4 p-5 rounded-lg hover:bg-slate-50 transition-colors">
               <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#002D5B] text-white shadow-sm shrink-0">
@@ -146,7 +146,7 @@ export default function HomePage() {
 
       {/* Categories */}
       {data?.categories && data.categories.length > 0 && (
-        <section className="py-16 sm:py-24">
+        <section className="py-12 sm:py-24 bg-white">
           <SectionHeader
             title="Departamentos"
             subtitle="Explore nossa linha completa por categoria"
