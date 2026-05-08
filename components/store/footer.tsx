@@ -14,8 +14,8 @@ export default function StoreFooter() {
       links: [
         { label: `Sobre a ${SITE.shortName}`, href: "/sobre" },
         { label: "Nossas Lojas", href: "/nossas-lojas" },
-        { label: "Política de Privacidade", href: "/privacidade" },
-        { label: "Termos de Uso", href: "/termos" },
+        { label: "Política de Privacidade", href: "/politica-de-privacidade" },
+        { label: "Termos de Uso", href: "/termos-de-uso" },
         { label: "Trabalhe Conosco", href: "/carreiras" },
       ]
     },
@@ -23,10 +23,10 @@ export default function StoreFooter() {
       title: "Atendimento",
       links: [
         { label: "Central de Ajuda", href: "/faq" },
-        { label: "Trocas e Devoluções", href: "/devolucoes" },
-        { label: "Prazos de Entrega", href: "/frete" },
-        { label: "Fale Conosco", href: "/contato" },
-        { label: "Rastrear Pedido", href: "/rastreio" },
+        { label: "Trocas e Devoluções", href: "/trocas-e-devolucoes" },
+        { label: "Prazos de Entrega", href: "/politica-de-frete" },
+        { label: "Fale Conosco", href: "/fale-conosco" },
+        { label: "Rastrear Pedido", href: "/rastrear-pedido" },
       ]
     }
   ]
