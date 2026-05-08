@@ -79,8 +79,8 @@ export default function HeroBanner() {
           <div className="flex touch-pan-y">
             {slides.map((banner, i) => (
               <div key={banner.id} className="relative min-w-0 shrink-0 grow-0 basis-full">
-                {/* Responsive Aspect Ratio: Vertical on Mobile, Panoramic on Desktop */}
-                <div className="relative aspect-[3/4] sm:aspect-[16/6] lg:aspect-[1920/500] w-full overflow-hidden bg-slate-100">
+                {/* Surgical Adjustment: Shorter aspect ratios for better fold visibility */}
+                <div className="relative aspect-[4/3] sm:aspect-[21/9] lg:aspect-[21/7] w-full overflow-hidden bg-slate-100">
                   {banner.link ? (
                     <Link href={banner.link} className="block size-full group/banner">
                       <Image
