@@ -21,16 +21,16 @@ export default function DynamicBrandLogo({
   // Usa logo do dashboard, ou o logo padrão
   const logoUrl = row?.logo_url?.trim() || "/images/logo-cimentoecal.jpg"
   
-  // Tamanhos responsivos baseados na variante
+  // Tamanhos responsivos baseados na variante - LOGO GRANDE E PROFISSIONAL
   const sizeClasses = variant === "compact" 
-    ? "h-8 sm:h-10" // Versão compacta (footer, mobile menu)
-    : "h-11 sm:h-14 md:h-16 lg:h-[70px]" // Versão completa (header principal)
+    ? "h-10 sm:h-12" // Versão compacta (footer, mobile menu)
+    : "h-14 sm:h-16 md:h-20 lg:h-24" // Versão completa (header principal) - 56px, 64px, 80px, 96px
 
   // Loading skeleton
   if (isLoading) {
     return (
       <div className={cn("flex items-center", className)}>
-        <div className={cn("animate-pulse rounded-lg bg-muted/60 w-32 sm:w-44 md:w-52", sizeClasses)} />
+        <div className={cn("animate-pulse rounded-lg bg-muted/60 w-40 sm:w-52 md:w-64 lg:w-80", sizeClasses)} />
       </div>
     )
   }
@@ -47,11 +47,11 @@ export default function DynamicBrandLogo({
       <Image
         src={logoUrl}
         alt={SITE.shortName}
-        width={400}
-        height={100}
+        width={500}
+        height={120}
         unoptimized
         className={cn(
-          "w-auto object-contain object-left",
+          "w-auto max-w-[200px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[400px] object-contain object-left",
           sizeClasses
         )}
         priority
