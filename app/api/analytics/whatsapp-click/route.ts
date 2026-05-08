@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         {
           ok: false,
           error: error.message,
-            "Execute scripts/012_fix_db_schema.sql no Supabase para corrigir as tabelas.",
+          instruction: "Execute scripts/012_fix_db_schema.sql no Supabase para corrigir as tabelas.",
         },
         { status: 500 },
       )
