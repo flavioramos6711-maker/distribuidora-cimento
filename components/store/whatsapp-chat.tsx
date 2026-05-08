@@ -57,7 +57,7 @@ export default function WhatsAppChat() {
   return (
     <div className={cn("fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3 font-sans select-none transition-all duration-500", !scrolled && "max-sm:translate-y-32 max-sm:opacity-0 max-sm:pointer-events-none")}>
       {isOpen && (
-        <div className="mb-2 w-[calc(100vw-3rem)] sm:w-[350px] overflow-hidden rounded-3xl bg-white shadow-2xl animate-in slide-in-from-bottom-5 fade-in duration-300 flex flex-col border border-slate-200">
+        <div className="mb-2 w-[calc(100vw-3rem)] sm:w-[350px] overflow-hidden rounded-3xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] animate-in slide-in-from-bottom-8 fade-in zoom-in-[0.98] duration-500 ease-out flex flex-col border border-slate-100">
           {/* Corporate Header */}
           <div className="bg-secondary p-5 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
