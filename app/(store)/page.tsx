@@ -121,7 +121,7 @@ export default function HomePage() {
 
   return (
     <div className="pb-12 sm:pb-20">
-      <div className="px-0 sm:px-4 lg:px-6">
+      <div className="px-0">
         <HeroBanner />
       </div>
 
