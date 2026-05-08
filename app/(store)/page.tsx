@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import HeroBanner from "@/components/store/hero-banner"
 import CategoriesCarousel from "@/components/store/categories-carousel"
+import ProductsCarousel from "@/components/store/products-carousel"
 import InstitutionalSection from "@/components/store/institutional-section"
 import TestimonialsCarousel from "@/components/store/testimonials-carousel"
 import ProductCard from "@/components/store/product-card"
@@ -127,17 +128,17 @@ export default function HomePage() {
 
 
 
-      {/* Benefits Bar */}
-      <section className="relative z-20 mt-4 sm:-mt-10 mx-auto max-w-7xl px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-xl bg-white shadow-lg border border-slate-100">
+      {/* Benefits Bar - Premium Glassmorphism */}
+      <section className="relative z-20 mt-4 sm:-mt-12 mx-auto max-w-7xl px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 p-2 rounded-3xl bg-white/70 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50">
           {trustItems.map((item) => (
-            <div key={item.title} className="flex items-center gap-4 p-5 rounded-lg hover:bg-slate-50 transition-colors">
-              <div className="w-12 h-12 flex items-center justify-center rounded-lg bg-[#002D5B] text-white shadow-sm shrink-0">
+            <div key={item.title} className="flex items-center gap-4 p-5 rounded-2xl hover:bg-white/50 transition-all group">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-900 text-[#F47920] shadow-sm shrink-0 group-hover:scale-110 transition-transform">
                 <item.icon className="w-6 h-6" />
               </div>
               <div className="min-w-0">
-                <p className="text-[13px] font-bold text-slate-800 uppercase tracking-tight truncate">{item.title}</p>
-                <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider truncate">{item.desc}</p>
+                <p className="text-[13px] font-black text-slate-800 uppercase tracking-tight truncate">{item.title}</p>
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest truncate">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -158,9 +159,9 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Featured Products */}
+      {/* Featured Products - Infinite Loop */}
       {data?.featured && data.featured.length > 0 && (
-        <section className="py-16 sm:py-24 bg-muted/20">
+        <section className="py-16 sm:py-24 bg-slate-50/50">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader
               title="Em Destaque"
@@ -168,16 +169,12 @@ export default function HomePage() {
               href="/produtos"
               icon={Sparkles}
             />
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-              {data.featured.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <ProductsCarousel products={data.featured} autoplayDelay={4500} />
           </div>
         </section>
       )}
 
-      {/* New Products */}
+      {/* New Products - Infinite Loop */}
       {data?.newProducts && data.newProducts.length > 0 && (
         <section className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl px-4">
@@ -187,11 +184,7 @@ export default function HomePage() {
               href="/produtos" 
               icon={Sparkles} 
             />
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-              {data.newProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <ProductsCarousel products={data.newProducts} autoplayDelay={6000} />
           </div>
         </section>
       )}
@@ -231,20 +224,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Discounts / Monthly Offers */}
+      {/* Discounts / Monthly Offers - Infinite Loop */}
       {data?.discounts && data.discounts.length > 0 && (
-        <section id="promocoes" className="py-16 sm:py-24 bg-slate-50/50">
+        <section id="promocoes" className="py-16 sm:py-24 bg-slate-900 text-white">
           <div className="mx-auto max-w-7xl px-4">
             <SectionHeader
               title="Ofertas do Mês"
               subtitle="Condições exclusivas para compras imediatas"
               href="/produtos"
               icon={Tag}
+              className="text-white"
             />
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-              {data.discounts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            <div className="bg-white/5 p-8 rounded-[3rem] backdrop-blur-sm border border-white/5">
+                <ProductsCarousel products={data.discounts} autoplayDelay={5000} />
             </div>
           </div>
         </section>

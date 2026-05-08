@@ -77,8 +77,8 @@ export default function StoreHeader() {
   }, [])
 
   const barSurface = scrolled 
-    ? "bg-white/40 backdrop-blur-2xl border-b border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)]" 
-    : "bg-transparent border-b border-transparent"
+    ? "bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_15px_40px_rgba(0,0,0,0.05)]" 
+    : "bg-white border-b border-slate-50 shadow-sm"
 
   return (
     <header
@@ -92,12 +92,12 @@ export default function StoreHeader() {
       <div className={`${barSurface} transition-all duration-500`}>
         <div className="mx-auto max-w-7xl px-4 lg:px-6">
           {/* Main Bar */}
-          <div className="flex items-center justify-between gap-6 py-2.5 lg:py-5">
+          <div className="flex items-center justify-between gap-6 py-3 lg:py-5">
             {/* Mobile Menu Trigger */}
             <button
               type="button"
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-[#002D5B] lg:hidden"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-slate-900 border border-slate-100 lg:hidden shadow-sm active:scale-90 transition-all"
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -105,14 +105,14 @@ export default function StoreHeader() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex shrink-0 items-center"
+              className="flex shrink-0 items-center hover:opacity-80 transition-opacity"
             >
               <DynamicBrandLogo variant="full" className="h-9 lg:h-12 w-auto" />
             </Link>
 
             {/* Desktop Search */}
             <div className="hidden lg:flex flex-1 max-w-2xl mx-12">
-              <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-lg bg-slate-50" />}>
+              <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-2xl bg-slate-50" />}>
                 <StoreSearch />
               </Suspense>
             </div>
@@ -124,30 +124,32 @@ export default function StoreHeader() {
                 href={user ? "/minha-conta" : "/login"}
                 className="hidden sm:flex items-center gap-3 group"
               >
-                <User className="h-5 w-5 text-slate-400 group-hover:text-[#F47920] transition-colors" />
+                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-[#F47920] transition-all">
+                    <User className="h-5 w-5 text-slate-400 group-hover:text-[#F47920] transition-colors" />
+                </div>
                 <div className="hidden lg:flex flex-col items-start leading-tight">
-                  <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
-                    {user ? "Bem-vindo," : "Acesse sua"}
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    {user ? "Perfil" : "Entrar"}
                   </span>
-                  <span className="text-[12px] font-bold text-[#002D5B] truncate max-w-[120px]">
-                    {user ? (user.name || user.email.split("@")[0]) : "Conta"}
+                  <span className="text-[11px] font-black text-slate-900 truncate max-w-[120px] uppercase tracking-tight">
+                    {user ? (user.name || user.email.split("@")[0]) : "Minha Conta"}
                   </span>
                 </div>
               </Link>
 
               {/* Desktop Location Selector */}
-              <div className="hidden lg:block border-l border-slate-200 pl-6">
+              <div className="hidden lg:block border-l border-slate-100 pl-8">
                 <LocationSelector />
               </div>
 
               {/* Cart */}
               <Link
                 href="/carrinho"
-                className="group relative flex h-10 w-10 items-center justify-center rounded-lg bg-white border border-slate-200 text-[#002D5B] hover:border-[#F47920] hover:text-[#F47920] transition-all"
+                className="group relative flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-[#F47920] shadow-lg shadow-blue-900/10 hover:scale-105 active:scale-95 transition-all"
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#F47920] px-1 text-[10px] font-black text-white shadow-sm ring-2 ring-white">
+                  <span className="absolute -right-2 -top-2 flex h-6 min-w-6 items-center justify-center rounded-full bg-[#F47920] px-1 text-[11px] font-black text-white shadow-xl ring-4 ring-white">
                     {cartCount > 99 ? "99+" : cartCount}
                   </span>
                 )}
@@ -156,49 +158,49 @@ export default function StoreHeader() {
           </div>
 
           {/* Search Row (Mobile/Tablet Only) */}
-          <div className="pb-2 lg:hidden">
-            <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-lg bg-slate-50" />}>
+          <div className="pb-3 lg:hidden">
+            <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-2xl bg-slate-50" />}>
               <StoreSearch />
             </Suspense>
           </div>
 
           {/* Streamlined Nav */}
-          <nav className="hidden lg:block border-t border-border/10">
+          <nav className="hidden lg:block border-t border-slate-50">
             <ul className="flex items-center gap-1 py-1">
               <li>
                 <Link
                   href="/produtos"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B] uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all"
+                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-600 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
                 >
                   <Menu className="h-4 w-4" />
-                  Todos os Produtos
+                  Catálogo Completo
                 </Link>
               </li>
-              <div className="w-px h-4 bg-border/40 mx-2" />
+              <div className="w-px h-4 bg-slate-100 mx-2" />
               <li>
                 <Link
                   href="/promocoes"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#F47920] uppercase tracking-wide hover:bg-[#F47920]/10 rounded-xl transition-all"
+                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-[#F47920] uppercase tracking-[0.15em] hover:bg-[#F47920]/5 rounded-xl transition-all"
                 >
                   <Tag className="h-4 w-4" />
-                  Ofertas do Dia
+                  Ofertas Exclusivas
                 </Link>
               </li>
-              <div className="w-px h-4 bg-border/40 mx-2" />
+              <div className="w-px h-4 bg-slate-100 mx-2" />
               <li>
                 <Link
                   href="/rastrear-pedido"
-                  className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B]/70 uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all"
+                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
                 >
-                  Rastrear Pedido
+                  Rastreamento
                 </Link>
               </li>
               <li className="ml-auto">
                 {isMounted && (
                   <ContactPopup>
-                    <button className="flex items-center gap-2 px-6 py-3 text-sm font-black text-[#002D5B] uppercase tracking-wide hover:bg-muted/50 rounded-xl transition-all cursor-pointer">
+                    <button className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-900 uppercase tracking-[0.15em] hover:bg-slate-50 rounded-xl transition-all cursor-pointer">
                       <Headset className="h-4 w-4 text-[#F47920]" />
-                      Atendimento Oficial
+                      Atendimento
                     </button>
                   </ContactPopup>
                 )}
@@ -209,30 +211,34 @@ export default function StoreHeader() {
       </div>
 
       {menuOpen && (
-        <div className="max-h-[min(78vh,520px)] overflow-y-auto border-b border-border bg-background/98 shadow-app-lg backdrop-blur-xl lg:hidden">
-          <div className="mx-auto max-w-7xl space-y-1 p-3">
+        <div className="max-h-[min(85vh,600px)] overflow-y-auto border-b border-slate-100 bg-white/98 shadow-2xl backdrop-blur-2xl lg:hidden animate-in slide-in-from-top-4 duration-300">
+          <div className="mx-auto max-w-7xl space-y-1 p-4">
             <Link
               href="/produtos"
               onClick={() => setMenuOpen(false)}
-              className="block rounded-2xl px-4 py-3.5 text-sm font-semibold transition hover:bg-muted/80 active:scale-[0.99]"
+              className="flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4 text-sm font-black uppercase tracking-widest text-slate-900 transition active:scale-[0.98]"
             >
               Ver catálogo completo
+              <ChevronDown className="h-4 w-4 -rotate-90 opacity-40" />
             </Link>
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/categoria/${cat.slug}`}
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-2xl px-4 py-3 text-sm transition hover:bg-muted/80 active:scale-[0.99]"
-              >
-                {cat.name}
-              </Link>
-            ))}
-            <div className="mt-3 flex flex-col gap-1 border-t border-border/60 pt-3 text-sm sm:hidden">
-              <a href={`tel:+${SITE.whatsappE164}`} className="rounded-2xl px-4 py-2.5 text-muted-foreground">
+            <div className="grid grid-cols-1 gap-1 py-2">
+                {categories.map((cat) => (
+                <Link
+                    key={cat.id}
+                    href={`/categoria/${cat.slug}`}
+                    onClick={() => setMenuOpen(false)}
+                    className="block rounded-2xl px-5 py-3.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98]"
+                >
+                    {cat.name}
+                </Link>
+                ))}
+            </div>
+            <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 text-sm">
+              <a href={`tel:+${SITE.whatsappE164}`} className="flex items-center gap-3 rounded-2xl bg-slate-900 text-[#F47920] px-5 py-4 font-black uppercase tracking-widest shadow-lg">
+                <Phone className="h-4 w-4" />
                 {SITE.phoneDisplay}
               </a>
-              <Link href="/rastrear-pedido" className="rounded-2xl px-4 py-2.5" onClick={() => setMenuOpen(false)}>
+              <Link href="/rastrear-pedido" className="flex items-center gap-3 rounded-2xl bg-slate-50 px-5 py-4 font-black uppercase tracking-widest text-slate-500" onClick={() => setMenuOpen(false)}>
                 Rastrear pedido
               </Link>
             </div>

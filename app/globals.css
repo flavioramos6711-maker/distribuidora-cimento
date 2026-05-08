@@ -4,8 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Industrial premium: azul escuro, concreto, branco, laranja/âmbar */
+/* Sophisticated Premium: Soft backgrounds, Navy accents, and refined shadows */
 :root {
-  --background: #fafafa;
+  --background: #fcfdfe;
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
@@ -15,37 +16,18 @@
   --primary-foreground: #ffffff;
   --secondary: #002D5B;
   --secondary-foreground: #f8fafc;
-  --muted: #eceef1;
+  --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --accent: #f59e0b;
   --accent-foreground: #002D5B;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
+  --border: #f1f5f9;
+  --input: #f1f5f9;
   --ring: #F47920;
-  --chart-1: #F47920;
-  --chart-2: #002D5B;
-  --chart-3: #f59e0b;
-  --chart-4: #3b82f6;
-  --chart-5: #10b981;
-  /* Marketplace / app: cantos mais generosos */
-  --radius: 0.875rem;
-  --app-shadow: 0 4px 24px -4px rgb(0 45 91 / 0.08), 0 2px 8px -2px rgb(0 45 91 / 0.04);
-  --app-shadow-lg: 0 12px 40px -8px rgb(0 45 91 / 0.12), 0 4px 16px -4px rgb(0 45 91 / 0.06);
-  --success: #059669;
-  --success-foreground: #ffffff;
-  --sidebar: #002D5B;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #F47920;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #003d7a;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #004a92;
-  --sidebar-ring: #F47920;
-  --brand-navy: #002D5B;
-  --brand-concrete: #94a3b8;
-  --brand-slate: #475569;
+  --radius: 1rem;
+  --app-shadow: 0 10px 30px -10px rgba(0, 45, 91, 0.05);
+  --app-shadow-lg: 0 20px 50px -15px rgba(0, 45, 91, 0.08);
 }
 
 .dark {
