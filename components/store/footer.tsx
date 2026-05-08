@@ -44,20 +44,25 @@ export default function StoreFooter() {
         {/* Upper Footer: Branding & Newsletter */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
           <div className="lg:col-span-5 space-y-8">
-            <DynamicBrandLogo variant="full" className="h-10 lg:h-12 w-auto brightness-0 invert" />
+            <DynamicBrandLogo variant="full" className="h-10 lg:h-12 w-auto" />
             <p className="text-white/60 text-sm leading-relaxed max-w-md font-medium">
               Líder em distribuição de materiais básicos e acabamentos. Logística inteligente para o setor da construção civil com condições exclusivas de atacado.
             </p>
-            <div className="flex gap-3">
-              {[Facebook, Instagram, Youtube].map((Icon, i) => (
-                <a 
-                  key={i} 
-                  href="#" 
-                  className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-primary hover:border-primary transition-all group"
-                >
-                  <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
-                </a>
-              ))}
+            <div className="flex gap-4">
+              <a 
+                href="https://wa.me/551696447972" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="group flex items-center gap-4 rounded-2xl bg-white/5 border border-white/10 p-4 hover:border-primary hover:bg-white/10 transition-all max-w-max"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-lg transition-transform group-hover:scale-105">
+                  <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="h-7 w-7 brightness-0 invert" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#25D366] mb-1">WhatsApp</p>
+                  <p className="text-xl font-black tracking-tight text-white">(16) 9644-7972</p>
+                </div>
+              </a>
             </div>
           </div>
 
