@@ -3,9 +3,11 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
 import { createClient } from "@/lib/supabase/client"
+import { SITE } from "@/lib/site-config"
+import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 
 export default function LoginForm() {
   const searchParams = useSearchParams()
@@ -55,63 +57,89 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-12">
-      <div className="text-center mb-8">
-        <h1 className="font-heading text-2xl font-bold text-foreground">Entrar na sua conta</h1>
-        <p className="text-muted-foreground mt-2 text-sm">Acompanhe pedidos e dados da {` `}
-          <span className="text-foreground font-medium">Atacado de Construção</span>
-        </p>
-      </div>
-      <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-border p-8 shadow-sm">
-        <div className="mb-5">
-          <label className="block text-sm font-medium text-card-foreground mb-2">E-mail</label>
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/30 outline-none transition"
-              placeholder="seu@email.com"
-              required
-            />
-          </div>
-        </div>
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-card-foreground mb-2">Senha</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type={showPass ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-11 pr-12 py-3 rounded-xl border border-border bg-background text-foreground focus:ring-2 focus:ring-primary/30 outline-none transition"
-              placeholder="Sua senha"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPass(!showPass)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition disabled:opacity-50 shadow-md shadow-primary/15"
-        >
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
-        <p className="text-center text-sm text-muted-foreground mt-5">
-          Não tem conta?{" "}
-          <Link href="/cadastro" className="text-primary font-semibold hover:underline">
-            Cadastre-se
+    <div className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-12 bg-mesh relative overflow-hidden">
+      {/* Decorative Blur Elements */}
+      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-[440px] relative z-10">
+        <div className="flex justify-center mb-10">
+          <Link href="/">
+            <DynamicBrandLogo variant="full" className="h-12 w-auto" />
           </Link>
-        </p>
-      </form>
+        </div>
+
+        <div className="bg-white/80 backdrop-blur-2xl rounded-[32px] border border-white p-8 md:p-10 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)]">
+          <div className="text-center mb-10">
+            <h1 className="text-[28px] font-black tracking-tight text-slate-900 mb-2">Bem-vindo de volta</h1>
+            <p className="text-[13px] text-slate-500 font-medium">Acesse sua conta para gerenciar seus pedidos na {SITE.shortName}.</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">E-mail Corporativo</label>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-300 group-focus-within:text-primary transition-colors">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-4 py-4 text-sm font-bold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-primary/30 focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                  placeholder="seu@email.com"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Senha de Acesso</label>
+                <Link href="/recuperar-senha" className="text-[10px] font-black uppercase tracking-widest text-primary hover:underline">Esqueci a senha</Link>
+              </div>
+              <div className="relative group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-300 group-focus-within:text-primary transition-colors">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-12 py-4 text-sm font-bold text-slate-900 placeholder:text-slate-300 focus:bg-white focus:border-primary/30 focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                  placeholder="Sua senha"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors"
+                >
+                  {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 bg-secondary text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-lg shadow-secondary/20 hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? "Autenticando..." : "Acessar Conta"}
+              {!loading && <ArrowRight className="w-4 h-4" />}
+            </button>
+          </form>
+
+          <div className="mt-10 pt-8 border-t border-slate-100 text-center">
+            <p className="text-[13px] text-slate-500 font-medium">
+              Ainda não é parceiro?{" "}
+              <Link href="/cadastro" className="text-primary font-black uppercase tracking-widest hover:underline ml-1">
+                Cadastre-se aqui
+              </Link>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

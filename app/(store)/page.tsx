@@ -66,46 +66,35 @@ function SectionHeader({
   subtitle,
   href,
   linkLabel,
-  icon: Icon,
   className,
 }: {
   title: string
   subtitle?: string
   href?: string
   linkLabel?: string
-  icon?: ComponentType<{ className?: string }>
   className?: string
 }) {
   return (
-    <div className={cn("mb-12 flex flex-col gap-6 sm:mb-20 sm:flex-row sm:items-end sm:justify-between", className)}>
-      <div className="relative space-y-4">
-        {Icon && (
-          <div className="absolute -left-12 top-0 hidden xl:block">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Icon className="h-6 w-6" />
-            </div>
-          </div>
-        )}
-        <div className="space-y-2">
-          <div className="flex items-center gap-3">
-            <span className="h-1.5 w-12 rounded-full bg-primary" />
-            {subtitle && (
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                {subtitle}
-              </span>
-            )}
-          </div>
-          <h2 className="text-4xl font-bold tracking-tight text-secondary sm:text-5xl md:text-6xl">
-            {title}
-          </h2>
+    <div className={cn("mb-10 flex flex-col gap-6 sm:mb-16 sm:flex-row sm:items-end sm:justify-between", className)}>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="h-[1px] w-8 bg-primary/40" />
+          {subtitle && (
+            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+              {subtitle}
+            </span>
+          )}
         </div>
+        <h2 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+          {title}
+        </h2>
       </div>
       {href && (
         <Link
           href={href}
-          className="group inline-flex h-14 shrink-0 items-center justify-center gap-3 rounded-2xl bg-white border border-slate-200 px-8 text-xs font-bold uppercase tracking-widest text-secondary shadow-sm transition-all hover:border-primary hover:text-primary hover:shadow-xl active:scale-95 sm:self-auto"
+          className="group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-slate-50 px-8 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 transition-all hover:bg-secondary hover:text-white active:scale-95 sm:self-auto"
         >
-          {linkLabel || "Ver catálogo completo"} 
+          {linkLabel || "Ver catálogo"} 
           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       )}
@@ -139,10 +128,9 @@ export default function HomePage() {
         <section className="py-12 sm:py-20 overflow-hidden">
           <div className="mx-auto max-w-7xl px-6">
             <SectionHeader
-              title="O que você precisa?"
-              subtitle="Departamentos Especializados"
+              title="Categorias"
+              subtitle="Departamentos"
               href="/produtos"
-              icon={LayoutGrid}
             />
           </div>
           <div className="relative">
@@ -159,10 +147,9 @@ export default function HomePage() {
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
           <div className="mx-auto max-w-7xl px-6 relative z-10">
             <SectionHeader
-              title="Destaques"
-              subtitle="Melhores escolhas para sua obra"
+              title="O que você precisa?"
+              subtitle="Departamentos"
               href="/produtos"
-              icon={Sparkles}
             />
             <ProductsCarousel products={data.featured} autoplayDelay={5000} />
           </div>
@@ -175,9 +162,8 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl px-6">
             <SectionHeader 
               title="Lançamentos" 
-              subtitle="Tecnologia e Inovação" 
+              subtitle="Tecnologia" 
               href="/produtos" 
-              icon={Zap} 
             />
             <ProductsCarousel products={data.newProducts} autoplayDelay={7000} />
           </div>

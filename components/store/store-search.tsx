@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Search, Sparkles } from "lucide-react"
+import { Search } from "lucide-react"
 
 const DEBOUNCE_MS = 280
 
@@ -53,7 +53,10 @@ export default function StoreSearch() {
         }
       }}
     >
-          <div className="group relative flex items-center">
+      <div className="group relative flex items-center">
+        <div className="absolute left-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+          <Search className="h-5 w-5" />
+        </div>
         <input
           type="search"
           name="q"
@@ -61,15 +64,17 @@ export default function StoreSearch() {
           value={q}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="O que você está procurando hoje?"
-          className="h-12 w-full rounded-lg border border-slate-200 bg-white pl-5 pr-20 text-sm font-medium text-slate-700 placeholder:text-slate-400 outline-none transition-all focus:border-[#002D5B] focus:ring-1 focus:ring-[#002D5B]/10"
+          className="h-14 w-full rounded-2xl border border-slate-100 bg-slate-50 pl-14 pr-32 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5"
         />
-        <button
-          type="submit"
-          className="absolute right-0 h-12 w-14 flex items-center justify-center rounded-r-lg bg-gradient-to-br from-[#F47920] to-[#e06b10] text-white transition-all hover:brightness-110 active:scale-95 group/search"
-          aria-label="Buscar"
-        >
-          <Search className="h-5 w-5 group-hover/search:scale-110 transition-transform" />
-        </button>
+        <div className="absolute right-1.5 p-1">
+          <button
+            type="submit"
+            className="h-11 px-6 rounded-xl bg-secondary text-white text-[10px] font-black uppercase tracking-widest transition-all hover:bg-slate-800 active:scale-95 shadow-md shadow-secondary/10"
+            aria-label="Buscar"
+          >
+            Buscar
+          </button>
+        </div>
       </div>
     </form>
   )

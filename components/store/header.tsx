@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { ShoppingCart, User, Menu, X, Phone, ChevronDown, LogIn, Tag, Headset } from "lucide-react"
+import { ShoppingCart, User, Menu, X, Phone, ChevronDown, Tag, Headset } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import StoreSearch from "@/components/store/store-search"
@@ -37,37 +37,22 @@ export default function StoreHeader() {
       supabase.auth.getUser().then(({ data }) => {
         if (data.user) {
           const meta = data.user.user_metadata as any
-          const extractedName = meta?.full_name ?? meta?.name ?? meta?.first_name ?? meta?.displayName
-          
-          setUser({
-            email: data.user.email || "",
-            name: extractedName,
-          })
+          setUser({ email: data.user.email || "", name: meta?.full_name ?? meta?.name })
         } else {
           setUser(null)
         }
       })
     }
     syncUserFromAuth()
-    const { data: sub } = supabase.auth.onAuthStateChange(() => {
-      syncUserFromAuth()
-    })
+    const { data: sub } = supabase.auth.onAuthStateChange(() => syncUserFromAuth())
 
-    try {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]")
-      setCartCount(cart.reduce((acc: number, item: { qty: number }) => acc + item.qty, 0))
-    } catch {
-      /* empty */
-    }
-
-    function handleCartUpdate() {
+    const handleCartUpdate = () => {
       try {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]")
         setCartCount(cart.reduce((acc: number, item: { qty: number }) => acc + item.qty, 0))
-      } catch {
-        /* empty */
-      }
+      } catch { /* empty */ }
     }
+    handleCartUpdate()
     window.addEventListener("cart-updated", handleCartUpdate)
     setIsMounted(true)
 
@@ -78,179 +63,142 @@ export default function StoreHeader() {
   }, [])
 
   const barSurface = scrolled 
-    ? "bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_15px_40px_rgba(0,0,0,0.05)]" 
+    ? "bg-white/80 backdrop-blur-2xl border-b border-slate-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]" 
     : "bg-white border-b border-slate-50 shadow-sm"
 
   return (
-    <header
-      className={
-        "z-50 shrink-0 w-full transition-all duration-500 " +
-        "max-lg:fixed max-lg:inset-x-0 max-lg:top-0 " +
-        "lg:sticky lg:top-0"
-      }
-    >
+    <header className="z-50 shrink-0 w-full lg:sticky lg:top-0">
       <div className="hidden lg:block">
         <Topbar />
       </div>
-      <div className={`${barSurface} transition-all duration-500`}>
-        <div className="mx-auto max-w-7xl px-4 lg:px-6">
-          {/* Main Bar */}
-          <div className="flex items-center justify-between gap-6 py-3 lg:py-5">
-              {/* Mobile Menu Trigger */}
-              <button
-                type="button"
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 text-secondary border border-slate-100 lg:hidden shadow-sm active:scale-90 transition-all"
-              >
-                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
+      <div className={cn(barSurface, "transition-all duration-500")}>
+        <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
+          <div className="flex items-center justify-between gap-10 py-4 lg:py-6">
+            {/* Mobile Menu */}
+            <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden h-11 w-11 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 active:scale-90 transition-all">
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
 
             {/* Logo */}
-            <Link
-              href="/"
-              className="flex shrink-0 items-center hover:opacity-80 transition-opacity"
-            >
-              <DynamicBrandLogo variant="full" className="h-8 lg:h-12 w-auto" />
+            <Link href="/" className="shrink-0 transition-transform active:scale-95">
+              <DynamicBrandLogo variant="full" className="h-9 lg:h-11 w-auto" />
             </Link>
 
             {/* Desktop Search */}
-            <div className="hidden lg:flex flex-1 max-w-2xl mx-12">
-              <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-2xl bg-slate-50" />}>
+            <div className="hidden lg:flex flex-1 max-w-2xl mx-10">
+              <Suspense fallback={<div className="h-14 w-full animate-pulse rounded-2xl bg-slate-50" />}>
                 <StoreSearch />
               </Suspense>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3 lg:gap-8">
-              {!user ? (
-                <Link
-                  href="/login"
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-secondary text-white text-[10px] font-bold uppercase tracking-widest shadow-md hover:bg-secondary/90 active:scale-95 transition-all lg:bg-transparent lg:text-secondary lg:shadow-none lg:p-0"
-                >
-                  <User className="h-4 w-4" />
-                  <span className="hidden sm:inline">Entrar</span>
-                </Link>
-              ) : (
-                <Link
-                  href="/minha-conta"
-                  className="flex items-center gap-3 group"
-                >
-                  <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:border-primary transition-all">
-                      <User className="h-4 w-4 lg:h-5 lg:w-5 text-slate-400 group-hover:text-primary transition-colors" />
-                  </div>
-                  <div className="hidden lg:flex flex-col items-start leading-tight">
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Meu Perfil</span>
-                    <span className="text-[11px] font-bold text-secondary truncate max-w-[120px] uppercase tracking-tight">
-                      {user.name || user.email.split("@")[0]}
-                    </span>
-                  </div>
-                </Link>
-              )}
-
-              {/* Desktop Location Selector */}
-              <div className="hidden lg:block border-l border-slate-100 pl-8">
+            <div className="flex items-center gap-4 lg:gap-10">
+              <div className="hidden xl:block">
                 <LocationSelector />
               </div>
 
-              {/* Cart */}
-              <Link
-                href="/carrinho"
-                className="group relative h-10 w-10 lg:h-11 lg:w-11 flex items-center justify-center rounded-xl bg-slate-50 text-secondary border border-slate-100 hover:border-primary/30 hover:bg-white hover:shadow-lg transition-all active:scale-95"
-              >
+              <div className="h-8 w-px bg-slate-100 hidden lg:block" />
+
+              {!user ? (
+                <Link href="/login" className="hidden lg:flex items-center gap-3 group">
+                   <div className="w-11 h-11 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
+                      <User className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                   </div>
+                   <div className="flex flex-col items-start">
+                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Minha Conta</span>
+                     <span className="text-[11px] font-black uppercase tracking-tight text-slate-900">Entrar</span>
+                   </div>
+                </Link>
+              ) : (
+                <Link href="/minha-conta" className="flex items-center gap-3 group">
+                   <div className="w-11 h-11 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
+                      <User className="h-5 w-5 text-slate-400 group-hover:text-primary transition-colors" />
+                   </div>
+                   <div className="hidden lg:flex flex-col items-start leading-tight">
+                     <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Parceiro</span>
+                     <span className="text-[11px] font-black uppercase tracking-tight text-secondary truncate max-w-[100px]">
+                       {user.name?.split(" ")[0] || "Perfil"}
+                     </span>
+                   </div>
+                </Link>
+              )}
+
+              <Link href="/carrinho" className="group relative h-11 w-11 flex items-center justify-center rounded-2xl bg-slate-50 text-secondary border border-slate-100 hover:border-primary/20 hover:bg-white hover:shadow-xl transition-all">
                 <ShoppingCart className="h-5 w-5 transition-transform group-hover:scale-110" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-white shadow-lg ring-2 ring-white">
-                    {cartCount > 99 ? "99+" : cartCount}
+                  <span className="absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-black text-white shadow-lg ring-2 ring-white">
+                    {cartCount}
                   </span>
                 )}
               </Link>
             </div>
           </div>
 
-          {/* Search Row (Mobile/Tablet Only) */}
-          <div className="pb-3 lg:hidden">
-            <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-2xl bg-slate-50" />}>
+          {/* Search Row Mobile */}
+          <div className="pb-4 lg:hidden">
+            <Suspense fallback={<div className="h-14 w-full animate-pulse rounded-2xl bg-slate-50" />}>
               <StoreSearch />
             </Suspense>
           </div>
 
-          {/* Streamlined Nav */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:block border-t border-slate-50">
-            <ul className="flex items-center gap-1 py-1">
-              <li>
-                <Link
-                  href="/produtos"
-                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-bold text-slate-600 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
-                >
-                  <Menu className="h-4 w-4" />
-                  Catálogo Completo
-                </Link>
-              </li>
-              <div className="w-px h-4 bg-slate-100 mx-2" />
-              <li>
-                <Link
-                  href="/promocoes"
-                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-bold text-[#F47920] uppercase tracking-[0.15em] hover:bg-[#F47920]/5 rounded-xl transition-all"
-                >
-                  <Tag className="h-4 w-4" />
-                  Ofertas Exclusivas
-                </Link>
-              </li>
-              <div className="w-px h-4 bg-slate-100 mx-2" />
-              <li>
-                <Link
-                  href="/rastrear-pedido"
-                  className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
-                >
-                  Rastreamento
-                </Link>
-              </li>
-              <li className="ml-auto">
-                {isMounted && (
+            <ul className="flex items-center justify-between py-1 px-1">
+              <div className="flex items-center gap-2">
+                <li>
+                  <Link href="/produtos" className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+                    <Menu className="h-4 w-4" />
+                    Catálogo
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/promocoes" className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-[#F47920] uppercase tracking-[0.2em] hover:bg-[#F47920]/5 rounded-xl transition-all">
+                    <Tag className="h-4 w-4" />
+                    Ofertas
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/rastrear-pedido" className="px-5 py-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+                    Rastreamento
+                  </Link>
+                </li>
+              </div>
+              
+              {isMounted && (
+                <li>
                   <ContactPopup>
-                    <button className="flex items-center gap-2 px-6 py-3 text-[11px] font-black text-slate-900 uppercase tracking-[0.15em] hover:bg-slate-50 rounded-xl transition-all cursor-pointer">
-                      <Headset className="h-4 w-4 text-[#F47920]" />
-                      Atendimento
+                    <button className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] hover:bg-slate-50 rounded-xl transition-all">
+                      <Headset className="h-4 w-4 text-primary" />
+                      Atendimento Consultivo
                     </button>
                   </ContactPopup>
-                )}
-              </li>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="max-h-[min(85vh,600px)] overflow-y-auto border-b border-slate-100 bg-white/98 shadow-2xl backdrop-blur-2xl lg:hidden animate-in slide-in-from-top-4 duration-300">
-          <div className="mx-auto max-w-7xl space-y-1 p-4">
-            <Link
-              href="/produtos"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4 text-sm font-black uppercase tracking-widest text-slate-900 transition active:scale-[0.98]"
-            >
-              Ver catálogo completo
+        <div className="fixed inset-0 top-[136px] z-50 bg-white lg:hidden animate-in slide-in-from-top-4 duration-300">
+          <div className="p-6 space-y-6">
+            <Link href="/produtos" onClick={() => setMenuOpen(false)} className="flex items-center justify-between p-5 rounded-[24px] bg-slate-50 text-[11px] font-black uppercase tracking-widest text-slate-900 shadow-sm border border-slate-100">
+              Catálogo Completo
               <ChevronDown className="h-4 w-4 -rotate-90 opacity-40" />
             </Link>
-            <div className="grid grid-cols-1 gap-1 py-2">
-                {categories.map((cat) => (
-                <Link
-                    key={cat.id}
-                    href={`/categoria/${cat.slug}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="block rounded-2xl px-5 py-3.5 text-[13px] font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98]"
-                >
-                    {cat.name}
-                </Link>
+            <div className="grid grid-cols-1 gap-2">
+                {categories.slice(0, 8).map((cat) => (
+                  <Link key={cat.id} href={`/categoria/${cat.slug}`} onClick={() => setMenuOpen(false)} className="block px-5 py-3 text-sm font-bold text-slate-600 hover:text-primary">
+                      {cat.name}
+                  </Link>
                 ))}
             </div>
-            <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4 text-sm">
-              <a href={`tel:+${SITE.whatsappE164}`} className="flex items-center gap-3 rounded-2xl bg-slate-900 text-[#F47920] px-5 py-4 font-black uppercase tracking-widest shadow-lg">
+            <div className="pt-6 border-t border-slate-100 space-y-4">
+              <a href={`tel:+${SITE.whatsappE164}`} className="flex items-center justify-center gap-3 w-full h-14 rounded-2xl bg-secondary text-white font-black uppercase tracking-widest text-[11px]">
                 <Phone className="h-4 w-4" />
                 {SITE.phoneDisplay}
               </a>
-              <Link href="/rastrear-pedido" className="flex items-center gap-3 rounded-2xl bg-slate-50 px-5 py-4 font-black uppercase tracking-widest text-slate-500" onClick={() => setMenuOpen(false)}>
-                Rastrear pedido
-              </Link>
             </div>
           </div>
         </div>
