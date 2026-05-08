@@ -92,7 +92,7 @@ export default function StoreHeader() {
       <div className={`${barSurface} transition-all duration-500`}>
         <div className="mx-auto max-w-7xl px-4 lg:px-6">
           {/* Main Bar */}
-          <div className="flex items-center justify-between gap-6 py-4 lg:py-5">
+          <div className="flex items-center justify-between gap-6 py-2.5 lg:py-5">
             {/* Mobile Menu Trigger */}
             <button
               type="button"
@@ -156,7 +156,7 @@ export default function StoreHeader() {
           </div>
 
           {/* Search Row (Mobile/Tablet Only) */}
-          <div className="pb-3 lg:hidden">
+          <div className="pb-2 lg:hidden">
             <Suspense fallback={<div className="h-12 w-full animate-pulse rounded-lg bg-slate-50" />}>
               <StoreSearch />
             </Suspense>
