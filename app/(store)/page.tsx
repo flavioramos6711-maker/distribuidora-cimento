@@ -129,16 +129,14 @@ export default function HomePage() {
 
   return (
     <div className="relative pb-20 sm:pb-32 bg-mesh">
-      {/* Hero Section - Back to Top */}
-      <div className="px-0 sm:px-6 pt-0 sm:pt-6">
-        <div className="mx-auto max-w-[1600px] overflow-hidden sm:rounded-3xl shadow-app-lg bg-white">
-          <HeroBanner />
-        </div>
+      {/* Hero Section - Edge to Edge */}
+      <div className="w-full">
+        <HeroBanner />
       </div>
 
       {/* Categories - Grid Style */}
       {data?.categories && data.categories.length > 0 && (
-        <section className="py-20 sm:py-32 overflow-hidden">
+        <section className="py-12 sm:py-20 overflow-hidden">
           <div className="mx-auto max-w-7xl px-6">
             <SectionHeader
               title="O que você precisa?"
@@ -157,7 +155,7 @@ export default function HomePage() {
 
       {/* Featured Products - High End Carousel */}
       {data?.featured && data.featured.length > 0 && (
-        <section className="py-24 sm:py-32 bg-secondary/5 relative overflow-hidden">
+        <section className="py-16 sm:py-24 bg-secondary/5 relative overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
           <div className="mx-auto max-w-7xl px-6 relative z-10">
             <SectionHeader
@@ -173,7 +171,7 @@ export default function HomePage() {
 
       {/* New Products */}
       {data?.newProducts && data.newProducts.length > 0 && (
-        <section className="py-24 sm:py-32">
+        <section className="py-16 sm:py-24">
           <div className="mx-auto max-w-7xl px-6">
             <SectionHeader 
               title="Lançamentos" 
@@ -193,7 +191,7 @@ export default function HomePage() {
       </div>
 
       {/* Testimonials - Dark Professional */}
-      <section className="relative overflow-hidden bg-secondary py-24 sm:py-32 my-20">
+      <section className="relative overflow-hidden bg-secondary py-16 sm:py-24 my-12">
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
@@ -239,7 +237,7 @@ export default function HomePage() {
 
       {/* Weekly Offers - Dark Premium */}
       {data?.discounts && data.discounts.length > 0 && (
-        <section id="promocoes" className="py-24 sm:py-32 bg-[#020617] text-white rounded-[3rem] sm:rounded-[4rem] mx-4 my-10 relative overflow-hidden">
+        <section id="promocoes" className="py-16 sm:py-24 bg-[#020617] text-white rounded-[2rem] sm:rounded-[3rem] mx-4 my-6 relative overflow-hidden">
           <div className="absolute inset-0 bg-mesh opacity-10" />
           <div className="mx-auto max-w-7xl px-6 relative z-10">
             <div className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">

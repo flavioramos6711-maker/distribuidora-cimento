@@ -64,7 +64,7 @@ export default function HeroBanner() {
 
   if (isLoading || !slides || slides.length === 0) {
     return (
-      <div className="relative aspect-[16/7] sm:aspect-[16/6] lg:aspect-[1920/540] w-full bg-muted animate-pulse rounded-3xl" />
+      <div className="relative aspect-[16/7] sm:aspect-[16/6] lg:aspect-[1920/600] w-full bg-muted animate-pulse" />
     )
   }
 
@@ -79,7 +79,7 @@ export default function HeroBanner() {
         <div className="flex">
           {slides.map((banner, i) => (
             <div key={banner.id} className="relative min-w-0 shrink-0 grow-0 basis-full">
-              <div className="relative aspect-[16/5] sm:aspect-[16/6] lg:aspect-[1920/540] w-full overflow-hidden bg-white">
+              <div className="relative aspect-[16/5] sm:aspect-[16/6] lg:aspect-[1920/600] w-full overflow-hidden bg-white">
                 <Image
                   src={banner.image_url}
                   alt={`Banner ${i + 1}`}
@@ -87,14 +87,14 @@ export default function HeroBanner() {
                   priority={i === 0}
                   sizes="100vw"
                   className={cn(
-                    "object-contain lg:object-cover transition-transform duration-[8000ms] ease-out",
+                    "object-cover transition-transform duration-[8000ms] ease-out",
                     i === selected ? "lg:scale-110 scale-100" : "scale-100"
                   )}
                 />
                 
-                {/* Gradient Overlays for depth */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                {/* Softened Gradient Overlays for elegance */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
                 {banner.link && (
                   <Link 
