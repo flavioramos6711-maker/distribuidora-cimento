@@ -10,6 +10,13 @@ export default function WhatsAppChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [isTyping, setIsTyping] = useState(false)
   const [phone, setPhone] = useState(SITE.whatsappE164)
+  const [scrolled, setScrolled] = useState(false)
+  
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 200)
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
   
   useEffect(() => {
     async function fetchRotation() {
@@ -48,7 +55,7 @@ export default function WhatsAppChat() {
   const waLink = (msg: string) => `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3 font-sans select-none">
+    <div className={cn("fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3 font-sans select-none transition-all duration-500", !scrolled && "max-sm:translate-y-32 max-sm:opacity-0 max-sm:pointer-events-none")}>
       {isOpen && (
         <div className="mb-2 w-[calc(100vw-3rem)] sm:w-[350px] overflow-hidden rounded-3xl bg-white shadow-2xl animate-in slide-in-from-bottom-5 fade-in duration-300 flex flex-col border border-slate-200">
           {/* Corporate Header */}
@@ -122,14 +129,13 @@ export default function WhatsAppChat() {
       {/* Compact Floating Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-secondary shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 border-2 border-white overflow-hidden"
+        className="group relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-secondary shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 border-2 border-white overflow-hidden"
       >
         {isOpen ? (
-          <X className="w-6 h-6 text-primary" />
+          <X className="w-8 h-8 text-primary" />
         ) : (
           <div className="relative w-full h-full">
             <Image src={salespersonImg} alt="Atendente" fill className="object-cover" />
-            <div className="absolute top-1.5 right-1.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white shadow-sm" />
           </div>
         )}
       </button>
