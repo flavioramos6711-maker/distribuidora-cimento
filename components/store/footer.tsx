@@ -13,7 +13,7 @@ export default function StoreFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand & Social */}
           <div className="space-y-6">
-            <DynamicBrandLogo variant="full" className="h-10 w-auto brightness-0 invert" />
+            <DynamicBrandLogo variant="full" className="h-10 w-auto" />
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">
               Sua parceira de confiança em materiais de construção. Preço de atacado, entrega ágil e atendimento especializado para sua obra.
             </p>

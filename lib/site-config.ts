@@ -1,6 +1,6 @@
 /** Dados da loja — e-mail e site alinhados ao domínio oficial */
 export const SITE = {
-  legalName: "Cimento & Cai Distribuidora",
+  legalName: "Cimento & Cal Distribuidora",
   shortName: "C&C Distribuidora",
   tagline: "Sua parceira em materiais de construção: força, confiança e logística profissional.",
   whatsappE164: "5516996447972",

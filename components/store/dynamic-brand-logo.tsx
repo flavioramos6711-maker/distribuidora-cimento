@@ -19,8 +19,9 @@ export default function DynamicBrandLogo({
 }) {
   const { data: row } = useSWR("site-settings-public", getSiteSettingsPublic, { revalidateOnFocus: false })
   
-  // Use user-provided logo path first
-  const url = "/logo-oficial.png" 
+  // Use user-provided logo paths
+  // Header logo is preferred for the 'full' variant usually used in headers.
+  const url = variant === "full" ? "/logo-header.png" : "/logo-oficial.png" 
 
   const FallbackLogo = () => (
     <div className={cn("flex items-center gap-3", className)}>
