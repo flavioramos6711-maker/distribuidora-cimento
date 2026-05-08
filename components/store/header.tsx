@@ -73,7 +73,7 @@ export default function StoreHeader() {
       </div>
       <div className={cn(barSurface, "transition-all duration-500")}>
         <div className="mx-auto max-w-[1440px] px-4 lg:px-10">
-          <div className="flex items-center justify-between gap-10 py-4 lg:py-6">
+          <div className="flex items-center justify-between gap-10 py-3 lg:py-4">
             {/* Mobile Menu */}
             <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden h-11 w-11 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-100 active:scale-90 transition-all">
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -143,7 +143,7 @@ export default function StoreHeader() {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:block border-t border-slate-50">
-            <ul className="flex items-center justify-between py-1 px-1">
+            <ul className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <li>
                   <Link href="/produtos" className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
