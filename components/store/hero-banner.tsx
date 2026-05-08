@@ -74,7 +74,7 @@ export default function HeroBanner() {
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      <div className="relative mx-auto w-full max-w-[1920px]">
+      <div className="relative w-full">
         <div className="overflow-hidden rounded-none shadow-app-lg" ref={emblaRef}>
           <div className="flex touch-pan-y">
             {slides.map((banner, i) => (
