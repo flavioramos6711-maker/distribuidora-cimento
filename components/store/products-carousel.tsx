@@ -45,7 +45,7 @@ export default function ProductsCarousel({ products, autoplayDelay = 5000 }: Pro
         className="overflow-hidden" 
         ref={emblaRef}
       >
-        <div className="flex touch-pan-x -ml-4">
+        <div className="flex touch-pan-y -ml-4">
           {products.map((product) => (
             <div
               key={product.id}

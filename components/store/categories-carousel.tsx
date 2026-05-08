@@ -73,11 +73,11 @@ export default function CategoriesCarousel({ categories }: CategoriesCarouselPro
     >
       <div className="relative">
         <div className="overflow-hidden px-4 py-4" ref={emblaRef}>
-          <div className="flex touch-pan-x -ml-4">
+          <div className="flex touch-pan-y -ml-4">
             {categories.map((category) => (
               <div
                 key={category.id}
-                className="min-w-0 shrink-0 grow-0 pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                className="min-w-0 shrink-0 grow-0 pl-4 basis-[45%] sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
               >
                 <Link
                   href={`/categoria/${category.slug}`}
