@@ -130,13 +130,13 @@ export default function StoreFooter() {
             <div className="flex flex-col gap-6">
               {/* Security Images as requested */}
               <div className="flex flex-wrap items-center gap-4">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/SSL_Secured.svg/1024px-SSL_Secured.svg.png" alt="SSL Secure Connection" className="h-10 w-auto object-contain drop-shadow-sm" />
-                <img src="https://img.icons8.com/color/96/security-checked--v1.png" alt="Site Seguro" className="h-10 w-auto object-contain drop-shadow-sm" />
+                <img src="/ssl.png" alt="SSL Secure Connection" className="h-10 w-auto object-contain drop-shadow-sm" />
+                <img src="/shield.png" alt="Site Seguro" className="h-10 w-auto object-contain drop-shadow-sm" />
               </div>
               
               {/* Payment Methods Images */}
               <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/5">
-                <img src="https://logospng.org/download/pix/logo-pix-icone-512.png" alt="Pix" className="h-7 w-auto object-contain" />
+                <img src="/pix.png" alt="Pix" className="h-7 w-auto object-contain" />
                 <img src="https://logospng.org/download/mastercard/logo-mastercard-2048.png" alt="Mastercard" className="h-6 w-auto object-contain bg-white rounded-[4px] px-1 py-0.5" />
                 <img src="https://logospng.org/download/visa/logo-visa-2048.png" alt="Visa" className="h-5 w-auto object-contain bg-white rounded-[4px] px-1 py-0.5" />
               </div>

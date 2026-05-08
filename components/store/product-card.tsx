@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingCart, Package, MessageCircle, ChevronRight, Star } from "lucide-react"
+import { ShoppingCart, Package, Star, CheckCircle2 } from "lucide-react"
 import { toast } from "sonner"
 import { waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
-import { cn } from "@/lib/utils"
 
 export type ProductCardProduct = {
   id: string
@@ -53,9 +52,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
     const saved = localStorage.getItem("user-location") || ""
     setUserCity(saved)
 
-    const handleStorage = () => {
-      setUserCity(localStorage.getItem("user-location") || "")
-    }
+    const handleStorage = () => setUserCity(localStorage.getItem("user-location") || "")
     window.addEventListener("storage", handleStorage)
     window.addEventListener("user-location-updated", handleStorage)
     return () => {
@@ -74,17 +71,17 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
   )
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-500 hover:shadow-app-lg hover:-translate-y-2">
+    <div className="group relative flex flex-col h-full overflow-hidden rounded-[24px] border border-slate-200/70 bg-white shadow-sm transition-all duration-500 hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.12)] hover:-translate-y-1.5">
       {/* Floating Badges */}
-      <div className="pointer-events-none absolute left-0 top-6 z-10 flex flex-col gap-2">
+      <div className="absolute left-4 top-4 z-10 flex flex-col gap-2 pointer-events-none">
         {product.is_new && (
-          <div className="flex items-center bg-secondary text-white pl-5 pr-4 py-2 rounded-r-2xl shadow-xl border-l-4 border-primary">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Novo</span>
+          <div className="flex items-center bg-slate-950 text-white px-3 py-1.5 rounded-xl shadow-md border border-white/10 backdrop-blur-md">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em]">Lançamento</span>
           </div>
         )}
         {discount > 0 && (
-          <div className="flex items-center bg-primary text-white pl-5 pr-4 py-2 rounded-r-2xl shadow-xl">
-            <span className="text-[11px] font-bold uppercase tracking-tight">-{discount}% OFF</span>
+          <div className="flex items-center bg-[#F47920] text-white px-3 py-1.5 rounded-xl shadow-md">
+            <span className="text-[10px] font-black uppercase tracking-widest">-{discount}% OFF</span>
           </div>
         )}
       </div>
@@ -92,7 +89,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
       {/* Image Container */}
       <Link
         href={`/produto/${product.slug}`}
-        className="relative block aspect-square overflow-hidden bg-slate-50/50"
+        className="relative block aspect-[4/3] w-full overflow-hidden bg-gradient-to-b from-transparent to-slate-50/50"
       >
         {product.image_url ? (
           <Image
@@ -100,70 +97,79 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             alt={product.name}
             fill
             sizes="(max-width:768px) 50vw, 25vw"
-            className="object-contain p-10 transition-transform duration-700 group-hover:scale-110"
+            className="object-contain p-8 transition-transform duration-700 group-hover:scale-110"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
-            <Package className="h-16 w-16 text-slate-200" />
+            <Package className="h-12 w-12 text-slate-200" />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Subtle overlay effect */}
+        <div className="absolute inset-0 bg-slate-900/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-multiply" />
       </Link>
 
-      <div className="flex flex-1 flex-col p-6 sm:p-8">
-        <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
-                <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                Em Estoque
+      {/* Content */}
+      <div className="flex flex-1 flex-col p-5">
+        {/* Rating and Stock */}
+        <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100/50">
+                <CheckCircle2 className="w-3 h-3" />
+                Pronta Entrega
             </div>
-            <div className="flex items-center gap-1 text-slate-300">
+            <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100/50 text-amber-500">
                 <Star className="w-3 h-3 fill-current" />
-                <span className="text-[10px] font-semibold">5.0</span>
+                <span className="text-[10px] font-black">5.0</span>
             </div>
         </div>
 
-        <Link href={`/produto/${product.slug}`} className="mb-6">
-          <h3 className="line-clamp-2 text-base font-bold leading-tight text-secondary transition-colors group-hover:text-primary">
+        {/* Title */}
+        <Link href={`/produto/${product.slug}`} className="mb-4">
+          <h3 className="line-clamp-2 text-[15px] font-bold leading-snug text-slate-800 transition-colors group-hover:text-[#F47920]">
             {product.name}
           </h3>
         </Link>
 
-        <div className="mt-auto space-y-6">
-          <div className="border-t border-slate-100 pt-6">
-            {product.original_price && product.original_price > product.price && (
-              <p className="text-xs text-slate-400 line-through font-semibold mb-1">
+        {/* Price and Actions */}
+        <div className="mt-auto space-y-5">
+          <div className="flex flex-col">
+            {product.original_price && product.original_price > product.price ? (
+              <p className="text-[11px] text-slate-400 line-through font-bold mb-0.5">
                 R$ {Number(product.original_price).toFixed(2).replace(".", ",")}
               </p>
+            ) : (
+              <div className="h-[18px]" /> /* Spacer if no original price to keep cards same height */
             )}
-            <div className="flex items-baseline gap-2">
-              <p className="text-3xl font-bold text-secondary tabular-nums tracking-tighter">
-                <span className="text-sm font-semibold mr-1 text-slate-400">R$</span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-xs font-bold text-slate-500 mt-1">R$</span>
+              <p className="text-2xl font-black text-slate-900 tracking-tight">
                 {Number(product.price).toFixed(2).replace(".", ",")}
               </p>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">/{product.unit}</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                /{product.unit}
+              </span>
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-[1fr_auto] gap-2">
             <button
               type="button"
               onClick={() => addToCart(product)}
-              className="group/buy relative flex-1 flex h-14 items-center justify-center rounded-2xl bg-secondary text-white text-[11px] font-bold uppercase tracking-[0.2em] shadow-lg shadow-secondary/10 transition-all hover:bg-secondary/90 hover:shadow-secondary/20 active:scale-95 overflow-hidden"
+              className="group/buy relative flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-950 text-white text-[11px] font-black uppercase tracking-[0.15em] transition-all hover:bg-slate-800 active:scale-95 overflow-hidden"
             >
               <div className="absolute inset-0 translate-x-[-100%] group-hover/buy:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg]" />
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              <span>Orçar</span>
+              <ShoppingCart className="h-4 w-4" />
+              <span>Adicionar</span>
             </button>
             <a
               href={waHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/wa relative flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 transition-all hover:shadow-primary/30 active:scale-95 overflow-hidden"
-              title="Orçamento via WhatsApp"
+              className="group/wa relative flex h-12 w-12 items-center justify-center rounded-xl bg-[#25D366] text-white transition-all hover:bg-[#20bd5a] hover:shadow-lg active:scale-95 overflow-hidden"
+              title="Comprar via WhatsApp"
               onClick={() => trackWhatsAppClick("product_card", `/produto/${product.slug}`)}
             >
               <div className="absolute inset-0 translate-x-[-100%] group-hover/wa:translate-x-[100%] transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg]" />
-              <MessageCircle className="h-6 w-6 fill-current" />
+              <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp" className="h-6 w-6 brightness-0 invert" />
             </a>
           </div>
         </div>
@@ -171,4 +177,3 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
     </div>
   )
 }
-
