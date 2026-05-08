@@ -74,7 +74,7 @@ export default function WhatsAppChat() {
           </div>
 
           {/* Chat Body */}
-          <div className="p-5 space-y-6 bg-slate-50 max-h-[340px] overflow-y-auto">
+          <div className="p-5 space-y-4 bg-slate-50">
             <div className="flex items-start gap-3">
               <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-200">
                 {isTyping ? (
@@ -85,29 +85,11 @@ export default function WhatsAppChat() {
                   </div>
                 ) : (
                   <p className="text-[13px] leading-relaxed text-slate-700 font-medium">
-                    Prezado(a), como podemos auxiliar em sua demanda técnica ou comercial hoje?
+                    Olá! Como podemos auxiliar em sua demanda técnica ou comercial hoje?
                   </p>
                 )}
               </div>
             </div>
-
-            {!isTyping && (
-              <div className="space-y-3 animate-in fade-in duration-500">
-                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest px-1">Departamentos</p>
-                <div className="grid grid-cols-1 gap-2">
-                  {departments.map((dept, i) => (
-                    <button
-                      key={i}
-                      onClick={() => window.open(waLink(dept.msg), "_blank")}
-                      className="w-full p-3.5 text-left bg-white border border-slate-200 rounded-xl hover:border-primary/50 hover:bg-slate-50 transition-all text-[12px] font-bold text-slate-600 flex items-center justify-between group"
-                    >
-                      {dept.label}
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-primary transition-colors" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Footer Input */}
