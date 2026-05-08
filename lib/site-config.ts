@@ -3,8 +3,8 @@ export const SITE = {
   legalName: "Cimento & Cal Distribuidora",
   shortName: "C&C Distribuidora",
   tagline: "Sua parceira em materiais de construção: força, confiança e logística profissional.",
-  whatsappE164: "5516996447972",
-  phoneDisplay: "(16) 9 9644-7972",
+  whatsappE164: "551696447972",
+  phoneDisplay: "(16) 9644-7972",
   email: "contato@atacadodeconstrucao.com",
   website: "https://www.atacadodeconstrucao.com",
   address: {

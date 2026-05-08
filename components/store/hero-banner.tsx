@@ -79,7 +79,7 @@ export default function HeroBanner() {
         <div className="flex">
           {slides.map((banner, i) => (
             <div key={banner.id} className="relative min-w-0 shrink-0 grow-0 basis-full">
-              <div className="relative aspect-[16/5] sm:aspect-[16/6] lg:aspect-[1920/600] w-full overflow-hidden bg-white">
+              <div className="relative aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/600] w-full overflow-hidden bg-white">
                 <Image
                   src={banner.image_url}
                   alt={`Banner ${i + 1}`}
@@ -87,7 +87,7 @@ export default function HeroBanner() {
                   priority={i === 0}
                   sizes="100vw"
                   className={cn(
-                    "object-cover transition-transform duration-[8000ms] ease-out",
+                    "object-contain lg:object-cover transition-transform duration-[8000ms] ease-out",
                     i === selected ? "lg:scale-110 scale-100" : "scale-100"
                   )}
                 />
