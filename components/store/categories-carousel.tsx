@@ -68,7 +68,7 @@ export default function CategoriesCarousel({ categories }: CategoriesCarouselPro
       <div className="mx-auto max-w-7xl px-4">
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex touch-pan-y">
+            <div className="flex touch-pan-x">
               {categories.map((category) => (
                 <div
                   key={category.id}
