@@ -67,7 +67,7 @@ export default function StoreHeader() {
     : "bg-white border-b border-slate-50 shadow-sm"
 
   return (
-    <header className="z-50 shrink-0 w-full lg:sticky lg:top-0">
+    <header className="z-50 shrink-0 w-full fixed inset-x-0 top-0 lg:sticky lg:top-0">
       <div className="hidden lg:block">
         <Topbar />
       </div>
