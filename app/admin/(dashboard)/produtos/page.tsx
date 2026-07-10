@@ -3,7 +3,7 @@
 import { useState } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
-import { Plus, Pencil, Trash2, X, Upload, ImageIcon, Package, Search } from "lucide-react"
+import { Plus, Pencil, Trash2, X, Upload, ImageIcon, Package, Search, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 import Image from "next/image"
 import { uploadImage } from "@/lib/upload-image"
@@ -49,6 +49,7 @@ export default function ProdutosPage() {
   const [uploading, setUploading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterCat, setFilterCat] = useState("")
+  const [seedingId, setSeedingId] = useState<string | null>(null)
 
   function generateSlug(name: string) {
     return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
@@ -147,6 +148,28 @@ export default function ProdutosPage() {
     if (!confirm("Deseja excluir este produto?")) return
     await supabase.from("products").delete().eq("id", id)
     toast.success("Produto excluido!"); mutate()
+  }
+
+  /** Gera avaliações realistas para um produto via API */
+  async function handleSeedReviews(productId: string, productName: string) {
+    if (!confirm(`Gerar avaliações realistas para "${productName}"? Isso adicionará 12–18 avaliações aprovadas.`)) return
+    setSeedingId(productId)
+    try {
+      const res = await fetch(`/api/admin/products/${productId}/seed-reviews`, {
+        method: "POST",
+        credentials: "include",
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        toast.error(json.error || "Erro ao gerar avaliações")
+        return
+      }
+      toast.success(`✅ ${json.generated} avaliações geradas para "${productName}"!`)
+    } catch {
+      toast.error("Erro de rede ao gerar avaliações")
+    } finally {
+      setSeedingId(null)
+    }
   }
 
   const filteredSubcats = subcategories?.filter((s) => s.category_id === form.category_id) || []
@@ -331,6 +354,17 @@ export default function ProdutosPage() {
 
               <div className="flex gap-3">
                 <button onClick={handleSave} className="flex-1 py-2.5 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition">{editing ? "Atualizar Produto" : "Criar Produto"}</button>
+                {editing && (
+                  <button
+                    onClick={() => handleSeedReviews(editing, form.name)}
+                    disabled={!!seedingId}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition disabled:opacity-50"
+                    title="Gerar avaliações realistas automáticas"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    {seedingId === editing ? "Gerando..." : "Gerar Avaliações"}
+                  </button>
+                )}
                 <button onClick={() => setShowForm(false)} className="flex-1 py-2.5 bg-muted text-muted-foreground rounded-lg font-medium hover:bg-muted/80 transition">Cancelar</button>
               </div>
             </div>
@@ -382,8 +416,20 @@ export default function ProdutosPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
-                    <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-primary"><Pencil className="w-4 h-4" /></button>
-                    <button onClick={() => handleDelete(p.id)} className="p-2 rounded-lg hover:bg-destructive/10 transition text-muted-foreground hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
+                    <button onClick={() => openEdit(p)} className="p-2 rounded-lg hover:bg-muted transition text-muted-foreground hover:text-primary" title="Editar">
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleSeedReviews(p.id, p.name)}
+                      disabled={seedingId === p.id}
+                      className="p-2 rounded-lg hover:bg-amber-50 transition text-muted-foreground hover:text-amber-600 disabled:opacity-40"
+                      title="Gerar avaliações realistas"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => handleDelete(p.id)} className="p-2 rounded-lg hover:bg-destructive/10 transition text-muted-foreground hover:text-destructive" title="Excluir">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </td>
               </tr>

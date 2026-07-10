@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Outfit, Inter } from 'next/font/google'
+import { Outfit, Plus_Jakarta_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import Script from 'next/script'
@@ -15,10 +15,11 @@ const outfit = Outfit({
   weight: ['400', '700', '900'],
 })
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -43,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable}`}>
       <body className="font-sans antialiased">
         {/* Google Tag Manager (noscript) */}
         {process.env.NEXT_PUBLIC_GTM_ID && (
