@@ -154,21 +154,7 @@ export default function HeroBanner() {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
-                {/* Título / subtítulo vindos do CMS */}
-                {(slide.title || slide.subtitle) && (
-                  <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-16">
-                    {slide.title && (
-                      <h2 className="text-white font-black text-2xl md:text-4xl lg:text-5xl drop-shadow-lg max-w-2xl leading-tight">
-                        {slide.title}
-                      </h2>
-                    )}
-                    {slide.subtitle && (
-                      <p className="text-white/80 text-base md:text-lg font-medium mt-2 drop-shadow max-w-xl">
-                        {slide.subtitle}
-                      </p>
-                    )}
-                  </div>
-                )}
+
 
                 {/* Link clicável em todo o slide */}
                 {slide.link && (
