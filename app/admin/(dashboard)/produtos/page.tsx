@@ -50,6 +50,8 @@ export default function ProdutosPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterCat, setFilterCat] = useState("")
   const [seedingId, setSeedingId] = useState<string | null>(null)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [isSeedingBulk, setIsSeedingBulk] = useState(false)
 
   function generateSlug(name: string) {
     return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
@@ -155,8 +157,10 @@ export default function ProdutosPage() {
     if (!confirm(`Gerar avaliações realistas para "${productName}"? Isso adicionará 12–18 avaliações aprovadas.`)) return
     setSeedingId(productId)
     try {
-      const res = await fetch(`/api/admin/products/${productId}/seed-reviews`, {
+      const res = await fetch("/api/admin/products/seed-reviews-bulk", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productIds: [productId] }),
         credentials: "include",
       })
       const json = await res.json()
@@ -164,11 +168,55 @@ export default function ProdutosPage() {
         toast.error(json.error || "Erro ao gerar avaliações")
         return
       }
-      toast.success(`✅ ${json.generated} avaliações geradas para "${productName}"!`)
+      if (json.generated === 0) {
+        toast.info(`"${productName}" já possui todas as avaliações do nosso banco. Nenhuma nova foi gerada.`)
+      } else {
+        toast.success(`✅ ${json.generated} avaliações geradas para "${productName}"!`)
+      }
     } catch {
       toast.error("Erro de rede ao gerar avaliações")
     } finally {
       setSeedingId(null)
+    }
+  }
+
+  async function handleBulkSeed() {
+    if (selectedIds.size === 0) return
+    if (!confirm(`Gerar avaliações para ${selectedIds.size} produto(s) selecionado(s)?`)) return
+    setIsSeedingBulk(true)
+    try {
+      const res = await fetch("/api/admin/products/seed-reviews-bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productIds: Array.from(selectedIds) }),
+        credentials: "include",
+      })
+      const json = await res.json()
+      if (!res.ok) {
+        toast.error(json.error || "Erro ao gerar avaliações em massa")
+        return
+      }
+      toast.success(`✅ Operação concluída! ${json.generated} novas avaliações no total.`)
+      setSelectedIds(new Set())
+    } catch {
+      toast.error("Erro de rede ao gerar avaliações")
+    } finally {
+      setIsSeedingBulk(false)
+    }
+  }
+
+  function toggleSelection(id: string) {
+    const next = new Set(selectedIds)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setSelectedIds(next)
+  }
+
+  function toggleAll() {
+    if (selectedIds.size === filteredProducts.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(filteredProducts.map((p) => p.id)))
     }
   }
 
@@ -191,8 +239,18 @@ export default function ProdutosPage() {
         </button>
       </div>
 
-      {/* Filters */}
+      {/* Filters & Bulk Actions */}
       <div className="flex flex-col sm:flex-row gap-3">
+        {selectedIds.size > 0 && (
+          <button
+            onClick={handleBulkSeed}
+            disabled={isSeedingBulk}
+            className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition text-sm whitespace-nowrap disabled:opacity-50"
+          >
+            <Sparkles className="w-4 h-4" />
+            {isSeedingBulk ? "Gerando..." : `Gerar em Massa (${selectedIds.size})`}
+          </button>
+        )}
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Buscar produto..." className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-foreground focus:ring-2 focus:ring-primary outline-none text-sm" />
@@ -377,6 +435,14 @@ export default function ProdutosPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-border">
+              <th className="px-4 py-3 text-left w-10">
+                <input
+                  type="checkbox"
+                  checked={filteredProducts.length > 0 && selectedIds.size === filteredProducts.length}
+                  onChange={toggleAll}
+                  className="w-4 h-4 accent-primary cursor-pointer rounded border-border"
+                />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Imagem</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Produto</th>
               <th className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase">Categoria</th>
@@ -389,6 +455,14 @@ export default function ProdutosPage() {
           <tbody>
             {filteredProducts.map((p) => (
               <tr key={p.id} className="border-b border-border last:border-0 hover:bg-muted/30 transition">
+                <td className="px-4 py-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(p.id)}
+                    onChange={() => toggleSelection(p.id)}
+                    className="w-4 h-4 accent-primary cursor-pointer rounded border-border"
+                  />
+                </td>
                 <td className="px-4 py-3">
                   {p.image_url ? (
                     <Image src={p.image_url} alt={p.name} width={48} height={48} className="w-12 h-12 rounded-lg object-cover" />
