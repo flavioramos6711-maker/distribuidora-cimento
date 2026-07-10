@@ -64,13 +64,13 @@ export default function HeroBanner() {
 
   if (isLoading || !slides || slides.length === 0) {
     return (
-      <div className="relative aspect-[16/7] sm:aspect-[16/6] lg:aspect-[1920/600] w-full bg-muted animate-pulse" />
+      <div className="relative w-full bg-muted animate-pulse" style={{ aspectRatio: '1920 / 430' }} />
     )
   }
 
   return (
     <section 
-      className="group/hero relative w-full overflow-hidden" 
+      className="group/hero relative w-full" 
       aria-label="Banners principais"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -79,17 +79,18 @@ export default function HeroBanner() {
         <div className="flex">
           {slides.map((banner, i) => (
             <div key={banner.id} className="relative min-w-0 shrink-0 grow-0 basis-full">
-              <div className="relative aspect-[16/9] sm:aspect-[16/6] lg:aspect-[1920/600] w-full overflow-hidden bg-white">
+              {/* aspect-ratio 1920/430 garante escala proporcional em qualquer largura */}
+              <div
+                className="relative w-full"
+                style={{ aspectRatio: '1920 / 430' }}
+              >
                 <Image
                   src={banner.image_url}
                   alt={`Banner ${i + 1}`}
                   fill
                   priority={i === 0}
                   sizes="100vw"
-                  className={cn(
-                    "object-contain lg:object-cover transition-transform duration-[8000ms] ease-out",
-                    i === selected ? "lg:scale-110 scale-100" : "scale-100"
-                  )}
+                  className="object-cover"
                 />
                 
                 {/* Softened Gradient Overlays for elegance */}
