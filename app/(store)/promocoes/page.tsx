@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client"
 import ProductCard from "@/components/store/product-card"
 import { Tag, ArrowLeft, Loader2, Sparkles } from "lucide-react"
 import Link from "next/link"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 
 const supabase = createClient()
 
@@ -95,6 +96,7 @@ export default function PromocoesPage() {
             href="https://wa.me/5516996447972?text=Olá! Preciso de um orçamento relâmpago para minha obra."
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick("promocoes_orcamento_relampago")}
             className="group flex h-16 min-w-[280px] items-center justify-center gap-3 rounded-2xl bg-[#F47920] px-8 text-lg font-black text-white shadow-xl transition-all hover:scale-105 active:scale-95"
           >
             SOLICITAR AGORA

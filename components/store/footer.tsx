@@ -4,6 +4,7 @@ import { Mail, Phone, Send } from "lucide-react"
 import Link from "next/link"
 import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
 import { SITE } from "@/lib/site-config"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 
 export default function StoreFooter() {
   const currentYear = new Date().getFullYear()
@@ -43,6 +44,9 @@ export default function StoreFooter() {
             <div className="flex items-center gap-4 pt-2">
               <a 
                 href={`https://wa.me/${SITE.whatsappE164}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackWhatsAppClick("footer_whatsapp")}
                 className="flex items-center gap-3 group"
               >
                 <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-[#25D366]/10 text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white transition-all">

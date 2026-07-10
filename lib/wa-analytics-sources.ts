@@ -9,6 +9,12 @@ export const WA_CLICK_SOURCES = [
   "minha_conta",
   "home_cta",
   "product_card",
+  // Novos pontos de conversão (Meta Pixel)
+  "footer_whatsapp",
+  "contact_popup_whatsapp",
+  "contact_popup_phone",
+  "chat_widget_typed",
+  "promocoes_orcamento_relampago",
 ] as const
 
 export type WaClickSource = (typeof WA_CLICK_SOURCES)[number]
@@ -26,4 +32,11 @@ export const WA_SOURCE_LABELS: Record<WaClickSource, string> = {
   minha_conta: "Minha conta",
   home_cta: "Banner CTA Inicial",
   product_card: "Card de Produto",
+  // Novos
+  footer_whatsapp: "Rodapé — WhatsApp",
+  contact_popup_whatsapp: "Popup de contato — WhatsApp",
+  contact_popup_phone: "Popup de contato — Telefone",
+  chat_widget_typed: "Chat flutuante — Mensagem digitada",
+  promocoes_orcamento_relampago: "Promoções — Orçamento Relâmpago",
 }
+

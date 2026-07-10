@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Phone, MessageCircle, Mail, X, Headphones } from "lucide-react"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from "@/components/ui/dialog"
 import { SITE } from "@/lib/site-config"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 
 export default function ContactPopup({ children }: { children: React.ReactNode }) {
@@ -36,6 +37,7 @@ export default function ContactPopup({ children }: { children: React.ReactNode }
           {/* Phone Button */}
           <a 
             href={`tel:+${SITE.whatsappE164}`}
+            onClick={() => trackWhatsAppClick("contact_popup_phone")}
             className="flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
           >
             <div className="w-16 h-16 flex items-center justify-center bg-[#3F51B5] text-white group-hover:scale-105 transition-transform">
@@ -48,6 +50,7 @@ export default function ContactPopup({ children }: { children: React.ReactNode }
           <a 
             href={waLink}
             target="_blank"
+            onClick={() => trackWhatsAppClick("contact_popup_whatsapp")}
             className="flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
           >
             <div className="w-16 h-16 flex items-center justify-center bg-[#00E676] text-white group-hover:scale-105 transition-transform">

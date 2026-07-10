@@ -5,6 +5,7 @@ import { MessageCircle, X, Send, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import { SITE } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 
 export default function WhatsAppChat() {
   const [isOpen, setIsOpen] = useState(false)
@@ -108,6 +109,7 @@ export default function WhatsAppChat() {
                 className="flex-1 bg-transparent text-[13px] outline-none text-slate-800 font-medium placeholder:text-slate-400"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && e.currentTarget.value) {
+                    trackWhatsAppClick("chat_widget_typed")
                     window.open(waLink(e.currentTarget.value), "_blank")
                   }
                 }}
@@ -115,7 +117,10 @@ export default function WhatsAppChat() {
               <button 
                 onClick={() => {
                   const input = document.querySelector('input[placeholder="Digite sua mensagem..."]') as HTMLInputElement
-                  if (input?.value) window.open(waLink(input.value), "_blank")
+                  if (input?.value) {
+                    trackWhatsAppClick("chat_widget_typed")
+                    window.open(waLink(input.value), "_blank")
+                  }
                 }}
                 className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-primary transition-all hover:bg-primary hover:text-white"
               >
