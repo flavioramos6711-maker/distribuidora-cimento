@@ -50,6 +50,7 @@ export default function ProdutosPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterCat, setFilterCat] = useState("")
   const [seedingId, setSeedingId] = useState<string | null>(null)
+  const [fetchingImageId, setFetchingImageId] = useState<string | null>(null)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isSeedingBulk, setIsSeedingBulk] = useState(false)
 
@@ -150,6 +151,26 @@ export default function ProdutosPage() {
     if (!confirm("Deseja excluir este produto?")) return
     await supabase.from("products").delete().eq("id", id)
     toast.success("Produto excluido!"); mutate()
+  }
+
+  /** Busca imagem no Google Images (scraper básico) */
+  async function handleFetchImage(productId: string, productName: string) {
+    if (!confirm(`Buscar e definir primeira imagem da internet para "${productName}"?`)) return
+    setFetchingImageId(productId)
+    try {
+      const res = await fetch(`/api/admin/products/${productId}/fetch-image`, { method: "POST" })
+      const json = await res.json()
+      if (!res.ok) {
+        toast.error(json.error || "Erro ao buscar imagem")
+      } else {
+        toast.success("Imagem encontrada com sucesso!")
+        mutate() // Atualiza a tabela
+      }
+    } catch {
+      toast.error("Erro de rede")
+    } finally {
+      setFetchingImageId(null)
+    }
   }
 
   /** Gera avaliações realistas para um produto via API */
@@ -500,6 +521,14 @@ export default function ProdutosPage() {
                       title="Gerar avaliações realistas"
                     >
                       <Sparkles className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleFetchImage(p.id, p.name)}
+                      disabled={fetchingImageId === p.id}
+                      className="p-2 rounded-lg hover:bg-blue-50 transition text-muted-foreground hover:text-blue-600 disabled:opacity-40"
+                      title="Buscar foto automaticamente"
+                    >
+                      <Search className="w-4 h-4" />
                     </button>
                     <button onClick={() => handleDelete(p.id)} className="p-2 rounded-lg hover:bg-destructive/10 transition text-muted-foreground hover:text-destructive" title="Excluir">
                       <Trash2 className="w-4 h-4" />

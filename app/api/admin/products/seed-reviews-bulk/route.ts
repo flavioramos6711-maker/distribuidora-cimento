@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       rating: r.rating,
       comment: r.comment,
       approved: true, // Avaliações automáticas já nascem aprovadas
-      created_at: randomDateInPast(180),
+      created_at: randomDateInPast(1500), // Histórico de até ~4 anos
     }))
 
     if (rows.length > 0) {
