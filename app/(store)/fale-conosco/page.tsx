@@ -30,12 +30,6 @@ export default function FaleConoscoPage() {
           text="Olá! Gostaria de falar com o atendimento."
           label="WhatsApp comercial"
         />
-        <Link
-          href="/contato"
-          className="inline-flex items-center justify-center rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold hover:bg-muted transition"
-        >
-          Ver dados completos
-        </Link>
       </div>
     </InstitutionalLayout>
   )
