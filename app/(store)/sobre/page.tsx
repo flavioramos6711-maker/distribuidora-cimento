@@ -9,7 +9,7 @@ export default function Page() {
     >
       <section className="space-y-6">
         <p>
-          A {SITE.name} é referência na distribuição de materiais básicos e acabamentos, atendendo com excelência o setor da construção civil. Nossa trajetória é marcada pela busca constante pela inovação e pela satisfação total de nossos clientes.
+          A {SITE.legalName} é referência na distribuição de materiais básicos e acabamentos, atendendo com excelência o setor da construção civil. Nossa trajetória é marcada pela busca constante pela inovação e pela satisfação total de nossos clientes.
         </p>
         
         <h2 className="text-lg font-bold text-secondary">Nossa Missão</h2>

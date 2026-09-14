@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og"
 
-export const size = { width: 32, height: 32 }
+export const size = { width: 512, height: 512 }
 export const contentType = "image/png"
 
 export default function Icon() {
@@ -11,38 +11,30 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           background: "#002D5B",
-          borderRadius: 6,
-          position: "relative",
+          borderRadius: 80,
         }}
       >
-        {/* Triangle / Bag Accent */}
-        <div 
-          style={{ 
-            width: 14, 
-            height: 14, 
-            background: "#F47920", 
-            clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)",
-            marginBottom: -4
-          }} 
-        />
-        {/* Main Logo Body (simplified) */}
-        <div 
-          style={{ 
-            width: 18, 
-            height: 14, 
-            background: "white", 
-            borderRadius: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }} 
+        {/* Letter M — built with 5 vertical bars and diagonal cuts via clip-path */}
+        <svg
+          width="360"
+          height="340"
+          viewBox="0 0 360 340"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <div style={{ width: 8, height: 2, background: "#002D5B" }} />
-        </div>
+          {/* White M shape */}
+          <path
+            d="M20 320 L20 20 L90 20 L180 160 L270 20 L340 20 L340 320 L270 320 L270 140 L180 280 L90 140 L90 320 Z"
+            fill="white"
+          />
+          {/* Orange inverted triangle overlaid on the V notch of M */}
+          <polygon
+            points="90,20 270,20 180,160"
+            fill="#F47920"
+          />
+        </svg>
       </div>
     ),
     { ...size }

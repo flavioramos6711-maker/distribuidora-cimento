@@ -1,47 +1,59 @@
 import { createRouteHandlerSupabase } from "@/lib/supabase/route-handler"
 import { isAdmin } from "@/lib/auth/admin"
 import { AUTH_SCOPE_ADMIN } from "@/lib/auth/scopes"
+import { loginSchema } from "@/lib/security/validation"
 import { NextRequest } from "next/server"
 
 /**
  * Login via Supabase Auth.
  * - Loja: POST { email, password }
  * - Painel admin: POST { email, password, scope: "admin" } — exige linha em public.admins
+ * 
+ * Segurança:
+ * - Validação de input com Zod
+ * - Rate limiting via route-handler
+ * - Trimming de email
+ * - Tratamento de erros centralizado
  */
 export async function POST(request: NextRequest) {
   try {
+    // === VALIDAÇÃO DE INPUT ===
     const body = await request.json()
-    const { email, password, scope } = body as {
-      email?: string
-      password?: string
-      scope?: string
+    const parseResult = loginSchema.safeParse(body)
+
+    if (!parseResult.success) {
+      const errors = parseResult.error.errors.map(e => ({
+        field: e.path.join("."),
+        message: e.message,
+      }))
+      return Response.json({ error: "Dados inválidos", details: errors }, { status: 400 })
     }
 
-    if (!email || !password) {
-      return Response.json({ error: "Email e senha obrigatórios" }, { status: 400 })
-    }
+    const { email, password, scope } = parseResult.data
 
     const { supabase, jsonWithSession } = createRouteHandlerSupabase(request)
 
+    // === AUTENTICAÇÃO ===
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: String(email).trim(),
-      password: String(password),
+      email: email.trim(),
+      password,
     })
 
     if (error || !data.session) {
-      return Response.json(
-        { error: error?.message || "Credenciais inválidas" },
-        { status: 401 }
+      return jsonWithSession(
+        { error: "Credenciais inválidas" },
+        { status: 401 },
       )
     }
 
+    // === VERIFICAÇÃO DE ADMIN ===
     if (scope === AUTH_SCOPE_ADMIN) {
       const adminOk = await isAdmin(supabase, data.user.id)
       if (!adminOk) {
         await supabase.auth.signOut()
         return jsonWithSession(
           { error: "Acesso negado: usuário não é administrador." },
-          { status: 403 }
+          { status: 403 },
         )
       }
     }
@@ -54,7 +66,8 @@ export async function POST(request: NextRequest) {
       },
       user: data.user,
     })
-  } catch {
-    return Response.json({ error: "Erro interno" }, { status: 500 })
+  } catch (err) {
+    console.error("[auth/login] Erro:", err)
+    return Response.json({ error: "Erro interno no servidor" }, { status: 500 })
   }
 }

@@ -2,8 +2,10 @@
 
 import { useState } from "react"
 import { Lock, Mail, Eye, EyeOff } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { AUTH_SCOPE_ADMIN } from "@/lib/auth/scopes"
+import { loginSchema } from "@/lib/security/validation"
 
 function messageForLoginFailure(status: number, apiError: string): string {
   if (status === 403) {
@@ -18,19 +20,30 @@ export default function AdminLoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError("")
+
+    const parseResult = loginSchema.safeParse({ email, password })
+    if (!parseResult.success) {
+      setError(parseResult.error.errors[0]?.message || "Dados inválidos")
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password, scope: AUTH_SCOPE_ADMIN }),
+        body: JSON.stringify({ email: email.trim(), password, scope: AUTH_SCOPE_ADMIN }),
       })
       const data = await res.json()
+
       if (!res.ok) {
         setError(messageForLoginFailure(res.status, typeof data.error === "string" ? data.error : ""))
         return
@@ -48,9 +61,16 @@ export default function AdminLoginPage() {
         }
       }
 
-      window.location.href = "/admin"
+      const errorParam = searchParams.get("error")
+      if (errorParam === "acesso_negado") {
+        setError("Acesso negado: usuário não é administrador.")
+        return
+      }
+
+      router.push("/admin")
+      router.refresh()
     } catch {
-      setError("Erro de conexao")
+      setError("Erro de conexão. Verifique sua internet.")
     } finally {
       setLoading(false)
     }

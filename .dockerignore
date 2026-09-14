@@ -1,0 +1,63 @@
+# Dependências
+node_modules/
+.pnpm-store/
+
+# Build
+.next/
+out/
+build/
+dist/
+
+# Ambientais
+.env
+.env.local
+.env.*.local
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Scripts
+scripts/
+scratch/
+
+# Testes
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+
+# Documentação
+*.md
+!.env.example
+
+# Logs
+*.log
+
+# Temporários
+tmp/
+temp/
+*.tsbuildinfo
+
+# Supabase local
+.supabase/
+
+# Secrets
+*.pem
+*.key
+*.secret

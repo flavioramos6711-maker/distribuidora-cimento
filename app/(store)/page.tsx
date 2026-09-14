@@ -21,17 +21,19 @@ import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 const supabase = createClient()
 
 async function fetchHome() {
-  const [featuredRes, categoriesRes, newRes, discountRes] = await Promise.all([
+  const [featuredRes, categoriesRes, newRes, discountRes, catalogRes] = await Promise.all([
     supabase.from("products").select("*").eq("active", true).eq("featured", true).order("created_at", { ascending: false }).limit(8),
     supabase.from("categories").select("*, products(id)").eq("active", true).order("sort_order"),
     supabase.from("products").select("*").eq("active", true).eq("is_new", true).order("created_at", { ascending: false }).limit(8),
     supabase.from("products").select("*").eq("active", true).eq("is_discount", true).order("created_at", { ascending: false }).limit(8),
+    supabase.from("products").select("*").eq("active", true).order("created_at", { ascending: false }).limit(32),
   ])
   return {
     featured: featuredRes.data || [],
     categories: categoriesRes.data || [],
     newProducts: newRes.data || [],
     discounts: discountRes.data || [],
+    catalog: catalogRes.data || [],
   }
 }
 
@@ -247,21 +249,37 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Benefits Bar - Professional Industrial Footer Top */}
-      <section className="border-t border-slate-100 bg-white py-16 sm:py-24 mt-20">
+      {/* Vitrine de Produtos (Grid) */}
+      {data?.catalog && data.catalog.length > 0 && (
+        <section id="vitrine" className="py-12 sm:py-16">
+          <div className="mx-auto max-w-7xl px-6">
+            <SectionHeader
+              title="Vitrine de Produtos"
+              subtitle="Catálogo"
+              href="/produtos"
+              linkLabel="Ver todos os produtos"
+            />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {data.catalog.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Benefits Bar - Premium Dark Strip */}
+      <section className="bg-[#00213F] py-12 sm:py-16 mt-16">
         <div className="mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-12 gap-x-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
             {trustItems.map((item, idx) => (
-              <div key={item.title} className={cn(
-                "flex flex-col items-center sm:items-start gap-4 group text-center sm:text-left",
-                idx % 2 === 0 && "max-sm:border-r max-sm:border-slate-100 max-sm:pr-4"
-              )}>
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-slate-50 text-primary transition-all group-hover:bg-primary group-hover:text-white group-hover:scale-110">
-                  <item.icon className="h-6 w-6" />
+              <div key={item.title} className="flex items-center gap-4 group px-6 sm:px-8 py-6 sm:py-0 hover:bg-white/5 transition-colors rounded-xl">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary transition-all group-hover:bg-primary group-hover:text-white group-hover:border-primary group-hover:scale-110">
+                  <item.icon className="h-5 w-5" />
                 </div>
-                <div className="space-y-1.5">
-                  <p className="text-[11px] font-bold text-secondary uppercase tracking-wider leading-none">{item.title}</p>
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest leading-relaxed">{item.desc}</p>
+                <div className="space-y-0.5">
+                  <p className="text-sm font-black text-white leading-none">{item.title}</p>
+                  <p className="text-[11px] font-medium text-white/40 leading-snug">{item.desc}</p>
                 </div>
               </div>
             ))}

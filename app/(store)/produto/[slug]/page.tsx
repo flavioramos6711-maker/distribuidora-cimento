@@ -181,7 +181,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
     brand: { "@type": "Brand", name: SITE.shortName },
     offers: {
       "@type": "Offer",
-      url: `${SITE.baseUrl}/produto/${product.slug}`,
+      url: `${SITE.siteUrl}/produto/${product.slug}`,
       priceCurrency: "BRL",
       price: Number(product.price).toFixed(2),
       availability: product.stock > 0
@@ -377,9 +377,7 @@ export default function ProductPage({ params }: { params: Promise<{ slug: string
                     product.stock > 0 ? "text-emerald-800" : "text-red-700"
                   )}>
                     {product.stock > 0
-                      ? product.stock <= 10
-                        ? `⚡ Últimas unidades — apenas ${product.stock} em estoque`
-                        : `Disponível para entrega imediata — ${product.stock} em estoque`
+                      ? "Disponível em estoque — Pronta Entrega"
                       : "Produto temporariamente indisponível"}
                   </p>
                   {product.stock > 0 && (

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createRouteHandlerSupabase } from "@/lib/supabase/route-handler"
 import { isAdmin } from "@/lib/auth/admin"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { supabase, jsonWithSession } = createRouteHandlerSupabase(request)
 
   const {
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     return jsonWithSession({ error: "Acesso restrito a administradores." }, { status: 403 })
   }
 
-  const { id } = params
+  const { id } = await params
   if (!id) {
     return jsonWithSession({ error: "ID do produto inválido." }, { status: 400 })
   }

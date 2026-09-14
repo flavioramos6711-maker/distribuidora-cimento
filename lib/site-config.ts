@@ -7,6 +7,7 @@ export const SITE = {
   phoneDisplay: "(16) 9644-7972",
   email: "contato@atacadodeconstrucao.com",
   website: "https://www.atacadodeconstrucao.com",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://www.atacadodeconstrucao.com",
   address: {
     street: "Rua Igarapava, 73",
     district: "Vila Albertina",
@@ -17,4 +18,8 @@ export const SITE = {
 
 export function waLink(text: string) {
   return `https://wa.me/${SITE.whatsappE164}?text=${encodeURIComponent(text)}`
+}
+
+export function imageUrl(path: string) {
+  return `${SITE.siteUrl}/storage/v1/object/public/${path}`
 }

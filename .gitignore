@@ -1,10 +1,74 @@
-# v0 runtime files
+# Runtime v0
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
 
-# Common ignores
+# Dependências
 node_modules/
+.pnpm-store/
+
+# Build
 .next/
-.env*.local
+out/
+build/
+dist/
+
+# Ambientais - NUNCA commitar chaves reais
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Mas commitar .env.example como template
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Testes
+coverage/
+.nyc_output/
+
+# Dados sensíveis
+*.pem
+*.key
+*.secret
+credentials.json
+service-account.json
+
+# Supabase local
+.supabase/
+
+# Temporários
+tmp/
+temp/
+
+# Scripts internos
+scripts/scratch/
+scratch/
+
+# Análise
+*.tsbuildinfo
+next-env.d.ts
+# Datasets e backups grandes
+data/
+*.csv
+*.json.gz
+*.parquet
+

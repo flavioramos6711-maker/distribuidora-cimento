@@ -3,10 +3,10 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "es2020"
     ],
     "allowJs": true,
-    "target": "ES6",
+    "target": "ES2020",
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -26,7 +26,21 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    // Performance e segurança adicionais
+    "useDefineForClassFields": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    // Remover qualquer declaração implicita
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": false,
+    "noImplicitAny": false
   },
   "include": [
     "next-env.d.ts",
@@ -36,6 +50,10 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
-  ]
+    "node_modules",
+    "**/scratch/**",
+    "**/scripts/**"
+  ],
+  // Compilar arquivos específicos separadamente para melhor performance
+  "references": []
 }

@@ -15,6 +15,7 @@ export const WA_CLICK_SOURCES = [
   "contact_popup_phone",
   "chat_widget_typed",
   "promocoes_orcamento_relampago",
+  "pro_solutions_banner",
 ] as const
 
 export type WaClickSource = (typeof WA_CLICK_SOURCES)[number]
@@ -38,5 +39,6 @@ export const WA_SOURCE_LABELS: Record<WaClickSource, string> = {
   contact_popup_phone: "Popup de contato — Telefone",
   chat_widget_typed: "Chat flutuante — Mensagem digitada",
   promocoes_orcamento_relampago: "Promoções — Orçamento Relâmpago",
+  pro_solutions_banner: "Banner de Soluções Pro",
 }
 

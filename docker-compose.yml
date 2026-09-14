@@ -1,0 +1,73 @@
+# =============================================================================
+# DISTRIBUIDORA DE CIMENTO - Docker Compose
+# =============================================================================
+# Uso: docker-compose up -d
+# =============================================================================
+
+services:
+  # ---- Aplicação Next.js ----
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_GTM_ID=${NEXT_PUBLIC_GTM_ID:-}
+      - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID:-}
+      - NEXT_PUBLIC_META_PIXEL_ID=${NEXT_PUBLIC_META_PIXEL_ID:-}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://localhost:3000}
+      - ADMIN_REGISTRATION_OPEN=${ADMIN_REGISTRATION_OPEN:-false}
+    depends_on:
+      - db
+    volumes:
+      - .next:/app/.next
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ---- Supabase (opcional - desenvolvimento local) ----
+  # NOTA: Para produção, use Supabase managed service
+  # db:
+  #   image: supabase/supabase:v1.2.0
+  #   ports:
+  #     - "5432:5432"
+  #     - "54322:54322"
+  #   environment:
+  #     - PGDATA=/var/lib/postgresql/data
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+  #     - POSTGRES_DB=${POSTGRES_DB:-postgres}
+  #   volumes:
+  #     - supabase-data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # ---- Cache Redis (opcional para sessões e cache ----
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis-data:/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 3s
+  #     retries: 3
+
+volumes:
+  # supabase-data:
+  # redis-data:

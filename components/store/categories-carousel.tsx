@@ -83,13 +83,13 @@ export default function CategoriesCarousel({ categories }: CategoriesCarouselPro
                   href={`/categoria/${category.slug}`}
                   className="group relative flex flex-col items-center gap-4 rounded-[2.5rem] p-4 transition-all hover:bg-white hover:shadow-app-lg active:scale-95"
                 >
-                  <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-slate-100 shadow-sm transition-all group-hover:shadow-xl group-hover:-translate-y-1">
+                  <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all group-hover:shadow-xl group-hover:-translate-y-1 p-3">
                     {category.image_url ? (
                       <Image
                         src={category.image_url}
                         alt={category.name}
                         fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="object-contain p-3 transition-transform duration-500 group-hover:scale-110"
                         sizes="(max-width: 640px) 40vw, (max-width: 1024px) 25vw, 15vw"
                       />
                     ) : (
@@ -97,8 +97,6 @@ export default function CategoriesCarousel({ categories }: CategoriesCarouselPro
                         {category.name.charAt(0)}
                       </div>
                     )}
-                    {/* Subtle Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                   
                   <div className="text-center space-y-1">

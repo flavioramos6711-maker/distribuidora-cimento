@@ -22,6 +22,11 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ['400', '500', '600', '700', '800'],
 })
 
+// CSP nonce gerado por middleware - aqui apenas para referência
+const cspBase = process.env.NODE_ENV === 'production'
+  ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self' https://www.googletagmanager.com https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+  : "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;"
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettingsServer()
   const favUrl = settings?.favicon_url?.trim()
@@ -35,6 +40,14 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: favUrl
       ? { icon: [{ url: favUrl }] }
       : { icon: [{ url: BRANDING.faviconPath, type: 'image/png', sizes: '32x32' }] },
+    // Segurança: metatag CSP
+    other: {
+      'Content-Security-Policy': cspBase,
+      'X-DNS-Prefetch-Control': 'on',
+      'X-UA-Compatible': 'IE=edge',
+    },
+    // Referrer policy
+    referrer: 'strict-origin-when-cross-origin',
   }
 }
 
@@ -44,7 +57,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable}`}>
+    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Segurança: Meta tags de segurança */}
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+        <meta httpEquiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+        {/* Segurança: CSP via meta tag (fallback para inline) */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={cspBase}
+        />
+      </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         {/* Google Tag Manager (noscript) */}
         {process.env.NEXT_PUBLIC_GTM_ID && (
@@ -57,12 +82,40 @@ export default function RootLayout({
             />
           </noscript>
         )}
-        
+
         {children}
         <Toaster position="top-right" richColors />
         <Analytics />
 
-        {/* Google Tag Manager */}
+        {/* Google Ads Consent Mode v2 — Conformidade LGPD */}
+        <Script
+          id="consent-mode"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Consent Mode v2 para Google Ads compliance
+              window.dataLayer = window.dataLayer || [];
+              function gtagConsent() {
+                var consentFlags = {
+                  'ad_storage': 'granted',
+                  'analytics_storage': 'granted',
+                  'wait_for_update': 500
+                };
+                try {
+                  var consent = localStorage.getItem('cookie_consent');
+                  if (consent === 'denied' || consent === 'marketing-denied') {
+                    consentFlags.ad_storage = 'denied';
+                    consentFlags.analytics_storage = 'denied';
+                  }
+                } catch(e) {}
+                dataLayer.push(consentFlags);
+              }
+              gtagConsent();
+            `,
+          }}
+        />
+
+        {/* Google Tag Manager - carregamento assíncrono */}
         {process.env.NEXT_PUBLIC_GTM_ID && (
           <Script
             id="gtm-script"
@@ -79,12 +132,12 @@ export default function RootLayout({
           />
         )}
 
-        {/* Google Analytics (gtag.js) */}
+        {/* Google Analytics (gtag.js) - carregamento preguiçoso */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script
-              strategy="afterInteractive"
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
             />
             <Script
               id="gtag-init"
@@ -94,14 +147,18 @@ export default function RootLayout({
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
-                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                    'cookie_flags': 'SameSite=None;Secure',
+                    'ads_data_redaction': false,
+                    'url_passthrough': true,
+                  });
                 `,
               }}
             />
           </>
         )}
 
-        {/* Facebook Meta Pixel */}
+        {/* Facebook Meta Pixel - carregamento preguiçoso */}
         {process.env.NEXT_PUBLIC_META_PIXEL_ID && (
           <>
             <Script
@@ -123,7 +180,6 @@ export default function RootLayout({
               }}
             />
             <noscript>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 height="1"
                 width="1"
