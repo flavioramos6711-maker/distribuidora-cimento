@@ -192,6 +192,9 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.2(eslint@10.10.0(jiti@2.6.1))
@@ -1607,6 +1610,10 @@ packages:
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+
+  dotenv@17.4.2:
+    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
+    engines: {node: '>=12'}
 
   duckduckgo-images-api@1.0.5:
     resolution: {integrity: sha512-54EW2AD/VOEizdRo23nHnTI/VNgRmVyR7MkCHYqBdvlTkSUYg+uMCTETd6GgU+9ohnCJUUDD9cC3rvw9RnuLcw==}
@@ -3591,6 +3598,8 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       csstype: 3.2.3
+
+  dotenv@17.4.2: {}
 
   duckduckgo-images-api@1.0.5:
     dependencies:
