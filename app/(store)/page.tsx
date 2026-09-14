@@ -20,20 +20,96 @@ import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 
 const supabase = createClient()
 
+const CAT_CIMENTO = "c0134152-de0a-42f7-bb87-dd9ec8588983"
+const CAT_ACO = "914576a6-f187-4f97-83e1-dd7e0c38dd1b"
+const CAT_TINTA = "5564e59c-c674-4d39-a93e-ba1e8d940627"
+const CAT_ARGAMASSA = "6df9b914-06d0-484a-9b0c-c2d9192fcfa9"
+
 async function fetchHome() {
-  const [featuredRes, categoriesRes, newRes, discountRes, catalogRes] = await Promise.all([
-    supabase.from("products").select("*").eq("active", true).eq("featured", true).order("created_at", { ascending: false }).limit(8),
+  const [
+    featuredRes,
+    categoriesRes,
+    newRes,
+    discountRes,
+    cimentosRes,
+    acoRes,
+    tintasRes,
+    argamassasRes,
+    outrosRes,
+  ] = await Promise.all([
+    supabase.from("products").select("*").eq("active", true).eq("featured", true).order("created_at", { ascending: false }).limit(24),
     supabase.from("categories").select("*, products(id)").eq("active", true).order("sort_order"),
-    supabase.from("products").select("*").eq("active", true).eq("is_new", true).order("created_at", { ascending: false }).limit(8),
-    supabase.from("products").select("*").eq("active", true).eq("is_discount", true).order("created_at", { ascending: false }).limit(8),
-    supabase.from("products").select("*").eq("active", true).order("created_at", { ascending: false }).limit(32),
+    supabase.from("products").select("*").eq("active", true).eq("is_new", true).order("created_at", { ascending: false }).limit(12),
+    supabase.from("products").select("*").eq("active", true).eq("is_discount", true).order("created_at", { ascending: false }).limit(12),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_CIMENTO).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ACO).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_TINTA).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ARGAMASSA).limit(10),
+    supabase.from("products").select("*").eq("active", true).order("created_at", { ascending: false }).limit(20),
   ])
+
+  // Organizar vitrine variada (intercalando cimento, aço, tinta, argamassa e outros)
+  const cimentos = cimentosRes.data || []
+  const aco = acoRes.data || []
+  const tintas = tintasRes.data || []
+  const argamassas = argamassasRes.data || []
+  const outros = outrosRes.data || []
+
+  const catalog: any[] = []
+  const seenIds = new Set<string>()
+  const maxGroups = Math.max(cimentos.length, aco.length, tintas.length, argamassas.length)
+
+  for (let i = 0; i < maxGroups; i++) {
+    if (cimentos[i] && !seenIds.has(cimentos[i].id)) {
+      catalog.push(cimentos[i])
+      seenIds.add(cimentos[i].id)
+    }
+    if (aco[i] && !seenIds.has(aco[i].id)) {
+      catalog.push(aco[i])
+      seenIds.add(aco[i].id)
+    }
+    if (tintas[i] && !seenIds.has(tintas[i].id)) {
+      catalog.push(tintas[i])
+      seenIds.add(tintas[i].id)
+    }
+    if (argamassas[i] && !seenIds.has(argamassas[i].id)) {
+      catalog.push(argamassas[i])
+      seenIds.add(argamassas[i].id)
+    }
+  }
+
+  // Preencher com outros se houver espaço até 40 produtos
+  for (const p of outros) {
+    if (!seenIds.has(p.id) && catalog.length < 40) {
+      catalog.push(p)
+      seenIds.add(p.id)
+    }
+  }
+
+  // Organizar carrossel de destaques com cimento, aço e tinta no topo
+  const allFeatured = featuredRes.data || []
+  const featCimento = allFeatured.filter((p: any) => p.category_id === CAT_CIMENTO)
+  const featAco = allFeatured.filter((p: any) => p.category_id === CAT_ACO)
+  const featTinta = allFeatured.filter((p: any) => p.category_id === CAT_TINTA)
+  const featOutros = allFeatured.filter(
+    (p: any) => ![CAT_CIMENTO, CAT_ACO, CAT_TINTA].includes(p.category_id)
+  )
+
+  const balancedFeatured: any[] = []
+  const maxFeat = Math.max(featCimento.length, featAco.length, featTinta.length, featOutros.length)
+  for (let i = 0; i < maxFeat; i++) {
+    if (featCimento[i]) balancedFeatured.push(featCimento[i])
+    if (featAco[i]) balancedFeatured.push(featAco[i])
+    if (featTinta[i]) balancedFeatured.push(featTinta[i])
+    if (featOutros[i]) balancedFeatured.push(featOutros[i])
+  }
+
   return {
-    featured: featuredRes.data || [],
+    featured: balancedFeatured.length > 0 ? balancedFeatured : allFeatured,
     categories: categoriesRes.data || [],
     newProducts: newRes.data || [],
     discounts: discountRes.data || [],
-    catalog: catalogRes.data || [],
+    catalog: catalog.length > 0 ? catalog : (outrosRes.data || []),
   }
 }
 

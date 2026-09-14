@@ -9,7 +9,7 @@ import { ArrowLeft, SlidersHorizontal, Search, Loader2, ChevronLeft, ChevronRigh
 import { Skeleton } from "@/components/ui/skeleton"
 
 const supabase = createClient()
-const PAGE_SIZE = 24
+const PAGE_SIZE = 36
 
 type Category = { id: string; name: string; slug: string }
 type Product = {
@@ -25,6 +25,7 @@ type Product = {
   category_id: string | null
   is_new?: boolean
   is_discount?: boolean
+  featured?: boolean
 }
 
 export default function ProductsPage() {
@@ -57,7 +58,12 @@ export default function ProductsPage() {
   const { data, isLoading } = useSWR(
     ["products-paginated", categoryId, q, page],
     async () => {
-      let query = supabase.from("products").select("*", { count: "exact" }).eq("active", true).order("created_at", { ascending: false })
+      let query = supabase
+        .from("products")
+        .select("*", { count: "exact" })
+        .eq("active", true)
+        .order("featured", { ascending: false })
+        .order("created_at", { ascending: false })
       if (categoryId !== "all") query = query.eq("category_id", categoryId)
       if (q) query = query.ilike("name", `%${q}%`)
       const from = (page - 1) * PAGE_SIZE
