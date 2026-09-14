@@ -60,7 +60,7 @@ export default function ProductsPage() {
     async () => {
       let query = supabase
         .from("products")
-        .select("*", { count: "exact" })
+        .select("id, name, slug, price, original_price, image_url, unit, stock, category_id, is_new, is_discount, featured", { count: "exact" })
         .eq("active", true)
         .not("image_url", "is", null)
         .order("featured", { ascending: false })

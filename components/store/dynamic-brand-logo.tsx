@@ -27,18 +27,18 @@ export default function DynamicBrandLogo({
     <div className={cn("flex items-center gap-3", className)}>
       <div className={cn(
         "flex h-10 w-10 items-center justify-center rounded-xl rotate-3 shadow-lg transition-transform hover:rotate-0",
-        inverted ? "bg-white text-[#002D5B]" : "bg-[#002D5B] text-white"
+        inverted ? "bg-white text-[#0047AB]" : "bg-[#0047AB] text-white"
       )}>
         <div className="relative">
           <div className="w-5 h-5 border-2 border-current rounded-sm rotate-45" />
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#F47920] rounded-full animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#FF7700] rounded-full animate-pulse" />
         </div>
       </div>
       <div className="flex flex-col leading-none">
         <span
           className={cn(
             "font-heading text-xl font-black tracking-tighter sm:text-2xl italic",
-            inverted ? "text-white" : "text-[#002D5B]",
+            inverted ? "text-white" : "text-[#0047AB]",
           )}
         >
           {SITE.shortName.toUpperCase()}
@@ -46,7 +46,7 @@ export default function DynamicBrandLogo({
         <span
           className={cn(
             "text-[9px] font-black uppercase tracking-[0.3em] sm:text-[10px]",
-            inverted ? "text-white/60" : "text-[#F47920]",
+            inverted ? "text-white/60" : "text-[#FF7700]",
           )}
         >
           Distribuidora

@@ -2,6 +2,7 @@ import { createRouteHandlerSupabase } from "@/lib/supabase/route-handler"
 import { isAdmin } from "@/lib/auth/admin"
 import { AUTH_SCOPE_ADMIN } from "@/lib/auth/scopes"
 import { loginSchema } from "@/lib/security/validation"
+import { checkRateLimit } from "@/lib/security/rate-limiter"
 import { NextRequest } from "next/server"
 
 /**
@@ -17,6 +18,26 @@ import { NextRequest } from "next/server"
  */
 export async function POST(request: NextRequest) {
   try {
+    // === RATE LIMITING ===
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"
+    const rateLimit = checkRateLimit(`login:${ip}`, {
+      windowMs: 60000,
+      maxRequests: 5,
+    })
+    if (!rateLimit.allowed) {
+      return Response.json(
+        { error: "Muitas tentativas de login. Por segurança, aguarde 1 minuto." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": "60",
+            "X-RateLimit-Limit": "5",
+            "X-RateLimit-Remaining": "0",
+          },
+        }
+      )
+    }
+
     // === VALIDAÇÃO DE INPUT ===
     const body = await request.json()
     const parseResult = loginSchema.safeParse(body)

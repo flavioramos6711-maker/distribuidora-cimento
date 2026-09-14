@@ -9,7 +9,7 @@ export default function IndustrialBanners() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Banner 1: Carga Fechada de Cimento & Básicos */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#002D5B] to-[#001833] p-6 sm:p-8 text-white shadow-xl flex flex-col justify-between min-h-[220px] group">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0055FF] to-[#002673] p-6 sm:p-8 text-white shadow-xl flex flex-col justify-between min-h-[220px] group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/15 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform" />
             <div className="relative z-10 space-y-2 max-w-sm">
               <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#F47920] text-white text-[9px] font-black uppercase tracking-widest">

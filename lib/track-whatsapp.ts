@@ -43,6 +43,18 @@ export function trackWhatsAppClick(
 
   const pagePath = page ?? window.location.pathname
 
+  // Dispara evento para o Google Tag Manager (GTM)
+  try {
+    if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || []
+      window.dataLayer.push({
+        event: "whatsapp_click",
+        wa_source: source,
+        page_path: pagePath,
+      })
+    }
+  } catch (_) {}
+
   // 1. Dispara conversão no Meta Pixel
   fireMetaPixelContact(source)
 

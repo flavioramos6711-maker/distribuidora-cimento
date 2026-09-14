@@ -61,15 +61,15 @@ export default function LocationSelector() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-white shadow-sm border border-border/10 hover:border-[#F47920]/30 hover:shadow-lg transition-all group active:scale-95"
       >
-        <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-[#002D5B]/5 group-hover:bg-[#F47920]/10 transition-colors">
+        <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-[#0055FF]/5 group-hover:bg-[#F47920]/10 transition-colors">
           <MapPin className="w-4 h-4 text-[#F47920] group-hover:animate-bounce" />
           <span className="absolute inset-0 rounded-xl border border-[#F47920]/20 animate-ping opacity-20" />
         </div>
         <div className="flex flex-col items-start leading-tight">
-          <span className="text-[9px] font-black uppercase tracking-widest text-[#002D5B]/40">Região de entrega</span>
+          <span className="text-[9px] font-black uppercase tracking-widest text-[#0047AB]/40">Região de entrega</span>
           <div className="flex items-center gap-1">
-            <span className="text-xs font-black text-[#002D5B] truncate max-w-[120px]">{location}</span>
-            <ChevronDown className={cn("w-3.5 h-3.5 text-[#002D5B]/20 transition-transform", isOpen && "rotate-180")} />
+            <span className="text-xs font-black text-[#0047AB] truncate max-w-[120px]">{location}</span>
+            <ChevronDown className={cn("w-3.5 h-3.5 text-[#0055FF]/20 transition-transform", isOpen && "rotate-180")} />
           </div>
         </div>
       </button>
@@ -81,14 +81,14 @@ export default function LocationSelector() {
             onClick={() => setIsOpen(false)} 
           />
           <div className="absolute top-full right-0 lg:left-0 lg:right-auto mt-3 w-72 p-5 bg-white rounded-[2rem] shadow-2xl border border-border/40 z-[70] animate-in fade-in zoom-in-95 duration-200">
-            <h3 className="text-sm font-black text-[#002D5B] mb-1">Onde você está?</h3>
+            <h3 className="text-sm font-black text-[#0047AB] mb-1">Onde você está?</h3>
             <p className="text-[11px] text-muted-foreground mb-6">Mostraremos as ofertas e prazos para sua região.</p>
             
             <div className="space-y-3">
               <button
                 onClick={detectLocation}
                 disabled={isDetecting}
-                className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-[#002D5B] text-white text-sm font-bold shadow-lg hover:bg-[#003d7a] transition-all disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-3 p-4 rounded-2xl bg-[#0055FF] hover:bg-[#0047AB] shadow-md shadow-[#0055FF]/20 transition-all disabled:opacity-50"
               >
                 {isDetecting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -114,7 +114,7 @@ export default function LocationSelector() {
                         localStorage.setItem("user-location", city)
                         setIsOpen(false)
                       }}
-                      className="px-3 py-2 rounded-xl border border-border/60 text-[11px] font-bold text-[#002D5B] hover:bg-[#F47920]/5 hover:border-[#F47920]/30 transition-colors text-left"
+                      className="px-3 py-2 rounded-xl border border-border/60 text-[11px] font-bold text-[#0047AB] hover:bg-[#F47920]/5 hover:border-[#F47920]/30 transition-colors text-left"
                     >
                       {city}
                     </button>

@@ -63,6 +63,62 @@ export async function PATCH(request: NextRequest) {
         ? b.chat_header_url
         : null
 
+  // Google Marketing fields
+  const gtm_id =
+    b.gtm_id === null || b.gtm_id === "" ? null : typeof b.gtm_id === "string" ? b.gtm_id : null
+  const ga4_id =
+    b.ga4_id === null || b.ga4_id === "" ? null : typeof b.ga4_id === "string" ? b.ga4_id : null
+  const google_site_verification =
+    b.google_site_verification === null || b.google_site_verification === ""
+      ? null
+      : typeof b.google_site_verification === "string"
+        ? b.google_site_verification
+        : null
+  const google_ads_id =
+    b.google_ads_id === null || b.google_ads_id === ""
+      ? null
+      : typeof b.google_ads_id === "string"
+        ? b.google_ads_id
+        : null
+  const google_ads_conversion_label =
+    b.google_ads_conversion_label === null || b.google_ads_conversion_label === ""
+      ? null
+      : typeof b.google_ads_conversion_label === "string"
+        ? b.google_ads_conversion_label
+        : null
+
+  // Google Meu Negócio fields
+  const business_name =
+    b.business_name === null || b.business_name === ""
+      ? null
+      : typeof b.business_name === "string"
+        ? b.business_name
+        : null
+  const business_address =
+    b.business_address === null || b.business_address === ""
+      ? null
+      : typeof b.business_address === "string"
+        ? b.business_address
+        : null
+  const business_phone =
+    b.business_phone === null || b.business_phone === ""
+      ? null
+      : typeof b.business_phone === "string"
+        ? b.business_phone
+        : null
+  const business_hours =
+    b.business_hours === null || b.business_hours === ""
+      ? null
+      : typeof b.business_hours === "string"
+        ? b.business_hours
+        : null
+  const business_maps_url =
+    b.business_maps_url === null || b.business_maps_url === ""
+      ? null
+      : typeof b.business_maps_url === "string"
+        ? b.business_maps_url
+        : null
+
   if (!Array.isArray(b.banner_images)) {
     return jsonWithSession({ error: "banner_images deve ser um array." }, { status: 400 })
   }
@@ -94,6 +150,16 @@ export async function PATCH(request: NextRequest) {
     chat_header_url,
     banner_images,
     testimonials,
+    gtm_id,
+    ga4_id,
+    google_site_verification,
+    google_ads_id,
+    google_ads_conversion_label,
+    business_name,
+    business_address,
+    business_phone,
+    business_hours,
+    business_maps_url,
     updated_at: new Date().toISOString(),
   }
 
@@ -104,11 +170,9 @@ export async function PATCH(request: NextRequest) {
     .single()
 
   if (error) {
+    console.error("[site-settings PATCH] Erro:", error.message)
     return jsonWithSession(
-      {
-        error: error.message,
-        hint: "Crie ou corrija a tabela com scripts/012_fix_db_schema.sql no Supabase.",
-      },
+      { error: "Falha ao salvar configurações do site." },
       { status: 500 }
     )
   }

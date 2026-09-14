@@ -1,12 +1,41 @@
 // =============================================================================
 // SITEMAP XML — DISTRIBUIDORA DE CIMENTO
+// Busca produtos e categorias dinamicamente do Supabase
 // =============================================================================
 import type { MetadataRoute } from "next"
+import { createClient } from "@/lib/supabase/server"
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.atacadodeconstrucao.com"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.atacadodeconstrucao.com"
+
+  // Buscar slugs de produtos ativos
+  const supabase = await createClient()
+  const { data: products } = await supabase
+    .from("products")
+    .select("slug")
+    .eq("active", true)
+
+  // Buscar slugs de categorias ativas
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("slug")
+    .eq("active", true)
+
+  const productRoutes = (products || []).map((p: { slug: string }) => ({
+    url: `${baseUrl}/produto/${p.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }))
+
+  const categoryRoutes = (categories || []).map((c: { slug: string }) => ({
+    url: `${baseUrl}/categoria/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }))
 
   const pages: MetadataRoute.Sitemap = [
     {
@@ -21,11 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
+    ...categoryRoutes,
     {
-      url: `${baseUrl}/categoria`,
+      url: `${baseUrl}/promocoes`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/carrinho`,
@@ -39,6 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.8,
     },
+    ...productRoutes,
     {
       url: `${baseUrl}/sobre`,
       lastModified: new Date(),

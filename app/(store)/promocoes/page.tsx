@@ -36,7 +36,7 @@ export default function PromocoesPage() {
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F47920]/10 text-[#F47920]">
               <Tag className="h-6 w-6" />
             </div>
-            <h1 className="font-heading text-3xl font-black tracking-tight text-[#002D5B] sm:text-4xl">
+            <h1 className="font-heading text-3xl font-black tracking-tight text-[#0047AB] sm:text-4xl">
               Promoções Imperdíveis
             </h1>
           </div>
@@ -45,7 +45,7 @@ export default function PromocoesPage() {
           </p>
         </div>
         
-        <div className="flex items-center gap-3 rounded-2xl bg-[#002D5B] p-4 text-white shadow-lg sm:p-6">
+        <div className="flex items-center gap-3 rounded-2xl bg-[#0055FF] hover:bg-[#0047AB] text-white shadow-lg shadow-[#0055FF]/20 p-4 sm:p-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
             <Sparkles className="h-5 w-5 text-amber-400" />
           </div>
@@ -74,7 +74,7 @@ export default function PromocoesPage() {
           </p>
           <Link
             href="/produtos"
-            className="mt-6 inline-flex h-12 items-center gap-2 rounded-xl bg-[#002D5B] px-8 text-sm font-bold text-white transition-all hover:scale-105"
+            className="mt-6 inline-flex h-12 items-center gap-2 rounded-xl bg-[#0055FF] hover:bg-[#0047AB] px-8 text-sm font-bold text-white transition-all hover:scale-105 shadow-lg shadow-[#0055FF]/20"
           >
             Ver catálogo completo
           </Link>
@@ -82,7 +82,7 @@ export default function PromocoesPage() {
       )}
 
       {/* Orçamento Relâmpago CTA */}
-      <div className="mt-20 overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#002D5B] to-[#003d7a] p-8 text-white shadow-2xl sm:p-12">
+      <div className="mt-20 overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#0055FF] to-[#0038A8] p-8 text-white shadow-2xl sm:p-12">
         <div className="relative z-10 flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
           <div className="flex-1 space-y-4">
             <h2 className="text-3xl font-black leading-tight sm:text-4xl">
@@ -93,7 +93,7 @@ export default function PromocoesPage() {
             </p>
           </div>
           <a
-            href="https://wa.me/5516996447972?text=Olá! Preciso de um orçamento relâmpago para minha obra."
+            href="https://wa.me/5516996536403?text=Olá! Preciso de um orçamento relâmpago para minha obra."
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackWhatsAppClick("promocoes_orcamento_relampago")}

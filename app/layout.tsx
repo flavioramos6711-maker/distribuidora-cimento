@@ -1,35 +1,31 @@
 import type { Metadata } from 'next'
-import { Outfit, Plus_Jakarta_Sans } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { Toaster } from 'sonner'
 import Script from 'next/script'
 import { SITE } from '@/lib/site-config'
 import { BRANDING } from '@/lib/branding'
 import { getSiteSettingsServer } from '@/lib/site-settings-server'
+import { resolveBusinessName, resolveBusinessMapsUrl } from '@/lib/site-settings'
+import { GoogleBusinessSchema } from '@/components/seo/google-business-schema'
 import './globals.css'
 
-const outfit = Outfit({
-  subsets: ['latin'],
-  variable: '--font-heading',
-  display: 'swap',
-  weight: ['400', '700', '900'],
-})
-
-const plusJakarta = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
+  weight: ['400', '500', '600', '700', '800', '900'],
 })
 
 // CSP nonce gerado por middleware - aqui apenas para referência
 const cspBase = process.env.NODE_ENV === 'production'
-  ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-src 'self' https://www.googletagmanager.com https://www.facebook.com; object-src 'none'; base-uri 'self'; form-action 'self';"
-  : "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co;"
+  ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com https://*.google.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https: https://*.google.com https://*.google-analytics.com https://*.doubleclick.net https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.google.com.br; frame-src 'self' https://www.googletagmanager.com https://www.facebook.com https://*.doubleclick.net https://*.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+  : "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.googletagmanager.com;"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettingsServer()
   const favUrl = settings?.favicon_url?.trim()
+  const googleVerification = settings?.google_site_verification?.trim() || process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
 
   return {
     title: {
@@ -45,19 +41,28 @@ export async function generateMetadata(): Promise<Metadata> {
       'Content-Security-Policy': cspBase,
       'X-DNS-Prefetch-Control': 'on',
       'X-UA-Compatible': 'IE=edge',
+      // Google Search Console verification
+      ...(googleVerification ? { 'google-site-verification': googleVerification } : {}),
     },
     // Referrer policy
     referrer: 'strict-origin-when-cross-origin',
   }
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const settings = await getSiteSettingsServer()
+  const gtmId = settings?.gtm_id?.trim() || process.env.NEXT_PUBLIC_GTM_ID
+  const ga4Id = settings?.ga4_id?.trim() || process.env.NEXT_PUBLIC_GA_ID
+  const businessName = resolveBusinessName(settings)
+  const googleAdsId = settings?.google_ads_id?.trim() || process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-16526087847"
+  const businessMapsUrl = resolveBusinessMapsUrl(settings)
+
   return (
-    <html lang="pt-BR" className={`${outfit.variable} ${plusJakarta.variable}`} suppressHydrationWarning>
+      <html lang="pt-BR" className={inter.className} suppressHydrationWarning>
       <head>
         {/* Segurança: Meta tags de segurança */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
@@ -69,13 +74,21 @@ export default function RootLayout({
           httpEquiv="Content-Security-Policy"
           content={cspBase}
         />
+        {/* Google Business Schema JSON-LD (Server Component) */}
+        <GoogleBusinessSchema
+          businessName={businessName}
+          businessAddress={settings?.business_address || undefined}
+          businessPhone={settings?.business_phone || undefined}
+          businessHours={settings?.business_hours || undefined}
+          businessMapsUrl={businessMapsUrl}
+        />
       </head>
-      <body className="font-sans antialiased" suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         {/* Google Tag Manager (noscript) */}
-        {process.env.NEXT_PUBLIC_GTM_ID && (
+        {gtmId && (
           <noscript>
             <iframe
-              src={`https://www.googletagmanager.com/ns.html?id=${process.env.NEXT_PUBLIC_GTM_ID}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
               height="0"
               width="0"
               style={{ display: 'none', visibility: 'hidden' }}
@@ -87,7 +100,7 @@ export default function RootLayout({
         <Toaster position="top-right" richColors />
         <Analytics />
 
-        {/* Google Ads Consent Mode v2 — Conformidade LGPD */}
+{/* Google Ads Consent Mode v2 — Conformidade LGPD */}
         <Script
           id="consent-mode"
           strategy="afterInteractive"
@@ -95,28 +108,51 @@ export default function RootLayout({
             __html: `
               // Consent Mode v2 para Google Ads compliance
               window.dataLayer = window.dataLayer || [];
-              function gtagConsent() {
+              function gtagConsent(consentFlags) {
+                dataLayer.push(consentFlags);
+              }
+              function updateConsentMode() {
                 var consentFlags = {
-                  'ad_storage': 'granted',
-                  'analytics_storage': 'granted',
-                  'wait_for_update': 500
+                  ad_storage: 'denied',
+                  analytics_storage: 'denied',
+                  ad_user_data: 'denied',
+                  ad_personalization: 'denied',
+                  wait_for_update: 500
                 };
                 try {
                   var consent = localStorage.getItem('cookie_consent');
-                  if (consent === 'denied' || consent === 'marketing-denied') {
-                    consentFlags.ad_storage = 'denied';
-                    consentFlags.analytics_storage = 'denied';
+                  if (consent === 'granted' || consent === 'marketing-granted') {
+                    consentFlags.ad_storage = 'granted';
+                    consentFlags.analytics_storage = 'granted';
+                    consentFlags.ad_user_data = 'granted';
+                    consentFlags.ad_personalization = 'granted';
                   }
                 } catch(e) {}
-                dataLayer.push(consentFlags);
+                gtagConsent(consentFlags);
               }
-              gtagConsent();
+              updateConsentMode();
+              if (typeof window.__tcfapi === 'function') {
+                window.__tcfapi('addEventListener', 2, function(stackId, success) {
+                  if (success) {
+                    window.__tcfapi('getTCData', 2, function(tcData) {
+                      var flags = {
+                        ad_storage: tcData.gdprApplies ? (tcData.purposeConsents['1'] ? 'granted' : 'denied') : 'granted',
+                        analytics_storage: tcData.gdprApplies ? (tcData.purposeConsents['1'] ? 'granted' : 'denied') : 'granted',
+                        ad_user_data: tcData.gdprApplies ? (tcData.purposeConsents['3'] ? 'granted' : 'denied') : 'granted',
+                        ad_personalization: tcData.gdprApplies ? (tcData.purposeConsents['4'] ? 'granted' : 'denied') : 'granted',
+                        wait_for_update: 500
+                      };
+                      dataLayer.push(flags);
+                    });
+                  }
+                });
+              }
             `,
           }}
         />
 
         {/* Google Tag Manager - carregamento assíncrono */}
-        {process.env.NEXT_PUBLIC_GTM_ID && (
+        {gtmId && (
           <Script
             id="gtm-script"
             strategy="afterInteractive"
@@ -126,17 +162,17 @@ export default function RootLayout({
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID}');
+                })(window,document,'script','dataLayer','${gtmId}');
               `,
             }}
           />
         )}
 
         {/* Google Analytics (gtag.js) - carregamento preguiçoso */}
-        {process.env.NEXT_PUBLIC_GA_ID && (
+        {ga4Id && (
           <>
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`}
               strategy="afterInteractive"
             />
             <Script
@@ -147,10 +183,12 @@ export default function RootLayout({
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
-                  gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  gtag('config', '${ga4Id}', {
                     'cookie_flags': 'SameSite=None;Secure',
                     'ads_data_redaction': false,
                     'url_passthrough': true,
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted',
                   });
                 `,
               }}
@@ -188,6 +226,31 @@ export default function RootLayout({
                 alt=""
               />
             </noscript>
+          </>
+        )}
+
+        {/* Google Ads Tag (gtag.js) */}
+        {googleAdsId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
+              strategy="afterInteractive"
+            />
+            <Script
+              id="google-ads-gtag"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${googleAdsId}', {
+                    'cookie_flags': 'SameSite=None;Secure',
+                    'url_passthrough': true
+                  });
+                `,
+              }}
+            />
           </>
         )}
       </body>

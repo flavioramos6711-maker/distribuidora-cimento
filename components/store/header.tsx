@@ -146,19 +146,19 @@ export default function StoreHeader() {
             <ul className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
                 <li>
-                  <Link href="/produtos" className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+                  <Link href="/produtos" className="flex items-center gap-2 px-5 py-3 text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
                     <Menu className="h-4 w-4" />
                     Catálogo
                   </Link>
                 </li>
                 <li>
-                  <Link href="/promocoes" className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-[#F47920] uppercase tracking-[0.2em] hover:bg-[#F47920]/5 rounded-xl transition-all">
+                  <Link href="/promocoes" className="flex items-center gap-2 px-5 py-3 text-[11px] font-black text-[#F47920] uppercase tracking-[0.2em] hover:bg-[#F47920]/5 rounded-xl transition-all">
                     <Tag className="h-4 w-4" />
                     Ofertas
                   </Link>
                 </li>
                 <li>
-                  <Link href="/rastrear-pedido" className="px-5 py-3 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
+                  <Link href="/rastrear-pedido" className="px-5 py-3 text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] hover:text-primary hover:bg-primary/5 rounded-xl transition-all">
                     Rastreamento
                   </Link>
                 </li>
@@ -166,12 +166,12 @@ export default function StoreHeader() {
               
               {isMounted && (
                 <li>
-                  <ContactPopup>
-                    <button className="flex items-center gap-2 px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] hover:bg-slate-50 rounded-xl transition-all">
-                      <Headset className="h-4 w-4 text-primary" />
-                      Atendimento Consultivo
-                    </button>
-                  </ContactPopup>
+<ContactPopup>
+                     <button className="flex items-center gap-2 px-5 py-3 text-[11px] font-black text-slate-900 uppercase tracking-[0.2em] hover:bg-slate-50 rounded-xl transition-all border border-slate-100 hover:border-primary/30">
+                       <Headset className="h-4 w-4 text-primary" />
+                       Atendimento Consultivo
+                     </button>
+                   </ContactPopup>
                 </li>
               )}
             </ul>

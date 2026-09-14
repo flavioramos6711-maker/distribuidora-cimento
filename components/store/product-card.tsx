@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ShoppingCart, Package, Star, Heart, Zap } from "lucide-react"
+import { ShoppingCart, Package, Star, Zap } from "lucide-react"
 import { toast } from "sonner"
 import { waLink } from "@/lib/site-config"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
@@ -21,7 +21,6 @@ export type ProductCardProduct = {
   stock: number
   is_new?: boolean
   is_discount?: boolean
-  // Estatísticas opcionais (vindas de join com reviews)
   review_count?: number
   avg_rating?: number
 }
@@ -50,6 +49,29 @@ export function addToCart(product: ProductCardProduct, qty = 1) {
   }
 }
 
+/** Ícone de carriola profissional */
+function CarriolaIcon({ className, filled }: { className?: string; filled?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path
+        d="M5.5 12.5L7.5 6.5H16.5L18.5 12.5H5.5Z"
+        fill={filled ? "currentColor" : "none"}
+      />
+      <path d="M2.5 10.5L6.5 13.5L18.5 16.5" />
+      <path d="M8.5 14.5V19" />
+      <circle cx="19" cy="17" r="2.2" fill={filled ? "currentColor" : "none"} />
+    </svg>
+  )
+}
+
 // Gera uma cor de avatar baseada no nome do produto (consistente)
 function avatarColor(str: string) {
   const colors = [
@@ -75,12 +97,10 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
       ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
       : 0
 
-  // Rating padrão: se não vier do banco, mostra 4.8–5.0 aleatório mas consistente
   const rating = product.avg_rating ?? (4.7 + ((product.name.length % 3) * 0.1))
   const ratingDisplay = rating.toFixed(1)
   const reviewCount = product.review_count ?? 0
 
-  // Stock baixo (<= 10) — urgência sutil mas verdadeira
   const isLowStock = product.stock > 0 && product.stock <= 10
 
   const waHref = waLink(
@@ -100,19 +120,16 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
       {/* ── Badges flutuantes ── */}
       <div className="absolute inset-x-4 top-4 z-10 flex items-start justify-between pointer-events-none">
         <div className="flex flex-col gap-1.5">
-          {/* Novo */}
           {product.is_new && (
             <span className="inline-flex items-center gap-1 bg-emerald-500 text-white px-2.5 py-1 rounded-full shadow-lg shadow-emerald-500/30">
               <span className="text-[9px] font-black uppercase tracking-widest">NOVO</span>
             </span>
           )}
-          {/* Desconto */}
           {discount > 0 && (
             <span className="inline-flex items-center gap-1 bg-[#F47920] text-white px-2.5 py-1 rounded-full shadow-lg shadow-orange-500/30">
               <span className="text-[9px] font-black uppercase tracking-widest">-{discount}%</span>
             </span>
           )}
-          {/* Estoque baixo */}
           {isLowStock && (
             <span className="inline-flex items-center gap-1 bg-red-500/90 text-white px-2.5 py-1 rounded-full shadow-lg shadow-red-500/30">
               <Zap className="w-2.5 h-2.5 fill-current" />
@@ -121,22 +138,24 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
           )}
         </div>
 
-        {/* Wishlist */}
+        {/* Carriola de Obra */}
         <button
+          type="button"
           onClick={(e) => {
             e.preventDefault()
             setIsWishlist(!isWishlist)
           }}
           className={cn(
             "pointer-events-auto h-9 w-9 flex items-center justify-center rounded-full transition-all duration-300",
-            "backdrop-blur-md border shadow-sm",
+            "backdrop-blur-md border shadow-xs",
             isWishlist
-              ? "bg-red-500 text-white border-red-500 scale-110"
-              : "bg-white/70 text-slate-300 border-white/80 hover:bg-white hover:text-red-400 hover:scale-105"
+              ? "bg-blue-600 text-white border-blue-600 scale-110 shadow-sm"
+              : "bg-white/90 text-slate-400 border-slate-200/80 hover:bg-white hover:text-blue-600 hover:scale-105"
           )}
-          aria-label="Favoritar"
+          aria-label={isWishlist ? "Remover da carriola" : "Salvar na carriola"}
+          title={isWishlist ? "Remover da carriola" : "Salvar na carriola"}
         >
-          <Heart className={cn("h-4 w-4 transition-all", isWishlist && "fill-current")} />
+          <CarriolaIcon className="h-4 w-4 transition-all" filled={isWishlist} />
         </button>
       </div>
 
@@ -146,7 +165,6 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
         className="relative block aspect-square w-full overflow-hidden"
         aria-label={`Ver ${product.name}`}
       >
-        {/* Fundo gradiente sutil baseado na cor do produto */}
         <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", gradient)} />
 
         {imgSrc ? (
@@ -173,9 +191,9 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             }}
             className={cn(
               "w-full h-11 flex items-center justify-center gap-2",
-              "bg-white/95 backdrop-blur-xl text-[#002D5B] text-[10px] font-black uppercase tracking-widest",
+              "bg-white/95 backdrop-blur-xl text-blue-600 text-[10px] font-black uppercase tracking-widest",
               "rounded-xl shadow-xl border border-white",
-              "hover:bg-[#002D5B] hover:text-white hover:border-[#002D5B]",
+              "hover:bg-blue-600 hover:text-white hover:border-blue-600",
               "transition-all active:scale-95"
             )}
           >
@@ -211,7 +229,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
 
         {/* Nome */}
         <Link href={`/produto/${product.slug}`} className="mb-3 block group/title">
-          <h3 className="line-clamp-2 text-[12px] sm:text-[14px] font-bold leading-snug text-slate-800 transition-colors duration-200 group-hover/title:text-[#002D5B]">
+          <h3 className="line-clamp-2 text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
             {product.name}
           </h3>
         </Link>
@@ -226,7 +244,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             )}
             <div className="flex items-baseline gap-1">
               <span className="text-[11px] font-black text-slate-400">R$</span>
-              <p className="text-2xl font-black text-[#002D5B] tracking-tight leading-none">
+              <p className="text-2xl font-black text-[#001A4D] tracking-tight leading-none">
                 {Number(product.price).toFixed(2).replace(".", ",")}
               </p>
               <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest self-end pb-0.5">
@@ -241,8 +259,8 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
               href={`/produto/${product.slug}`}
               className={cn(
                 "flex flex-1 h-10 sm:h-11 items-center justify-center rounded-xl",
-                "bg-[#002D5B] text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest",
-                "transition-all hover:bg-[#003d7a] active:scale-95"
+                "bg-blue-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest",
+                "transition-all hover:bg-blue-700 shadow-lg shadow-blue-600/20 active:scale-95"
               )}
             >
               Ver Detalhes

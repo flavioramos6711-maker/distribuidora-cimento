@@ -25,6 +25,20 @@ export type SiteSettingsRow = {
   institutional_body: string | null
   testimonials: CmsTestimonial[] | unknown
   updated_at?: string
+
+  // Google Marketing & SEO
+  gtm_id: string | null
+  ga4_id: string | null
+  google_site_verification: string | null
+  google_ads_id: string | null
+  google_ads_conversion_label: string | null
+
+  // Google Meu Negócio & SEO Local
+  business_name: string | null
+  business_address: string | null
+  business_phone: string | null
+  business_hours: string | null
+  business_maps_url: string | null
 }
 
 export const DEFAULT_INSTITUTIONAL_TITLE = "Referência em materiais de construção"
@@ -161,4 +175,42 @@ export function resolveTestimonials(row: SiteSettingsRow | null): CmsTestimonial
 /** Hero: se houver slides no CMS, usa só eles; senão o front busca a tabela `banners`. */
 export function cmsBannerSlides(row: SiteSettingsRow | null): CmsBannerSlide[] {
   return parseBannerImages(row?.banner_images)
+}
+
+// ─── Defaults para Google Meu Negócio / SEO Local ─────────────────────────────
+export const DEFAULT_BUSINESS_NAME = "Cimento & Cal Distribuidora"
+
+export const DEFAULT_BUSINESS_ADDRESS =
+  "Rua Igarapava, 73 - Vila Albertina, Ribeirão Preto - SP, CEP 14.075-453"
+
+export const DEFAULT_BUSINESS_PHONE = "(16) 99653-6403"
+
+export const DEFAULT_BUSINESS_HOURS = "Segunda a Sexta: 07:00 - 18:00 | Sábado: 07:00 - 12:00"
+
+export const DEFAULT_BUSINESS_MAPS_URL =
+  "https://maps.google.com/?q=Cimento+Cal+Distribuidora+Ribeirao+Preto"
+
+export function resolveBusinessName(row: SiteSettingsRow | null): string {
+  const v = row?.business_name?.trim()
+  return v || DEFAULT_BUSINESS_NAME
+}
+
+export function resolveBusinessAddress(row: SiteSettingsRow | null): string {
+  const v = row?.business_address?.trim()
+  return v || DEFAULT_BUSINESS_ADDRESS
+}
+
+export function resolveBusinessPhone(row: SiteSettingsRow | null): string {
+  const v = row?.business_phone?.trim()
+  return v || DEFAULT_BUSINESS_PHONE
+}
+
+export function resolveBusinessHours(row: SiteSettingsRow | null): string {
+  const v = row?.business_hours?.trim()
+  return v || DEFAULT_BUSINESS_HOURS
+}
+
+export function resolveBusinessMapsUrl(row: SiteSettingsRow | null): string {
+  const v = row?.business_maps_url?.trim()
+  return v || DEFAULT_BUSINESS_MAPS_URL
 }

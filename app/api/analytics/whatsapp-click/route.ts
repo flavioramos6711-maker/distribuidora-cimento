@@ -35,11 +35,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error("whatsapp_clicks insert", error.message)
       return NextResponse.json(
-        {
-          ok: false,
-          error: error.message,
-          instruction: "Execute scripts/012_fix_db_schema.sql no Supabase para corrigir as tabelas.",
-        },
+        { ok: false, error: "Falha ao registrar evento" },
         { status: 500 },
       )
     }

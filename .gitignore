@@ -72,3 +72,4 @@ data/
 *.json.gz
 *.parquet
 
+.vercel

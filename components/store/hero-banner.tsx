@@ -12,17 +12,17 @@ import { parseBannerImages, type CmsBannerSlide } from "@/lib/site-settings"
 
 const supabase = createClient()
 
-// ─── Tipos internos ────────────────────────────────────────────────────────────
-type DbBanner = {
-  id: string
+export type Slide = {
+  key: string
   image_url: string
   link?: string | null
   title?: string | null
   subtitle?: string | null
 }
 
-type Slide = {
-  key: string
+// ─── Tipos internos ────────────────────────────────────────────────────────────
+type DbBanner = {
+  id: string
   image_url: string
   link?: string | null
   title?: string | null
@@ -80,8 +80,9 @@ async function fetchSlides(): Promise<Slide[]> {
 
 // ─── Componente ───────────────────────────────────────────────────────────────
 
-export default function HeroBanner() {
+export function HeroBanner({ initialSlides }: { initialSlides?: Slide[] }) {
   const { data: slides, isLoading } = useSWR<Slide[]>("store-hero-slides", fetchSlides, {
+    fallbackData: initialSlides,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })
@@ -114,8 +115,9 @@ export default function HeroBanner() {
     return () => clearInterval(interval)
   }, [emblaApi, slides, isPaused])
 
-  // Skeleton enquanto carrega
-  if (isLoading || !slides) {
+  // Skeleton enquanto carrega (apenas se não houver dados SSR)
+  const hasData = slides && slides.length > 0
+  if (!hasData && (!initialSlides || initialSlides.length === 0)) {
     return (
       <div
         className="relative w-full animate-pulse bg-slate-100"
@@ -124,8 +126,8 @@ export default function HeroBanner() {
     )
   }
 
-  // Sem banners cadastrados → não renderiza nada
-  if (slides.length === 0) return null
+  // Sem banners cadastrados e sem dados SSR → não renderiza nada
+  if ((!slides || slides.length === 0) && (!initialSlides || initialSlides.length === 0)) return null
 
   return (
     <section
@@ -137,7 +139,7 @@ export default function HeroBanner() {
       {/* ── Carousel track ── */}
       <div className="relative w-full overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {slides.map((slide, i) => (
+          {(slides || []).map((slide, i) => (
             <div key={slide.key} className="relative min-w-0 shrink-0 grow-0 basis-full">
               {/* Proporção 1920 × 430 — exibe de ponta a ponta sem cortar */}
               <div className="relative w-full" style={{ aspectRatio: "1920 / 430" }}>
@@ -169,7 +171,7 @@ export default function HeroBanner() {
       </div>
 
       {/* ── Controles (apenas quando múltiplos slides) ── */}
-      {slides.length > 1 && (
+      {(slides?.length ?? 0) > 1 && (
         <>
           {/* Setas */}
           <div className="absolute inset-x-4 md:inset-x-8 top-1/2 -translate-y-1/2 hidden md:flex justify-between pointer-events-none z-20">
@@ -203,7 +205,7 @@ export default function HeroBanner() {
 
           {/* Dots */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-            {slides.map((_, i) => (
+            {(slides || []).map((_, i) => (
               <button
                 key={i}
                 type="button"

@@ -64,7 +64,7 @@ export default function StoreSearch() {
           value={q}
           onChange={(e) => handleChange(e.target.value)}
           placeholder="O que você está procurando hoje?"
-          className="h-14 w-full rounded-2xl border border-slate-100 bg-slate-50 pl-14 pr-32 text-sm font-bold text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5"
+          className="h-14 w-full rounded-2xl border border-slate-100 bg-slate-50 pl-14 pr-32 text-sm font-bold text-slate-900 placeholder:font-medium placeholder:text-slate-400 outline-none transition-all focus:bg-white focus:border-primary/20 focus:ring-4 focus:ring-primary/5"
         />
         <div className="absolute right-1.5 p-1">
           <button

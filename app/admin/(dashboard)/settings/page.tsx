@@ -7,6 +7,11 @@ import {
   DEFAULT_INSTITUTIONAL_BODY,
   DEFAULT_INSTITUTIONAL_TITLE,
   DEFAULT_TESTIMONIALS,
+  DEFAULT_BUSINESS_NAME,
+  DEFAULT_BUSINESS_ADDRESS,
+  DEFAULT_BUSINESS_PHONE,
+  DEFAULT_BUSINESS_HOURS,
+  DEFAULT_BUSINESS_MAPS_URL,
   parseBannerImages,
   parseTestimonials,
   type CmsBannerSlide,
@@ -21,6 +26,7 @@ import {
   Package,
   Palette,
   Plus,
+  Phone,
   Save,
   Trash2,
   Upload,
@@ -43,6 +49,18 @@ type FormState = {
   institutional_body: string
   banner_images: CmsBannerSlide[]
   testimonials: CmsTestimonial[]
+  // Google Marketing & SEO
+  gtm_id: string
+  ga4_id: string
+  google_site_verification: string
+  google_ads_id: string
+  google_ads_conversion_label: string
+  // Google Meu Negócio
+  business_name: string
+  business_address: string
+  business_phone: string
+  business_hours: string
+  business_maps_url: string
 }
 
 const initialForm = (): FormState => ({
@@ -53,6 +71,16 @@ const initialForm = (): FormState => ({
   institutional_body: DEFAULT_INSTITUTIONAL_BODY,
   banner_images: [],
   testimonials: DEFAULT_TESTIMONIALS.map((t) => ({ ...t })),
+  gtm_id: "",
+  ga4_id: "",
+  google_site_verification: "",
+  google_ads_id: "",
+  google_ads_conversion_label: "",
+  business_name: DEFAULT_BUSINESS_NAME,
+  business_address: DEFAULT_BUSINESS_ADDRESS,
+  business_phone: DEFAULT_BUSINESS_PHONE,
+  business_hours: DEFAULT_BUSINESS_HOURS,
+  business_maps_url: DEFAULT_BUSINESS_MAPS_URL,
 })
 
 export default function AdminSiteSettingsPage() {
@@ -86,6 +114,16 @@ export default function AdminSiteSettingsPage() {
         institutional_body: data.institutional_body?.trim() || DEFAULT_INSTITUTIONAL_BODY,
         banner_images: parseBannerImages(data.banner_images),
         testimonials: t.length > 0 ? t : DEFAULT_TESTIMONIALS.map((x) => ({ ...x })),
+        gtm_id: data.gtm_id || "",
+        ga4_id: data.ga4_id || "",
+        google_site_verification: data.google_site_verification || "",
+        google_ads_id: data.google_ads_id || "",
+        google_ads_conversion_label: data.google_ads_conversion_label || "",
+        business_name: data.business_name?.trim() || DEFAULT_BUSINESS_NAME,
+        business_address: data.business_address?.trim() || DEFAULT_BUSINESS_ADDRESS,
+        business_phone: data.business_phone?.trim() || DEFAULT_BUSINESS_PHONE,
+        business_hours: data.business_hours?.trim() || DEFAULT_BUSINESS_HOURS,
+        business_maps_url: data.business_maps_url?.trim() || DEFAULT_BUSINESS_MAPS_URL,
       })
       setLoading(false)
     })()
@@ -109,6 +147,16 @@ export default function AdminSiteSettingsPage() {
           institutional_body: form.institutional_body || null,
           banner_images: form.banner_images,
           testimonials: form.testimonials,
+          gtm_id: form.gtm_id || null,
+          ga4_id: form.ga4_id || null,
+          google_site_verification: form.google_site_verification || null,
+          google_ads_id: form.google_ads_id || null,
+          google_ads_conversion_label: form.google_ads_conversion_label || null,
+          business_name: form.business_name || null,
+          business_address: form.business_address || null,
+          business_phone: form.business_phone || null,
+          business_hours: form.business_hours || null,
+          business_maps_url: form.business_maps_url || null,
         }),
       })
       const json = await res.json()
@@ -223,18 +271,18 @@ export default function AdminSiteSettingsPage() {
       </div>
 
       <Tabs defaultValue="marca" className="w-full gap-4">
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 p-1">
+        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1 p-1 overflow-visible">
           <TabsTrigger value="marca" className="gap-1.5">
             <Palette className="h-4 w-4" /> Marca
           </TabsTrigger>
           <TabsTrigger value="hero" className="gap-1.5">
-            <ImageIcon className="h-4 w-4" /> Hero / banners
+            <ImageIcon className="h-4 w-4" /> Banners
           </TabsTrigger>
           <TabsTrigger value="chat" className="gap-1.5">
             <MessageSquareQuote className="h-4 w-4" /> Chat
           </TabsTrigger>
           <TabsTrigger value="conteudo" className="gap-1.5">
-            <FolderTree className="h-4 w-4" /> Institucional & depoimentos
+            <FolderTree className="h-4 w-4" /> Institucional
           </TabsTrigger>
           <TabsTrigger value="catalogo" className="gap-1.5">
             <Package className="h-4 w-4" /> Catálogo
@@ -310,6 +358,39 @@ export default function AdminSiteSettingsPage() {
               >
                 Usar favicon padrão
               </button>
+            </div>
+          </div>
+
+          {/* Card de Controle de Telefones & WhatsApp */}
+          <div className="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <Phone className="w-5 h-5 text-blue-400" />
+                  Telefone & WhatsApp Principal do Site
+                </h3>
+                <p className="text-xs text-blue-200/70">
+                  Controla o número exibido no cabeçalho, rodapé e links de atendimento direto.
+                </p>
+              </div>
+              <Link
+                href="/admin/whatsapp"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow"
+              >
+                Gerenciar Atendentes WhatsApp →
+              </Link>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase text-blue-200/80 mb-1.5 block">
+                Número com DDD (Ex: (16) 99653-6403)
+              </label>
+              <input
+                type="text"
+                value={form.business_phone}
+                onChange={(e) => setForm({ ...form, business_phone: e.target.value })}
+                placeholder="(16) 99653-6403"
+                className="w-full max-w-md px-4 py-2.5 rounded-xl border border-blue-400/30 bg-slate-900/90 text-white font-mono text-sm focus:outline-none focus:border-blue-400"
+              />
             </div>
           </div>
 
@@ -604,7 +685,7 @@ export default function AdminSiteSettingsPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="catalogo" className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+<TabsContent value="catalogo" className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <h2 className="text-lg font-semibold">Imagens de produtos e categorias</h2>
           <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
             Para não duplicar lógica de estoque e preços, as imagens de cada produto e categoria continuam sendo

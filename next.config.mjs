@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 // Env: Next.js carrega .env, .env.local, .env.development.local, etc. na raiz deste projeto.
 // Turbopack (next dev --turbo) usa as mesmas regras; reinicie o dev server após mudar variáveis.
+const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://distribuidora-cimento-flavioramos6711-3618s-projects.vercel.app"
+
 const nextConfig = {
   typescript: {
     // NUNCA ignore erros TypeScript em produção - isso mascara bugs reais
@@ -37,14 +39,23 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-XSS-Protection", value: "1; mode=block" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-          // HSTS será configurado via middleware para HTTPS
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+          // CORS dinâmico via NEXT_PUBLIC_SITE_URL
+          { key: "Access-Control-Allow-Origin", value: origin },
+          { key: "Access-Control-Allow-Methods", value: "GET,POST,PUT,DELETE,OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "Content-Type,Authorization" },
+          { key: "Access-Control-Max-Age", value: "86400" },
+          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
+          { key: "Origin-Agent-Cluster", value: "?1" },
+          // HSTS — HTTPS obrigatório por 2 anos
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+          { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
         ],
       },
       {
         source: "/api/:path*",
         headers: [
-          { key: "Access-Control-Allow-Origin", value: "https://distribuidora-cimento-flavioramos6711-3618s-projects.vercel.app" },
+          { key: "Access-Control-Allow-Origin", value: origin },
           { key: "Access-Control-Allow-Methods", value: "GET,POST,PUT,DELETE,OPTIONS" },
           { key: "Access-Control-Allow-Headers", value: "Content-Type,Authorization" },
           { key: "Access-Control-Max-Age", value: "86400" },

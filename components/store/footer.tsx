@@ -1,6 +1,6 @@
 "use client"
 
-import { Phone, Shield, Star, Smartphone, Instagram, Youtube, Facebook } from "lucide-react"
+import { Phone, Smartphone, Instagram, Youtube, Facebook } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import DynamicBrandLogo from "@/components/store/dynamic-brand-logo"
@@ -10,7 +10,7 @@ import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 const PaymentCard = ({ children, label }: { children: React.ReactNode; label: string }) => (
   <div
     title={label}
-    className="h-9 px-3 bg-white rounded-lg flex items-center justify-center shadow-sm border border-slate-100 hover:shadow-md transition-shadow"
+    className="h-10 px-3 bg-white rounded-xl flex items-center justify-center shadow-sm border border-white/20 hover:scale-105 transition-all duration-200"
   >
     {children}
   </div>
@@ -36,7 +36,7 @@ export default function StoreFooter() {
   ]
 
   return (
-    <footer className="bg-[#00213F] text-white font-sans mt-20 relative overflow-hidden">
+    <footer className="bg-gradient-to-b from-[#020B1D] via-[#01081A] to-[#010510] text-white font-sans mt-20 relative overflow-hidden border-t border-[#0055FF]/25 shadow-2xl">
 
       {/* Top gradient accent */}
       <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#F47920] via-[#FFB347] to-[#F47920]" />
@@ -45,7 +45,7 @@ export default function StoreFooter() {
       <div className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-6 py-7 flex flex-col sm:flex-row items-center justify-between gap-5">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-[#F47920] mb-1">Newsletter</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-[#F47920] mb-1">Newsletter</p>
             <h4 className="text-base font-bold text-white">Receba ofertas e cotações exclusivas</h4>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto bg-white/5 border border-white/10 rounded-xl p-1.5">
@@ -146,34 +146,27 @@ export default function StoreFooter() {
 
             {/* Payment flags */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40">Formas de Pagamento</h4>
+              <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/50">Formas de Pagamento</h4>
 
-              {/* Pix + InfinitePay pills */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 bg-[#32BCAD] px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-white shadow-sm">
-                  <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="currentColor">
-                    <path d="M10 0L12.4 7.6H20L13.8 12.3L16.2 20L10 15.3L3.8 20L6.2 12.3L0 7.6H7.6L10 0Z"/>
-                  </svg>
-                  Pix à vista
-                </span>
-                <span className="inline-flex items-center gap-1.5 bg-[#00C2FF]/20 border border-[#00C2FF]/40 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#00C2FF] shadow-sm">
-                  <svg viewBox="0 0 16 16" className="h-3 w-3" fill="currentColor">
-                    <rect width="16" height="16" rx="3"/>
-                    <path d="M4 8h8M8 4v8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                  InfinitePay
-                </span>
+              {/* Pix + InfinitePay Oficiais */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <div className="h-10 px-3.5 bg-white rounded-xl flex items-center justify-center shadow-sm border border-white/20 hover:scale-105 transition-all" title="Pix à Vista">
+                  <Image src="/images/payments/pix.png" alt="Pix" width={80} height={26} className="h-6 w-auto object-contain" />
+                </div>
+                <div className="h-10 px-3.5 bg-white rounded-xl flex items-center justify-center shadow-sm border border-white/20 hover:scale-105 transition-all" title="InfinitePay">
+                  <Image src="/images/payments/infinitepay.png" alt="InfinitePay" width={95} height={26} className="h-5 w-auto object-contain" />
+                </div>
               </div>
 
               {/* Card flags — até 12x */}
               <div>
                 <p className="text-[9px] text-white/30 font-bold uppercase tracking-widest mb-2">Cartão de Crédito · até 12x</p>
                 <div className="flex flex-wrap gap-2">
-                  <PaymentCard label="Visa">
-                    <Image src="/images/footer/brands/visa.svg" alt="Visa" width={44} height={14} className="h-3.5 w-auto" />
+                <PaymentCard label="Visa">
+                    <Image src="/images/payments/visa.png" alt="Visa" width={48} height={18} className="h-4 w-auto object-contain" />
                   </PaymentCard>
                   <PaymentCard label="Mastercard">
-                    <Image src="/images/footer/brands/mastercard.svg" alt="Mastercard" width={36} height={28} className="h-6 w-auto" />
+                    <Image src="/images/payments/mastercard.png" alt="Mastercard" width={38} height={24} className="h-6 w-auto object-contain" />
                   </PaymentCard>
                   <PaymentCard label="American Express">
                     <Image src="/images/footer/brands/amex.svg" alt="Amex" width={40} height={40} className="h-5 w-auto" />
@@ -200,28 +193,22 @@ export default function StoreFooter() {
 
             {/* Trust badges */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40">Segurança e Confiança</h4>
+              <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/50">Segurança e Confiança</h4>
               <div className="flex flex-wrap gap-3">
-
-                {/* Reclame Aqui */}
-                <div className="flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition-colors">
-                  <div className="flex flex-col items-center justify-center w-8 h-8 rounded-lg bg-[#00B057] shrink-0">
-                    <Star className="h-4 w-4 text-white fill-white" />
-                  </div>
-                  <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#00B057] leading-none">Reclame Aqui</p>
-                    <p className="text-xs font-black text-white leading-tight">Ótimo · 9.8/10</p>
+                {/* Reclame Aqui Oficial */}
+                <div className="flex items-center gap-2.5 bg-white rounded-xl px-3.5 py-2 shadow-sm border border-white/20 hover:scale-105 transition-all">
+                  <Image src="/images/trust/reclame-aqui.png" alt="Reclame Aqui" width={90} height={22} className="h-4 w-auto object-contain" />
+                  <div className="border-l border-slate-200 pl-2">
+                    <p className="text-[8px] font-black uppercase text-[#00B057] leading-none">RA 1000</p>
+                    <p className="text-[11px] font-black text-slate-800 leading-tight">Ótimo · 9.8</p>
                   </div>
                 </div>
-
-                {/* Secure */}
-                <div className="flex items-center gap-2.5 bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 hover:bg-white/10 transition-colors">
-                  <div className="flex flex-col items-center justify-center w-8 h-8 rounded-lg bg-green-500/20 shrink-0">
-                    <Shield className="h-4 w-4 text-green-400" />
-                  </div>
+                {/* Certisign Site Seguro Oficial */}
+                <div className="flex items-center gap-2.5 bg-white rounded-xl px-3.5 py-2 shadow-sm border border-white/20 hover:scale-105 transition-all">
+                  <Image src="/images/trust/certisign.png" alt="Certisign Site Seguro" width={28} height={28} className="h-6 w-auto object-contain" />
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-green-400 leading-none">SSL Seguro</p>
-                    <p className="text-xs font-black text-white leading-tight">Compra Protegida</p>
+                    <p className="text-[8px] font-black uppercase text-purple-700 leading-none">Certisign</p>
+                    <p className="text-[11px] font-black text-slate-800 leading-tight">Site Seguro</p>
                   </div>
                 </div>
               </div>
@@ -229,28 +216,21 @@ export default function StoreFooter() {
 
             {/* Google Play */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 flex items-center gap-2">
-                <Smartphone className="h-3.5 w-3.5" /> Aplicativo
+              <h4 className="text-[11px] font-black uppercase tracking-[0.25em] text-white/50 flex items-center gap-2">
+                <Smartphone className="h-3.5 w-3.5 text-[#0055FF]" /> Aplicativo
               </h4>
               <a
                 href="#"
-                className="inline-flex items-center gap-3 bg-black hover:bg-zinc-900 border border-white/10 transition-colors rounded-xl px-4 py-2.5 group shadow-lg"
+                className="inline-block transition-transform hover:scale-105 active:scale-95 shadow-lg"
+                title="Disponível no Google Play"
               >
-                <svg viewBox="0 0 512 512" className="h-7 w-7 shrink-0" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35V477c0 15.8 8.7 28.2 21.7 35l242.7-242L47 0zM425.2 225.6l-58.9-33.9-65.1 64.5 65.1 64.5 60.1-34.3c17.1-9.8 17.1-34.4-.1-50.4l-1.1-.4zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z" fill="url(#gp)"/>
-                  <defs>
-                    <linearGradient id="gp" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#EA4335"/>
-                      <stop offset="33%" stopColor="#FBBC04"/>
-                      <stop offset="66%" stopColor="#34A853"/>
-                      <stop offset="100%" stopColor="#4285F4"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div>
-                  <p className="text-[9px] text-white/50 font-semibold uppercase tracking-widest leading-none">Disponível no</p>
-                  <p className="text-sm font-black text-white leading-tight">Google Play</p>
-                </div>
+                <Image
+                  src="/images/payments/googleplay.png"
+                  alt="Disponível no Google Play"
+                  width={150}
+                  height={45}
+                  className="h-10 w-auto object-contain"
+                />
               </a>
             </div>
           </div>
@@ -262,13 +242,13 @@ export default function StoreFooter() {
             © {currentYear} {SITE.legalName}. Todos os direitos reservados.
           </p>
           <div className="flex items-center gap-5">
-            <Link href="/politica-de-privacidade" className="text-[10px] text-white/30 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
+            <Link href="/politica-de-privacidade" className="text-[11px] text-white/40 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
               Privacidade
             </Link>
-            <Link href="/termos-de-uso" className="text-[10px] text-white/30 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
+            <Link href="/termos-de-uso" className="text-[11px] text-white/40 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
               Termos
             </Link>
-            <Link href="/politica-de-frete" className="text-[10px] text-white/30 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
+            <Link href="/politica-de-frete" className="text-[11px] text-white/40 hover:text-white/60 font-bold uppercase tracking-widest transition-colors">
               Frete
             </Link>
           </div>

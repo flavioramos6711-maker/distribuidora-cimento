@@ -230,8 +230,9 @@ export async function POST(
   const { error } = await supabase.from("reviews").insert(rows)
 
   if (error) {
+    console.error("[seed-reviews] Erro:", error.message)
     return jsonWithSession(
-      { error: error.message, hint: "Certifique-se que a tabela 'reviews' existe (script 001_create_schema.sql)." },
+      { error: "Falha ao registrar avaliações." },
       { status: 500 }
     )
   }
