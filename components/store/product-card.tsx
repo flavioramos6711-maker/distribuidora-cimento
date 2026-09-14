@@ -16,6 +16,7 @@ export type ProductCardProduct = {
   price: number
   original_price: number | null
   image_url: string | null
+  images?: string[] | null
   unit: string
   stock: number
   is_new?: boolean
@@ -66,6 +67,8 @@ function avatarColor(str: string) {
 
 export default function ProductCard({ product }: { product: ProductCardProduct }) {
   const [isWishlist, setIsWishlist] = useState(false)
+  const initialImage = product.image_url || (product.images && product.images.length > 0 ? product.images[0] : null)
+  const [imgSrc, setImgSrc] = useState<string | null>(initialImage)
 
   const discount =
     product.original_price && product.original_price > product.price
@@ -146,17 +149,18 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
         {/* Fundo gradiente sutil baseado na cor do produto */}
         <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", gradient)} />
 
-        {product.image_url ? (
+        {imgSrc ? (
           <Image
-            src={product.image_url}
+            src={imgSrc}
             alt={product.name}
             fill
             sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-            className="object-contain p-6 transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+            className="object-contain p-4 sm:p-6 transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+            onError={() => setImgSrc(null)}
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Package className="h-14 w-14 text-slate-100" />
+          <div className="flex h-full w-full items-center justify-center bg-slate-50/50">
+            <Package className="h-12 w-12 text-slate-300" />
           </div>
         )}
 

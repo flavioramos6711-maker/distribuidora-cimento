@@ -37,15 +37,15 @@ async function fetchHome() {
     argamassasRes,
     outrosRes,
   ] = await Promise.all([
-    supabase.from("products").select("*").eq("active", true).eq("featured", true).order("created_at", { ascending: false }).limit(24),
+    supabase.from("products").select("*").eq("active", true).eq("featured", true).not("image_url", "is", null).order("created_at", { ascending: false }).limit(24),
     supabase.from("categories").select("*, products(id)").eq("active", true).order("sort_order"),
-    supabase.from("products").select("*").eq("active", true).eq("is_new", true).order("created_at", { ascending: false }).limit(12),
-    supabase.from("products").select("*").eq("active", true).eq("is_discount", true).order("created_at", { ascending: false }).limit(12),
-    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_CIMENTO).limit(10),
-    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ACO).limit(10),
-    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_TINTA).limit(10),
-    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ARGAMASSA).limit(10),
-    supabase.from("products").select("*").eq("active", true).order("created_at", { ascending: false }).limit(20),
+    supabase.from("products").select("*").eq("active", true).eq("is_new", true).not("image_url", "is", null).order("created_at", { ascending: false }).limit(12),
+    supabase.from("products").select("*").eq("active", true).eq("is_discount", true).not("image_url", "is", null).order("created_at", { ascending: false }).limit(12),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_CIMENTO).not("image_url", "is", null).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ACO).not("image_url", "is", null).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_TINTA).not("image_url", "is", null).limit(10),
+    supabase.from("products").select("*").eq("active", true).eq("category_id", CAT_ARGAMASSA).not("image_url", "is", null).limit(10),
+    supabase.from("products").select("*").eq("active", true).not("image_url", "is", null).order("created_at", { ascending: false }).limit(20),
   ])
 
   // Organizar vitrine variada (intercalando cimento, aço, tinta, argamassa e outros)

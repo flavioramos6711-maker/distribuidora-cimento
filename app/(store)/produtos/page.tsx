@@ -62,6 +62,7 @@ export default function ProductsPage() {
         .from("products")
         .select("*", { count: "exact" })
         .eq("active", true)
+        .not("image_url", "is", null)
         .order("featured", { ascending: false })
         .order("created_at", { ascending: false })
       if (categoryId !== "all") query = query.eq("category_id", categoryId)
