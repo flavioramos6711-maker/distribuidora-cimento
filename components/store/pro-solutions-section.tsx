@@ -62,8 +62,12 @@ export default function ProSolutionsSection() {
               href={waCotacaoHref}
               target="_blank"
               rel="noopener noreferrer"
+              data-track="btn_whatsapp"
+              data-button-name="btn_whatsapp"
+              data-name="btn_whatsapp"
+              data-source="pro_solutions_banner"
               onClick={() => trackWhatsAppClick("pro_solutions_banner", "/")}
-              className="inline-flex h-13 px-8 items-center justify-center gap-3 rounded-2xl bg-[#25D366] text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-[#25D366]/25 hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all"
+              className="inline-flex h-13 px-8 items-center justify-center gap-3 rounded-2xl bg-[#25D366] text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-[#25D366]/25 hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all btn-whatsapp-track"
             >
               <MessageSquare className="w-5 h-5" />
               Cotar Lista no WhatsApp

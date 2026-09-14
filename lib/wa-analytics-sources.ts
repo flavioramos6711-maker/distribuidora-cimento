@@ -9,6 +9,8 @@ export const WA_CLICK_SOURCES = [
   "minha_conta",
   "home_cta",
   "product_card",
+  "topbar_phone",
+  "header_phone",
   // Novos pontos de conversão (Meta Pixel)
   "footer_whatsapp",
   "contact_popup_whatsapp",
@@ -33,6 +35,8 @@ export const WA_SOURCE_LABELS: Record<WaClickSource, string> = {
   minha_conta: "Minha conta",
   home_cta: "Banner CTA Inicial",
   product_card: "Card de Produto",
+  topbar_phone: "Topo — Telefone Televendas",
+  header_phone: "Menu Mobile — Telefone Televendas",
   // Novos
   footer_whatsapp: "Rodapé — WhatsApp",
   contact_popup_whatsapp: "Popup de contato — WhatsApp",

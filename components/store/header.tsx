@@ -10,6 +10,7 @@ import Topbar from "@/components/store/topbar"
 import LocationSelector from "@/components/store/location-selector"
 import ContactPopup from "@/components/store/contact-popup"
 import { SITE } from "@/lib/site-config"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 import { cn } from "@/lib/utils"
 
 const supabase = createClient()
@@ -195,9 +196,17 @@ export default function StoreHeader() {
                 ))}
             </div>
             <div className="pt-6 border-t border-slate-100 space-y-4">
-              <a href={`tel:+${SITE.whatsappE164}`} className="flex items-center justify-center gap-3 w-full h-14 rounded-2xl bg-secondary text-white font-black uppercase tracking-widest text-[11px]">
-                <Phone className="h-4 w-4" />
-                {SITE.phoneDisplay}
+              <a
+                href={`tel:+${SITE.whatsappE164}`}
+                onClick={() => trackWhatsAppClick("header_phone")}
+                data-source="header_phone"
+                data-track="btn_whatsapp"
+                data-button-name="btn_whatsapp"
+                data-name="btn_whatsapp"
+                className="flex items-center justify-center gap-3 w-full h-14 rounded-2xl bg-secondary text-white font-black uppercase tracking-widest text-[11px] btn-whatsapp-track"
+              >
+              <Phone className="h-4 w-4" />
+              {SITE.phoneDisplay}
               </a>
             </div>
           </div>

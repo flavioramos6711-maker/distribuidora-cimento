@@ -1,17 +1,17 @@
 "use client"
 
-import { MessageCircle } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { waLink } from "@/lib/site-config"
-import { cn } from "@/lib/utils"
 import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 import type { WaClickSource } from "@/lib/wa-analytics-sources"
+import { cn } from "@/lib/utils"
 
-export default function WhatsAppCta({
-  source,
+export default function HomeWhatsAppCta({
+  source = "home_cta" as WaClickSource,
   page,
   userId,
-  text = "Olá! Gostaria de falar com o Atacado de Construção.",
-  label = "Falar no WhatsApp",
+  text = "Olá! Gostaria de fazer um orçamento.",
+  label = "FALAR COM VENDEDOR",
   className,
   variant = "solid",
 }: {
@@ -30,24 +30,15 @@ export default function WhatsAppCta({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      data-track="btn_whatsapp"
+      data-button-name="btn_whatsapp"
+      data-name="btn_whatsapp"
+      data-source={source}
+      className="group/btn relative flex h-16 sm:h-20 w-full sm:w-auto sm:min-w-[280px] items-center justify-center gap-3 rounded-2xl btn-whatsapp-track bg-white text-base sm:text-lg font-black text-slate-950 shadow-xl transition-all duration-300 hover:bg-slate-100 hover:scale-105 active:scale-95"
       onClick={() => trackWhatsAppClick(source, page, userId)}
-      className={cn(
-        "inline-flex items-center justify-center gap-3 rounded-xl px-5 py-2.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30",
-        variant === "solid" &&
-          "border border-emerald-600/30 bg-emerald-600 text-white shadow-lg hover:bg-emerald-600/90 active:scale-[0.99]",
-        variant === "outline" &&
-          "border border-border bg-background text-foreground hover:border-emerald-500/35 hover:bg-emerald-500/[0.06]",
-        className,
-      )}
     >
-      <div className="relative w-6 h-6 rounded-full overflow-hidden border border-white/20">
-        <img 
-          src="/atendente.png" 
-          alt="Atendente" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      {label}
+      <span className="relative z-10">FALAR COM VENDEDOR</span>
+      <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover/btn:translate-x-1 text-blue-600" />
     </a>
   )
 }

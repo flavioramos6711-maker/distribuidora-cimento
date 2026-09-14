@@ -112,10 +112,11 @@ export function fireWhatsappConversion(
 
   fireConversion({
     id,
-    label: `whatsapp_${source}`,
+    label: "btn_whatsapp",
     value,
     currency: "BRL",
     customParams: {
+      button_name: "btn_whatsapp",
       source,
       page,
     },

@@ -156,8 +156,12 @@ export default function CartPage() {
           </div>
           <button
             type="button"
+            data-track="btn_whatsapp"
+            data-button-name="btn_whatsapp"
+            name="btn_whatsapp"
+            data-source="checkout_finalize"
             onClick={() => void finalizeWhatsApp()}
-            className="mb-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-app transition duration-200 hover:scale-[1.02] hover:bg-emerald-600/92 active:scale-[0.98]"
+            className="mb-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-app transition duration-200 hover:scale-[1.02] hover:bg-emerald-600/92 active:scale-[0.98] btn-whatsapp-track"
           >
             <MessageCircle className="h-5 w-5 shrink-0" aria-hidden />
             Finalizar via WhatsApp

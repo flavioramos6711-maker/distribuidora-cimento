@@ -79,7 +79,11 @@ export default function StoreFooter() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackWhatsAppClick("footer_whatsapp")}
-              className="inline-flex items-center gap-3 bg-[#25D366]/10 border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-all rounded-2xl px-4 py-3 group"
+              data-source="footer_whatsapp"
+              data-track="btn_whatsapp"
+              data-button-name="btn_whatsapp"
+              data-name="btn_whatsapp"
+              className="inline-flex items-center gap-3 bg-[#25D366]/10 border border-[#25D366]/20 hover:bg-[#25D366]/20 transition-all rounded-2xl px-4 py-3 group btn-whatsapp-track"
             >
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white shadow-md">
                 <Phone className="h-5 w-5" />

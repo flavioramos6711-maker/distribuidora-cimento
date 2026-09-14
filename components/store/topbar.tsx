@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Phone } from "lucide-react"
 import { SITE } from "@/lib/site-config"
+import { trackWhatsAppClick } from "@/lib/track-whatsapp"
 
 export default function Topbar() {
   return (
@@ -11,7 +12,15 @@ export default function Topbar() {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <span className="text-slate-500">Televendas:</span>
-            <a href={`tel:+${SITE.whatsappE164}`} className="flex items-center gap-1.5 text-white hover:text-blue-400 transition-colors font-black tracking-widest">
+            <a
+              href={`tel:+${SITE.whatsappE164}`}
+              onClick={() => trackWhatsAppClick("topbar_phone")}
+              data-source="topbar_phone"
+              data-track="btn_whatsapp"
+              data-button-name="btn_whatsapp"
+              data-name="btn_whatsapp"
+              className="flex items-center gap-1.5 text-white hover:text-blue-400 transition-colors font-black tracking-widest btn-whatsapp-track"
+            >
               <Phone className="h-3 w-3 text-blue-500" />
               {SITE.phoneDisplay}
             </a>

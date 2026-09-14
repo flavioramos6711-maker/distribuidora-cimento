@@ -96,8 +96,12 @@ export default function PromocoesPage() {
             href="https://wa.me/5516996536403?text=Olá! Preciso de um orçamento relâmpago para minha obra."
             target="_blank"
             rel="noopener noreferrer"
+            data-track="btn_whatsapp"
+            data-button-name="btn_whatsapp"
+            data-name="btn_whatsapp"
+            data-source="promocoes_orcamento_relampago"
             onClick={() => trackWhatsAppClick("promocoes_orcamento_relampago")}
-            className="group flex h-16 min-w-[280px] items-center justify-center gap-3 rounded-2xl bg-[#F47920] px-8 text-lg font-black text-white shadow-xl transition-all hover:scale-105 active:scale-95"
+            className="group flex h-16 min-w-[280px] items-center justify-center gap-3 rounded-2xl bg-[#F47920] px-8 text-lg font-black text-white shadow-xl transition-all hover:scale-105 active:scale-95 btn-whatsapp-track"
           >
             SOLICITAR AGORA
             <Sparkles className="h-5 w-5 animate-pulse" />

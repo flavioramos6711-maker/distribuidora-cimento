@@ -243,8 +243,12 @@ export default function MinhaContaPage() {
                     href={waLink("Olá! Gostaria de um orçamento.")}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-track="btn_whatsapp"
+                    data-button-name="btn_whatsapp"
+                    data-name="btn_whatsapp"
+                    data-source="minha_conta"
                     onClick={() => trackWhatsAppClick("minha_conta", "/minha-conta", authUserId)}
-                    className="inline-flex items-center gap-2 rounded-xl border border-[#25d366] px-5 py-2.5 text-sm font-semibold text-[#128C7E] hover:bg-[#25d366]/10 min-h-[44px]"
+                    className="inline-flex items-center gap-2 rounded-xl border border-[#25d366] px-5 py-2.5 text-sm font-semibold text-[#128C7E] hover:bg-[#25d366]/10 min-h-[44px] btn-whatsapp-track"
                   >
                     <MessageCircle className="w-4 h-4" />
                     Orçamento

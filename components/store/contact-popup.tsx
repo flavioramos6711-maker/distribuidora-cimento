@@ -26,7 +26,7 @@ export default function ContactPopup({ children }: { children: React.ReactNode }
         <div className="relative flex justify-end p-4">
           <button 
             onClick={() => setOpen(false)}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#E91E63] text-white shadow-lg hover:scale-110 transition-transform"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#E91E63] text-white shadow-lg:hover:scale-110 transition-transform"
           >
             <X className="w-5 h-5" />
           </button>
@@ -38,7 +38,11 @@ export default function ContactPopup({ children }: { children: React.ReactNode }
           <a 
             href={`tel:+${SITE.whatsappE164}`}
             onClick={() => trackWhatsAppClick("contact_popup_phone")}
-            className="flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
+            data-track="btn_whatsapp"
+            data-button-name="btn_whatsapp"
+            data-name="btn_whatsapp"
+            data-source="contact_popup_phone"
+            className="btn-whatsapp-track flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
           >
             <div className="w-16 h-16 flex items-center justify-center bg-[#3F51B5] text-white group-hover:scale-105 transition-transform">
               <Phone className="w-7 h-7" />
@@ -51,7 +55,11 @@ export default function ContactPopup({ children }: { children: React.ReactNode }
             href={waLink}
             target="_blank"
             onClick={() => trackWhatsAppClick("contact_popup_whatsapp")}
-            className="flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
+            data-track="btn_whatsapp"
+            data-button-name="btn_whatsapp"
+            data-name="btn_whatsapp"
+            data-source="contact_popup_whatsapp"
+            className="btn-whatsapp-track flex items-center gap-4 bg-white border border-black/5 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:shadow-lg transition-all group overflow-hidden"
           >
             <div className="w-16 h-16 flex items-center justify-center bg-[#00E676] text-white group-hover:scale-105 transition-transform">
               <MessageCircle className="w-8 h-8 fill-current" />

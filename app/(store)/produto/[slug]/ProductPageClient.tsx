@@ -454,11 +454,16 @@ export function ProductPageClient({ product: initialProduct }: { product: Produc
                   href={waLink(`Olá! Tenho interesse no produto: ${product.name} — R$ ${Number(product.price).toFixed(2).replace(".", ",")} por ${product.unit}`)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  data-track="btn_whatsapp"
+                  data-button-name="btn_whatsapp"
+                  data-name="btn_whatsapp"
+                  data-source="product_page"
                   onClick={() => trackWhatsAppClick("product_page", `/produto/${product.slug}`)}
                   className={cn(
                     "flex h-16 w-full items-center justify-center gap-3 rounded-2xl",
                     "border-2 border-emerald-200 bg-emerald-50 text-lg font-black text-emerald-700",
-                    "transition-all hover:bg-emerald-100 hover:border-emerald-300 active:scale-95"
+                    "transition-all hover:bg-emerald-100 hover:border-emerald-300 active:scale-95",
+                    "btn-whatsapp-track"
                   )}
                 >
                   <svg viewBox="0 0 24 24" className="w-6 h-6 fill-current text-emerald-600">

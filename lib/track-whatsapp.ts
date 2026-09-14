@@ -22,7 +22,11 @@ declare global {
 function fireMetaPixelContact(source: WaClickSource) {
   try {
     if (typeof window !== "undefined" && typeof window.fbq === "function") {
-      window.fbq("track", "Contact", { content_name: source })
+      window.fbq("track", "Contact", {
+        content_name: "btn_whatsapp",
+        button_name: "btn_whatsapp",
+        source: source,
+      })
     }
   } catch (_) {}
 }
@@ -49,6 +53,8 @@ export function trackWhatsAppClick(
       window.dataLayer = window.dataLayer || []
       window.dataLayer.push({
         event: "whatsapp_click",
+        button_name: "btn_whatsapp",
+        event_label: "btn_whatsapp",
         wa_source: source,
         page_path: pagePath,
       })

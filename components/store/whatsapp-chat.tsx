@@ -122,7 +122,11 @@ export default function WhatsAppChat() {
                     window.open(waLink(input.value), "_blank")
                   }
                 }}
-                className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-primary transition-all hover:bg-primary hover:text-white"
+                data-track="btn_whatsapp"
+                data-button-name="btn_whatsapp"
+                name="btn_whatsapp"
+                data-source="chat_widget_typed"
+                className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-primary transition-all hover:bg-primary hover:text-white btn-whatsapp-track"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -134,7 +138,11 @@ export default function WhatsAppChat() {
       {/* Compact Floating Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-secondary shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 border-2 border-white overflow-hidden"
+        data-track="btn_whatsapp"
+        data-button-name="btn_whatsapp"
+        name="btn_whatsapp"
+        data-source="floating_button"
+        className="group relative w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl bg-secondary shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 border-2 border-white overflow-hidden btn-whatsapp-track"
       >
         {isOpen ? (
           <X className="w-8 h-8 text-primary" />
