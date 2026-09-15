@@ -19,8 +19,8 @@ const inter = Inter({
 
 // CSP nonce gerado por middleware - aqui apenas para referência
 const cspBase = process.env.NODE_ENV === 'production'
-  ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com https://*.google.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https: https://*.google.com https://*.google-analytics.com https://*.doubleclick.net https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.google.com.br; frame-src 'self' https://www.googletagmanager.com https://www.facebook.com https://*.doubleclick.net https://*.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
-  : "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.googletagmanager.com;"
+  ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com https://*.google.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https: https://*.google.com https://*.google-analytics.com https://*.doubleclick.net https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://ad.doubleclick.net https://*.doubleclick.net https://stats.g.doubleclick.net https://*.g.doubleclick.net https://*.google.com https://*.google.com.br https://connect.facebook.net https://*.facebook.com; frame-src 'self' https://www.googletagmanager.com https://www.facebook.com https://*.doubleclick.net https://*.google.com; object-src 'none'; base-uri 'self'; form-action 'self';"
+  : "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.google-analytics.com https://*.googletagmanager.com https://ad.doubleclick.net https://*.doubleclick.net https://connect.facebook.net;"
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettingsServer()
@@ -229,30 +229,6 @@ export default async function RootLayout({
           </>
         )}
 
-        {/* Google Ads Tag (gtag.js) */}
-        {googleAdsId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`}
-              strategy="afterInteractive"
-            />
-            <Script
-              id="google-ads-gtag"
-              strategy="afterInteractive"
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${googleAdsId}', {
-                    'cookie_flags': 'SameSite=None;Secure',
-                    'url_passthrough': true
-                  });
-                `,
-              }}
-            />
-          </>
-        )}
       </body>
     </html>
   )
