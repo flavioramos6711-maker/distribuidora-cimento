@@ -1,12 +1,14 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import { ArrowLeft, SlidersHorizontal, Search, Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+import { rawTokens, slugTokens, escapeLike } from "@/lib/search-normalize"
 
 const supabase = createClient()
 const PAGE_SIZE = 36
@@ -26,6 +28,21 @@ type Product = {
   is_new?: boolean
   is_discount?: boolean
   featured?: boolean
+  sku?: string | null
+}
+
+function pageNumbers(page: number, totalPages: number): (number | "…")[] {
+  if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1)
+  const window = new Set<number>([1, 2, page - 1, page, page + 1, totalPages - 1, totalPages])
+  const nums = [...window].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b)
+  const out: (number | "…")[] = []
+  let prev = 0
+  for (const n of nums) {
+    if (n - prev > 1) out.push("…")
+    out.push(n)
+    prev = n
+  }
+  return out
 }
 
 export default function ProductsPage() {
@@ -34,16 +51,18 @@ export default function ProductsPage() {
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [page, setPage] = useState(1)
 
-  // debounce busca por nome
+  // debounce 400ms da busca textual
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(nameQuery.trim()), 400)
+    return () => clearTimeout(t)
+  }, [nameQuery])
+
+  const q = debouncedQuery
+
   const handleSearch = (v: string) => {
     setNameQuery(v)
     setPage(1)
-    // debounce 400ms
-    setTimeout(() => setDebouncedQuery(v.trim()), 400)
   }
-  // se o usuário digitar, atualiza debounced após digitação
-  // usamos useMemo para disparar
-  const q = debouncedQuery.toLowerCase()
 
   const handleCategory = (id: string | "all") => {
     setCategoryId(id)
@@ -55,20 +74,31 @@ export default function ProductsPage() {
     return (data || []) as Category[]
   })
 
+  // Paginação e filtragem SERVER-SIDE no Supabase (suporta 4.738 itens)
   const { data, isLoading } = useSWR(
     ["products-paginated", categoryId, q, page],
     async () => {
+      const from = (page - 1) * PAGE_SIZE
+      const to = from + PAGE_SIZE - 1
       let query = supabase
         .from("products")
-        .select("id, name, slug, price, original_price, image_url, unit, stock, category_id, is_new, is_discount, featured", { count: "exact" })
+        .select("id, name, slug, price, original_price, image_url, unit, stock, category_id, is_new, is_discount, featured, sku", { count: "exact" })
         .eq("active", true)
         .not("image_url", "is", null)
         .order("featured", { ascending: false })
         .order("created_at", { ascending: false })
       if (categoryId !== "all") query = query.eq("category_id", categoryId)
-      if (q) query = query.ilike("name", `%${q}%`)
-      const from = (page - 1) * PAGE_SIZE
-      const to = from + PAGE_SIZE - 1
+      if (q) {
+        // Busca por tokens (AND) em 3 frentes (OR): nome original (acentuado),
+        // slug cru e slug normalizado — cobre "caue"→"Cauê", "cp2"→"CP II",
+        // "cimento 50kg" (tokens independentes, sem exigir contiguidade).
+        const rt = rawTokens(q).map(escapeLike)
+        const st = slugTokens(q).map(escapeLike)
+        const andName = rt.map((t) => `name.ilike.%${t}%`).join(",")
+        const andSlugRaw = rt.map((t) => `slug.ilike.%${t}%`).join(",")
+        const andSlugNorm = st.map((t) => `slug.ilike.%${t}%`).join(",")
+        query = query.or(`and(${andName}),and(${andSlugRaw}),and(${andSlugNorm})`)
+      }
       const { data, count, error } = await query.range(from, to)
       if (error) throw error
       return { products: (data || []) as Product[], total: count || 0 }
@@ -79,6 +109,8 @@ export default function ProductsPage() {
   const products = data?.products || []
   const total = data?.total || 0
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const pages = pageNumbers(safePage, totalPages)
 
   return (
     <div className="mx-auto max-w-7xl px-3 py-5 sm:px-4 sm:py-8 md:py-10">
@@ -110,7 +142,7 @@ export default function ProductsPage() {
         <div className="min-w-0 flex-1">
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">Catálogo</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {isLoading && !data ? "Carregando..." : `${total} produtos disponíveis${totalPages > 1 ? ` — página ${page} de ${totalPages}` : ""}`}
+            {isLoading && !data ? "Carregando..." : `${total.toLocaleString("pt-BR")} produtos disponíveis${totalPages > 1 ? ` — página ${safePage} de ${totalPages}` : ""}`}
           </p>
           <div className="relative mb-6 mt-4 max-w-lg">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -136,17 +168,37 @@ export default function ProductsPage() {
               )}
 
               {totalPages > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-2">
-                  <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))} className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white disabled:opacity-40">
+                <nav aria-label="Paginação do catálogo" className="mt-8 flex flex-wrap items-center justify-center gap-1.5">
+                  <button disabled={safePage <= 1} onClick={() => setPage(1)} className="hidden h-10 px-3 items-center justify-center rounded-full border bg-white text-xs font-bold text-slate-600 disabled:opacity-40 sm:inline-flex">
+                    Primeira
+                  </button>
+                  <button disabled={safePage <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))} aria-label="Página anterior" className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white disabled:opacity-40">
                     <ChevronLeft className="h-4 w-4" />
                   </button>
-                  <span className="px-3 text-sm text-muted-foreground">
-                    Página {page} de {totalPages}
-                  </span>
-                  <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))} className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white disabled:opacity-40">
+                  {pages.map((p, i) =>
+                    p === "…" ? (
+                      <span key={`gap-${i}`} className="px-1 text-sm text-muted-foreground">…</span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        aria-current={p === safePage ? "page" : undefined}
+                        className={cn(
+                          "inline-flex h-10 min-w-10 items-center justify-center rounded-full border px-2 text-sm font-bold transition",
+                          p === safePage ? "border-slate-900 bg-slate-900 text-white" : "bg-white text-slate-600 hover:bg-slate-50"
+                        )}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+                  <button disabled={safePage >= totalPages} onClick={() => setPage((p) => Math.min(totalPages, p + 1))} aria-label="Próxima página" className="inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white disabled:opacity-40">
                     <ChevronRight className="h-4 w-4" />
                   </button>
-                </div>
+                  <button disabled={safePage >= totalPages} onClick={() => setPage(totalPages)} className="hidden h-10 px-3 items-center justify-center rounded-full border bg-white text-xs font-bold text-slate-600 disabled:opacity-40 sm:inline-flex">
+                    Última
+                  </button>
+                </nav>
               )}
               {isLoading && data && (
                 <div className="mt-4 flex justify-center">

@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation"
 import { Suspense, useMemo } from "react"
 import useSWR from "swr"
 import { createClient } from "@/lib/supabase/client"
+import { matchesSearch } from "@/lib/search-normalize"
 import ProductCard from "@/components/store/product-card"
 import Link from "next/link"
 import { ArrowLeft, Search } from "lucide-react"
@@ -11,27 +12,39 @@ import { ArrowLeft, Search } from "lucide-react"
 const supabase = createClient()
 
 async function fetchActiveProducts() {
-  const { data, error } = await supabase.from("products").select("*").eq("active", true).order("name")
-  if (error) throw error
-  return data || []
+  // O PostgREST limita cada resposta a 1000 linhas — pagina até esgotar
+  // para a busca textual cobrir o catálogo inteiro (~4.738 produtos).
+  const PAGE = 1000
+  const all: any[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, name, slug, price, original_price, image_url, unit, stock, description")
+      .eq("active", true)
+      .not("image_url", "is", null)
+      .order("name")
+      .range(from, from + PAGE - 1)
+    if (error) throw error
+    if (!data || data.length === 0) break
+    all.push(...data)
+    if (data.length < PAGE) break
+  }
+  return all
 }
 
 function SearchResults() {
   const searchParams = useSearchParams()
   const qRaw = searchParams.get("q") || ""
   const q = qRaw.trim()
-  const qLower = q.toLowerCase()
 
   const { data: allProducts, isLoading } = useSWR(q ? "store-catalog-active-v1" : null, fetchActiveProducts)
 
   const products = useMemo(() => {
-    if (!allProducts || !qLower) return []
-    return allProducts.filter((p) => {
-      const name = (p.name as string).toLowerCase()
-      const desc = p.description ? String(p.description).toLowerCase() : ""
-      return name.includes(qLower) || desc.includes(qLower)
-    })
-  }, [allProducts, qLower])
+    if (!allProducts || !q) return []
+    return allProducts.filter((p) =>
+      matchesSearch({ name: String((p as any).name || ""), description: (p as any).description ? String((p as any).description) : "", slug: String((p as any).slug || "") }, q)
+    )
+  }, [allProducts, q])
 
   return (
     <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 sm:py-10">

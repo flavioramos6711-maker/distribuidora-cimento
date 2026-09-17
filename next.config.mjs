@@ -23,11 +23,24 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Permite fotos locais com ou sem cache-bust (?v=N) — equivale ao
+    // comportamento padrão do Next mais query strings em /images/**
+    localPatterns: [
+      { pathname: "/**" },
+      { pathname: "/**", search: "?*" },
+    ],
   },
   // Desativar header X-Powered-By para segurança
   poweredByHeader: false,
   // Performance: habilitar compressão e cache
   compress: true,
+  // Redirects forenses — elimina 404 nas rotas de anúncios (Google Ads)
+  async redirects() {
+    return [
+      { source: '/categoria/cimento', destination: '/categoria/cimentos', permanent: true },
+      { source: '/cimento/atacado', destination: '/cimento', permanent: false },
+    ]
+  },
   // Segurança: configurar headers de resposta
   async headers() {
     return [

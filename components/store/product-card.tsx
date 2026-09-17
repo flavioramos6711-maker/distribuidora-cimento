@@ -23,6 +23,7 @@ export type ProductCardProduct = {
   is_discount?: boolean
   review_count?: number
   avg_rating?: number
+  sku?: string | null
 }
 
 export function addToCart(product: ProductCardProduct, qty = 1) {
@@ -72,21 +73,6 @@ function CarriolaIcon({ className, filled }: { className?: string; filled?: bool
   )
 }
 
-// Gera uma cor de avatar baseada no nome do produto (consistente)
-function avatarColor(str: string) {
-  const colors = [
-    "from-blue-500 to-indigo-600",
-    "from-emerald-500 to-teal-600",
-    "from-violet-500 to-purple-600",
-    "from-orange-400 to-amber-500",
-    "from-rose-500 to-pink-600",
-    "from-cyan-500 to-blue-600",
-  ]
-  let hash = 0
-  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  return colors[Math.abs(hash) % colors.length]
-}
-
 export default function ProductCard({ product }: { product: ProductCardProduct }) {
   const [isWishlist, setIsWishlist] = useState(false)
   const initialImage = product.image_url || (product.images && product.images.length > 0 ? product.images[0] : null)
@@ -107,14 +93,12 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
     `Olá! Tenho interesse em: ${product.name} — R$ ${Number(product.price).toFixed(2)} (${product.unit})`,
   )
 
-  const gradient = avatarColor(product.name)
-
   return (
     <div
       className={cn(
-        "group relative flex flex-col h-full overflow-hidden rounded-2xl sm:rounded-[28px] border border-slate-100/80 bg-white",
-        "transition-all duration-500 ease-out",
-        "hover:shadow-[0_24px_48px_-12px_rgba(0,45,91,0.12)] hover:-translate-y-1 sm:hover:-translate-y-2 hover:border-slate-200",
+        "group relative flex flex-col h-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white",
+        "transition-all duration-300",
+        "hover:shadow-[0_16px_40px_-16px_rgba(0,45,91,0.25)] hover:-translate-y-0.5 hover:border-slate-300",
       )}
     >
       {/* ── Badges flutuantes ── */}
@@ -165,7 +149,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
         className="relative block aspect-square w-full overflow-hidden"
         aria-label={`Ver ${product.name}`}
       >
-        <div className={cn("absolute inset-0 opacity-5 bg-gradient-to-br", gradient)} />
+        <div className="absolute inset-0 bg-slate-50" />
 
         {imgSrc ? (
           <Image
@@ -173,7 +157,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
             alt={product.name}
             fill
             sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-            className="object-contain p-4 sm:p-6 transition-transform duration-700 ease-out group-hover:scale-[1.08]"
+            className="object-contain p-4 sm:p-5 transition-transform duration-500 group-hover:scale-[1.04]"
             onError={() => setImgSrc(null)}
           />
         ) : (
@@ -227,27 +211,31 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
           </div>
         </div>
 
-        {/* Nome */}
-        <Link href={`/produto/${product.slug}`} className="mb-3 block group/title">
-          <h3 className="line-clamp-2 text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors leading-tight">
+        {/* Nome — tipografia institucional de atacado */}
+        <Link href={`/produto/${product.slug}`} className="mb-2 block group/title">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-bold leading-snug text-slate-800 group-hover:text-[#002D5B] transition-colors">
             {product.name}
           </h3>
         </Link>
+        {product.sku && (
+          <p className="mb-2 text-[11px] font-medium tracking-wide text-slate-400">Cód. {product.sku}</p>
+        )}
 
-        {/* Preço */}
+        {/* Preço de atacado */}
         <div className="mt-auto">
-          <div className="flex flex-col mb-4">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">Preço de atacado</p>
+          <div className="flex flex-col mb-3">
             {product.original_price && product.original_price > product.price && (
-              <p className="text-[11px] text-slate-300 line-through font-semibold leading-none mb-1">
+              <p className="text-[11px] text-slate-400 line-through font-medium leading-none mb-1">
                 R$ {Number(product.original_price).toFixed(2).replace(".", ",")}
               </p>
             )}
             <div className="flex items-baseline gap-1">
-              <span className="text-[11px] font-black text-slate-400">R$</span>
-              <p className="text-2xl font-black text-[#001A4D] tracking-tight leading-none">
+              <span className="text-xs font-bold text-slate-500">R$</span>
+              <p className="text-[26px] font-extrabold text-[#002D5B] tracking-tight leading-none">
                 {Number(product.price).toFixed(2).replace(".", ",")}
               </p>
-              <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest self-end pb-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider self-end pb-0.5">
                 /{product.unit}
               </span>
             </div>
@@ -259,8 +247,8 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
               href={`/produto/${product.slug}`}
               className={cn(
                 "flex flex-1 h-10 sm:h-11 items-center justify-center rounded-xl",
-                "bg-blue-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-widest",
-                "transition-all hover:bg-blue-700 shadow-lg shadow-blue-600/20 active:scale-95"
+                "bg-[#002D5B] text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-widest",
+                "transition-all hover:bg-[#003d7a] shadow-md shadow-[#002D5B]/20 active:scale-95"
               )}
             >
               Ver Detalhes

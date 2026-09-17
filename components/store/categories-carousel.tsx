@@ -5,133 +5,129 @@ import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { cn } from "@/lib/utils"
 
 interface Category {
   id: string
   name: string
   slug: string
   image_url?: string | null
+  products?: { id: string }[] | null
 }
 
 interface CategoriesCarouselProps {
   categories: Category[]
 }
 
+// Fileira fotográfica com loop infinito + arrasto livre + autoplay suave.
 export default function CategoriesCarousel({ categories }: CategoriesCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: categories.length > 5,
+    loop: true,
     align: "start",
     skipSnaps: false,
-    duration: 35,
+    duration: 30,
   })
-
-  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false)
-  const [nextBtnEnabled, setNextBtnEnabled] = useState(false)
-
-  const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi])
-  const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi])
-
+  const [prevEnabled, setPrevEnabled] = useState(false)
+  const [nextEnabled, setNextEnabled] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return
-    setPrevBtnEnabled(emblaApi.canScrollPrev())
-    setNextBtnEnabled(emblaApi.canScrollNext())
+    setPrevEnabled(emblaApi.canScrollPrev())
+    setNextEnabled(emblaApi.canScrollNext())
   }, [emblaApi])
-
-  // Autoplay Effect
-  useEffect(() => {
-    if (!emblaApi || isPaused) return
-    const interval = setInterval(() => {
-      if (emblaApi.canScrollNext()) {
-        emblaApi.scrollNext()
-      } else {
-        emblaApi.scrollTo(0)
-      }
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [emblaApi, isPaused])
 
   useEffect(() => {
     if (!emblaApi) return
     onSelect()
     emblaApi.on("select", onSelect)
     emblaApi.on("reInit", onSelect)
+    emblaApi.on("pointerDown", () => setIsDragging(true))
+    emblaApi.on("pointerUp", () => setIsDragging(false))
   }, [emblaApi, onSelect])
 
-  if (categories.length === 0) return null
+  // Autoplay — avança sempre para frente; o loop faz a volta sem pulo.
+  // Pausa no hover e enquanto arrasta.
+  useEffect(() => {
+    if (!emblaApi || isPaused || isDragging) return
+    const id = setInterval(() => emblaApi.scrollNext(), 3200)
+    return () => clearInterval(id)
+  }, [emblaApi, isPaused, isDragging])
 
   if (categories.length === 0) return null
 
   return (
-    <section 
-      className="w-full" 
-      aria-label="Categorias"
+    <section
+      className="w-full"
+      aria-label="Categorias de produtos"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="relative">
-        <div className="overflow-hidden px-4 py-4" ref={emblaRef}>
-          <div className="flex touch-pan-y -ml-4">
+        {/* Fade edges */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-white to-transparent" />
+
+        <div className="cursor-grab overflow-hidden py-3 active:cursor-grabbing" ref={emblaRef}>
+          <div className="flex touch-pan-y gap-3 sm:gap-4">
             {categories.map((category) => (
-              <div
+              <Link
                 key={category.id}
-                className="min-w-0 shrink-0 grow-0 pl-4 basis-[45%] sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                href={`/categoria/${category.slug}`}
+                className="group/card flex w-40 shrink-0 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-500 hover:border-[#002D5B]/30 hover:shadow-lg active:scale-[0.98] sm:w-48"
               >
-                <Link
-                  href={`/categoria/${category.slug}`}
-                  className="group relative flex flex-col items-center gap-4 rounded-[2.5rem] p-4 transition-all hover:bg-white hover:shadow-app-lg active:scale-95"
-                >
-                  <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-white border border-slate-100 shadow-sm transition-all group-hover:shadow-xl group-hover:-translate-y-1 p-3">
-                    {category.image_url ? (
-                      <Image
-                        src={category.image_url}
-                        alt={category.name}
-                        fill
-                        className="object-contain p-3 transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 640px) 40vw, (max-width: 1024px) 25vw, 15vw"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-secondary/10 text-secondary font-black text-2xl uppercase">
-                        {category.name.charAt(0)}
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="text-center space-y-1">
-                    <span className="block text-xs font-black text-secondary uppercase tracking-widest transition-colors group-hover:text-primary">
-                      {category.name}
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-white p-2">
+                  {category.image_url ? (
+                    <Image
+                      src={category.image_url}
+                      alt={category.name}
+                      fill
+                      draggable={false}
+                      className="rounded-2xl object-contain transition-transform duration-700 ease-out group-hover/card:scale-[1.03]"
+                      sizes="200px"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center rounded-2xl bg-[#002D5B]/5 text-3xl font-black uppercase text-[#002D5B]/40">
+                      {category.name.charAt(0)}
+                    </div>
+                  )}
+                  {typeof category.products?.length === "number" && category.products.length > 0 && (
+                    <span className="absolute right-3 top-3 rounded-full bg-slate-950/70 px-2 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm">
+                      {category.products.length} {category.products.length === 1 ? "item" : "itens"}
                     </span>
-                    <div className="mx-auto h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-10" />
-                  </div>
-                </Link>
-              </div>
+                  )}
+                </div>
+                <div className="flex flex-1 items-center justify-center p-3 text-center">
+                  <span className="text-xs font-bold leading-snug text-slate-800 transition-colors group-hover/card:text-[#002D5B]">
+                    {category.name}
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
 
-        {/* Navigation Buttons */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 hidden md:flex justify-between pointer-events-none px-2 xl:-mx-8">
-          <button
-            onClick={scrollPrev}
-            disabled={!prevBtnEnabled}
-            className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-2xl glass text-secondary transition-all hover:bg-primary hover:text-white disabled:opacity-0 disabled:pointer-events-none"
-            aria-label="Anterior"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          <button
-            onClick={scrollNext}
-            disabled={!nextBtnEnabled}
-            className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-2xl glass text-secondary transition-all hover:bg-primary hover:text-white disabled:opacity-0 disabled:pointer-events-none"
-            aria-label="Próximo"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </div>
+        {/* Setas */}
+        <button
+          onClick={scrollPrev}
+          disabled={!prevEnabled}
+          className="absolute left-0 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition-all hover:border-[#002D5B] hover:text-[#002D5B] disabled:opacity-0 md:flex"
+          aria-label="Anterior"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <button
+          onClick={scrollNext}
+          disabled={!nextEnabled}
+          className="absolute right-0 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition-all hover:border-[#002D5B] hover:text-[#002D5B] disabled:opacity-0 md:flex"
+          aria-label="Próximo"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
     </section>
   )
 }
-

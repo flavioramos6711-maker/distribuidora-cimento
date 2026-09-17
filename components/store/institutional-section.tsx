@@ -1,42 +1,42 @@
 "use client"
 
 import useSWR from "swr"
-import { Building2, ShieldCheck, Truck, Award, CheckCircle2, Warehouse, Timer, Star, ArrowRight } from "lucide-react"
+import { Building2, ScrollText, Truck, MapPin, CheckCircle2, Warehouse, Timer, Star, ArrowRight, CreditCard, ShieldCheck } from "lucide-react"
 import { getSiteSettingsPublic } from "@/lib/fetchers/site-settings-public"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
 const pillars = [
   {
-    icon: Warehouse,
-    label: "Escala Industrial",
-    desc: "Fornecimento contínuo para obras de todos os portes.",
-    stat: "3.800+",
-    statLabel: "produtos",
+    icon: CreditCard,
+    label: "Parcele em até 12x",
+    desc: "Compre no cartão de crédito sem acréscimos e receba na sua obra.",
+    stat: "12x",
+    statLabel: "sem juros no cartão",
     accent: "#F47920",
   },
   {
-    icon: CheckCircle2,
-    label: "Certificação ABNT",
-    desc: "Materiais rastreados com parcerias sólidas no setor.",
-    stat: "100%",
-    statLabel: "certificado",
+    icon: Truck,
+    label: "Entrega com Descarga Inclusa",
+    desc: "Entregamos paletizado com munck diretamente no seu canteiro.",
+    stat: "Munck",
+    statLabel: "descarga inclusa",
     accent: "#2563eb",
   },
   {
-    icon: Timer,
-    label: "Logística Inteligente",
-    desc: "Entregas pontuais para manter seu cronograma em dia.",
-    stat: "48h",
-    statLabel: "prazo médio",
+    icon: ShieldCheck,
+    label: "Produtos com Garantia",
+    desc: "Todos os materiais com laudo ABNT NBR e nota fiscal eletrônica.",
+    stat: "100%",
+    statLabel: "garantia ABNT",
     accent: "#F47920",
   },
   {
-    icon: Star,
-    label: "Autoridade Atacadista",
-    desc: "Mais de 20 anos de experiência no mercado.",
-    stat: "20+",
-    statLabel: "anos",
+    icon: MapPin,
+    label: "PIX com Desconto Especial",
+    desc: "Pague à vista no PIX e ganhe desconto direto no preço final.",
+    stat: "PIX",
+    statLabel: "desconto na hora",
     accent: "#2563eb",
   },
 ]
@@ -77,16 +77,16 @@ export default function InstitutionalSection() {
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
                   <span className="h-1 w-10 rounded-full bg-blue-600" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">Nossa Identidade</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">Por que nos escolher?</span>
                 </div>
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.05]">
-                  Compromisso com a{" "}
-                  <span className="text-blue-600 italic">sua obra.</span>
+                  Sua obra merece{" "}
+                  <span className="text-blue-600 italic">o melhor.</span>
                 </h2>
               </div>
 
               <p className="text-base text-slate-500 leading-relaxed font-medium">
-                Somos o parceiro estratégico de construtoras e lojistas em todo o Brasil. Infraestrutura completa, melhores preços do mercado e logística própria de alta performance para garantir que sua obra nunca pare.
+                Materiais de construção com os melhores preços da região. Parcele em até 12x no cartão, pague com PIX e ganhe desconto, ou retire direto no nosso CD em Ribeirão Preto.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -94,13 +94,13 @@ export default function InstitutionalSection() {
                   href="/produtos"
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-slate-900 px-7 text-sm font-black text-white hover:bg-slate-800 shadow-md transition-all"
                 >
-                  Ver catálogo <ArrowRight className="h-4 w-4" />
+                  Ver produtos <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/sobre"
+                  href="/formas-de-pagamento"
                   className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 px-7 text-sm font-black text-slate-600 hover:border-blue-600 hover:text-blue-600 transition-colors"
                 >
-                  Sobre nós
+                  Formas de pagamento
                 </Link>
               </div>
             </div>
