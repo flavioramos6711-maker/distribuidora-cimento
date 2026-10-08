@@ -9,6 +9,8 @@ node_modules/
 
 # Build
 .next/
+.open-next/
+.wrangler/
 out/
 build/
 dist/
@@ -44,6 +46,9 @@ yarn-debug.log*
 # Testes
 coverage/
 .nyc_output/
+
+# Ambientais locais
+.dev.vars
 
 # Dados sensíveis
 *.pem
