@@ -5,7 +5,7 @@
 
 export const revalidate = 300
 
-import { createClient } from "@/lib/supabase/server"
+import { createPublicClient } from "@/lib/supabase/public"
 import { HeroBanner } from "@/components/store/hero-banner"
 import CategoriesCarousel from "@/components/store/categories-carousel"
 import ProductsCarousel from "@/components/store/products-carousel"
@@ -33,7 +33,7 @@ const PROD_FIELDS =
   "id, name, slug, price, original_price, image_url, unit, stock, category_id, is_new, is_discount, featured"
 
 async function fetchHome() {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
 
   const [
     featuredRes,
