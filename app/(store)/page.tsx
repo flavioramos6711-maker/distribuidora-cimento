@@ -3,7 +3,7 @@
 // Home B2B corporativa — seções por departamento
 // =============================================================================
 
-export const revalidate = 60
+export const revalidate = 300
 
 import { createClient } from "@/lib/supabase/server"
 import { HeroBanner } from "@/components/store/hero-banner"

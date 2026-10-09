@@ -1,12 +1,24 @@
 /** @type {import('next').NextConfig} */
 // Env: Next.js carrega .env, .env.local, .env.development.local, etc. na raiz deste projeto.
 // Turbopack (next dev --turbo) usa as mesmas regras; reinicie o dev server após mudar variáveis.
-const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://distribuidora-cimento-flavioramos6711-3618s-projects.vercel.app"
+const origin = process.env.NEXT_PUBLIC_SITE_URL || "https://atacadodeconstrucao.com"
 
 const nextConfig = {
   typescript: {
     // NUNCA ignore erros TypeScript em produção - isso mascara bugs reais
     ignoreBuildErrors: false,
+  },
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-toast',
+      'recharts',
+    ],
   },
   images: {
     unoptimized: false,

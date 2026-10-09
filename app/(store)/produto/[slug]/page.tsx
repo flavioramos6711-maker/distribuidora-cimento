@@ -9,7 +9,7 @@ import { createClient } from "@/lib/supabase/server"
 import { SITE } from "@/lib/site-config"
 import { ProductPageClient } from "./ProductPageClient"
 
-export const revalidate = 60
+export const revalidate = 3600
 
 // ─── Tipos ────────────────────────────────────────────────────────────
 type Review = {
@@ -22,6 +22,18 @@ type Review = {
 }
 
 // ─── Função de busca de produto no servidor ──────────────────────────
+export async function generateStaticParams() {
+  const { createClient } = await import('@/lib/supabase/server')
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('products')
+    .select('slug')
+    .eq('active', true)
+    .order('name')
+    .limit(200)
+  return (data ?? []).map((p: { slug: string }) => ({ slug: p.slug }))
+}
+
 async function getProduct(slug: string) {
   const supabase = await createClient()
   const { data, error } = await supabase
