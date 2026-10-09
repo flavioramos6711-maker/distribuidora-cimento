@@ -167,7 +167,7 @@ export default function ProductCard({ product }: { product: ProductCardProduct }
         )}
 
         {/* Botão "Adicionar" aparece no hover da imagem */}
-        <div className="absolute inset-x-3 bottom-3 z-20 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
+        <div className="absolute inset-x-3 bottom-3 z-20 max-sm:opacity-90 max-sm:translate-y-0 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 ease-out">
           <button
             onClick={(e) => {
               e.preventDefault()

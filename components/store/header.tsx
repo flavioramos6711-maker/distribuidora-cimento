@@ -182,7 +182,7 @@ export default function StoreHeader() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="fixed inset-0 top-[136px] z-50 bg-white lg:hidden animate-in slide-in-from-top-4 duration-300">
+        <div className="fixed inset-x-0 bottom-0 top-[125px] z-50 bg-white lg:hidden overflow-y-auto animate-in slide-in-from-top-2 duration-200">
           <div className="p-6 space-y-6">
             <Link href="/produtos" onClick={() => setMenuOpen(false)} className="flex items-center justify-between p-5 rounded-[24px] bg-slate-50 text-[11px] font-black uppercase tracking-widest text-slate-900 shadow-sm border border-slate-100">
               Catálogo Completo
