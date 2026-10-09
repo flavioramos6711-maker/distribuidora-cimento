@@ -19,6 +19,7 @@ export const WA_CLICK_SOURCES = [
   "promocoes_orcamento_relampago",
   "pro_solutions_banner",
   "concierge_flyout",
+  "mobile_bottom_nav",
 ] as const
 
 export type WaClickSource = (typeof WA_CLICK_SOURCES)[number]
@@ -46,5 +47,6 @@ export const WA_SOURCE_LABELS: Record<WaClickSource, string> = {
   promocoes_orcamento_relampago: "Promoções — Orçamento Relâmpago",
   pro_solutions_banner: "Banner de Soluções Pro",
   concierge_flyout: "Concierge Executivo B2B",
+  mobile_bottom_nav: "Navegação inferior mobile",
 }
 

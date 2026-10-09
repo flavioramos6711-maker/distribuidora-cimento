@@ -776,6 +776,33 @@ export function ProductPageClient({ product: initialProduct }: { product: Produc
           </a>
         </div>
       </div>
+
+      {/* ── STICKY BUY BAR MOBILE ── */}
+      <div className="fixed bottom-16 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200 p-3 shadow-2xl lg:hidden">
+        <div className="flex items-center justify-between gap-3 max-w-md mx-auto">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 leading-none">Preço de atacado</span>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="text-xs font-bold text-slate-600">R$</span>
+              <span className="text-xl font-black text-[#002D5B] leading-none">
+                {Number(product.price).toFixed(2).replace(".", ",")}
+              </span>
+              <span className="text-[10px] font-bold text-slate-400">/{product.unit}</span>
+            </div>
+          </div>
+          <a
+            href={waLink(`Olá! Gostaria de solicitar um orçamento para o produto ${product.name} (R$ ${Number(product.price).toFixed(2)}/${product.unit}).`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="btn_whatsapp"
+            data-button-name="btn_whatsapp"
+            data-source="product_sticky_mobile"
+            className="btn-whatsapp-track flex-1 flex items-center justify-center gap-2 h-11 rounded-xl bg-[#25D366] text-white text-xs font-black uppercase tracking-wider shadow-md hover:bg-[#20bd5a] active:scale-95 transition-all"
+          >
+            Pedir no WhatsApp
+          </a>
+        </div>
+      </div>
     </>
   )
 }
