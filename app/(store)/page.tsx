@@ -122,7 +122,7 @@ async function fetchHome() {
     aco: acoRes.data || [],
     hidraulica: hidraRes.data || [],
     acabamento,
-    slides: [],
+    slides,
     siteSettingsRes,
   }
 }
@@ -192,14 +192,7 @@ export default async function HomePage() {
   const data = await fetchHome()
   const siteSettingsData = (data as any).siteSettingsRes || null
 
-  const cmsSlides = siteSettingsData?.banner_images ? parseBannerImages(siteSettingsData.banner_images) : []
-  const initialSlides = cmsSlides.filter((s) => s.image_url?.trim()).map((s: any, i: number) => ({
-    key: `cms-${i}`,
-    image_url: s.image_url,
-    link: s.link ?? null,
-    title: s.title ?? null,
-    subtitle: s.subtitle ?? null,
-  }))
+  const initialSlides = data.slides && data.slides.length > 0 ? data.slides : []
 
   const leaders = pickLeaders(data.cimentos || [])
 
