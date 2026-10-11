@@ -120,7 +120,7 @@ def main():
     if not url or not service_key:
         # tenta fallback hardcoded do projeto
         url="https://sdafczehznywoeqnfgph.supabase.co"
-        service_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkYWZjemVoem55d29lcW5mZ3BoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjExMjk0OCwiZXhwIjoyMDg3Njg4OTQ4fQ.jDUDj3hH5KGlzWISUMi5MIp_u5QiQ3aV0JBwV7PT3S8"
+        service_key=""
         print(f"[!] .env.local não encontrado, usando fallback {url}")
 
     url=url.rstrip("/")

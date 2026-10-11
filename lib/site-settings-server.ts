@@ -1,9 +1,9 @@
-import { createClient } from "@/lib/supabase/server"
+import { createPublicClient } from "@/lib/supabase/public"
 import { SITE_SETTINGS_ROW_ID, type SiteSettingsRow } from "@/lib/site-settings"
 
 export async function getSiteSettingsServer(): Promise<SiteSettingsRow | null> {
   try {
-    const supabase = await createClient()
+    const supabase = createPublicClient()
     const { data, error } = await supabase
       .from("site_settings")
       .select("*")

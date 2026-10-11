@@ -55,6 +55,13 @@ export async function proxy(request: NextRequest) {
 
   applySecurityHeaders(response)
 
+  // ─── EARLY RETURN PARA ROTAS PÚBLICAS (Visitantes do anúncio não pagam pedágio) ───
+  const requiresAuth = pathname.startsWith("/admin") || pathname.startsWith("/minha-conta") || pathname.startsWith("/api/admin")
+  if (!requiresAuth || pathname.startsWith("/admin/login")) {
+    return response
+  }
+
+  // ─── APENAS ROTAS PROTEGIDAS EXECUTAM AUTH NO SUPABASE ───
   let supabaseResponse = response
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -75,7 +82,6 @@ export async function proxy(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Proteção de rotas administrativas
   if (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) {
     if (!user) {
       const redirectUrl = request.nextUrl.clone()
@@ -85,31 +91,13 @@ export async function proxy(request: NextRequest) {
       supabaseResponse.cookies.getAll().forEach((c) => redirectRes.cookies.set(c.name, c.value, c))
       return redirectRes
     }
-    const { data: adminRow } = await supabase.from("admins").select("id").eq("id", user.id).maybeSingle()
-    if (!adminRow) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = "/admin/login"
-      redirectUrl.searchParams.set("error", "acesso_negado")
-      const redirectRes = NextResponse.redirect(redirectUrl)
-      supabaseResponse.cookies.getAll().forEach((c) => redirectRes.cookies.set(c.name, c.value, c))
-      return redirectRes
-    }
   }
 
-  // Proteção de rotas protegidas
-  if (pathname.startsWith("/protected") && !user) {
+  if (pathname.startsWith("/minha-conta") && !user) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = "/login"
-    const redirectRes = NextResponse.redirect(redirectUrl)
-    supabaseResponse.cookies.getAll().forEach((c) => redirectRes.cookies.set(c.name, c.value, c))
-    return redirectRes
-  }
-
-  // API route security headers
-  if (pathname.startsWith("/api/")) {
-    response.headers.set("x-api-route", "true")
-    response.headers.set("X-RateLimit-Limit", "100")
-    response.headers.set("X-RateLimit-Window", "60")
+    redirectUrl.searchParams.set("redirect", "/minha-conta")
+    return NextResponse.redirect(redirectUrl)
   }
 
   return supabaseResponse

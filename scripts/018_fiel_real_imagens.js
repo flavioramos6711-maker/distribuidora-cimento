@@ -2,7 +2,7 @@
 // e reorganiza categorias/subcategorias fiel 333obra
 const {createClient}=require('@supabase/supabase-js');
 let ddg; try{ ddg=require('duckduckgo-images-api'); }catch(e){ console.log('ddg not found',e.message); }
-const c=createClient('https://sdafczehznywoeqnfgph.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkYWZjemVoem55d29lcW5mZ3BoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjExMjk0OCwiZXhwIjoyMDg3Njg4OTQ4fQ.jDUDj3hH5KGlzWISUMi5MIp_u5QiQ3aV0JBwV7PT3S8');
+const c=createClient('https://sdafczehznywoeqnfgph.supabase.co',process.env.SUPABASE_SERVICE_ROLE_KEY || "");
 
 // imagens reais curadas MANUAIS (URLs que realmente existem - verificadas via CDN Leroy/Telhanorte/Quartzolit)
 const REAL_IMAGES={

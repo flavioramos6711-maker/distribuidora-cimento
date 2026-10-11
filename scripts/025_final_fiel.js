@@ -1,5 +1,5 @@
 const {createClient}=require('@supabase/supabase-js');
-const c=createClient('https://sdafczehznywoeqnfgph.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkYWZjemVoem55d29lcW5mZ3BoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjExMjk0OCwiZXhwIjoyMDg3Njg4OTQ4fQ.jDUDj3hH5KGlzWISUMi5MIp_u5QiQ3aV0JBwV7PT3S8');
+const c=createClient('https://sdafczehznywoeqnfgph.supabase.co',process.env.SUPABASE_SERVICE_ROLE_KEY || "");
 
 const MAPA_IMAGENS_333OBRA={
  'cimentos':'https://www.333obra.com.br/media/catalog/product/c/i/cimento_votoran_50kg_1.jpg',

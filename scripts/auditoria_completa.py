@@ -27,7 +27,7 @@ def supa_headers(key):
 def main():
     env=load_env()
     url=(env.get("NEXT_PUBLIC_SUPABASE_URL") or "https://sdafczehznywoeqnfgph.supabase.co").rstrip("/")
-    key=env.get("SUPABASE_SERVICE_ROLE_KEY") or env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") or "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNkYWZjemVoem55d29lcW5mZ3BoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjExMjk0OCwiZXhwIjoyMDg3Njg4OTQ4fQ.jDUDj3hH5KGlzWISUMi5MIp_u5QiQ3aV0JBwV7PT3S8"
+    key=env.get("SUPABASE_SERVICE_ROLE_KEY") or env.get("NEXT_PUBLIC_SUPABASE_ANON_KEY") or ""
     headers=supa_headers(key)
     client=httpx.Client(timeout=30, headers=headers)
 
