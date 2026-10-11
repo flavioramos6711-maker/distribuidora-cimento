@@ -48,10 +48,26 @@ export default function CartPage() {
   const totalItems = cart.reduce((sum, i) => sum + i.qty, 0)
 
   async function finalizeWhatsApp() {
-    const supabase = createClient()
-    const { data } = await supabase.auth.getUser()
-    const email = data.user?.email ?? undefined
-    const code = generateOrderCode()
+    // 1. Salvar pedido no banco via API (total recalculado no servidor)
+    let code = generateOrderCode()
+    let email: string | undefined
+    try {
+      const supabase = createClient()
+      const { data: userData } = await supabase.auth.getUser()
+      email = userData.user?.email ?? undefined
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: cart, email }),
+      })
+      if (res.ok) {
+        const json = await res.json()
+        code = json.code ?? code
+      }
+    } catch (_) {
+      // Fallback: continua com código local mesmo se a API falhar
+    }
+    // 2. Salvar localmente (rastreamento no "Minha Conta")
     const lines = cart.map((i) => `- ${i.name} (x${i.qty}) — R$ ${(i.price * i.qty).toFixed(2)}`)
     const summary = lines.join("\n")
     saveLocalOrder({
@@ -61,6 +77,7 @@ export default function CartPage() {
       total,
       itemsSummary: summary,
     })
+    // 3. Abrir WhatsApp
     const msg = `Olá! Quero finalizar o pedido *${code}*:\n\n${summary}\n\n*Total:* R$ ${total.toFixed(2)}`
     trackWhatsAppClick("checkout_finalize", "/carrinho")
     window.open(waLink(msg), "_blank", "noopener,noreferrer")
