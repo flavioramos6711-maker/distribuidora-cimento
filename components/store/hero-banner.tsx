@@ -83,6 +83,7 @@ async function fetchSlides(): Promise<Slide[]> {
 export function HeroBanner({ initialSlides }: { initialSlides?: Slide[] }) {
   const { data: slides, isLoading } = useSWR<Slide[]>("store-hero-slides", fetchSlides, {
     fallbackData: initialSlides,
+    revalidateOnMount: initialSlides && initialSlides.length > 0 ? false : true,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   })

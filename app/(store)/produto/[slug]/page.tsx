@@ -5,7 +5,7 @@
 // =============================================================================
 
 import { notFound } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+import { createPublicClient } from "@/lib/supabase/public"
 import { SITE } from "@/lib/site-config"
 import { ProductPageClient } from "./ProductPageClient"
 
@@ -23,8 +23,8 @@ type Review = {
 
 // ─── Função de busca de produto no servidor ──────────────────────────
 export async function generateStaticParams() {
-  const { createClient } = await import('@/lib/supabase/server')
-  const supabase = await createClient()
+  const { createPublicClient } = await import('@/lib/supabase/public')
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from('products')
     .select('slug')
@@ -35,7 +35,7 @@ export async function generateStaticParams() {
 }
 
 async function getProduct(slug: string) {
-  const supabase = await createClient()
+  const supabase = createPublicClient()
   const { data, error } = await supabase
     .from("products")
     .select("*, categories(name, slug)")
