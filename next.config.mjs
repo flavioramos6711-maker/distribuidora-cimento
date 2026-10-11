@@ -82,6 +82,30 @@ const nextConfig = {
         ],
       },
       {
+        source: "/",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" },
+        ],
+      },
+      {
+        source: "/produto/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=7200" },
+        ],
+      },
+      {
+        source: "/categoria/:slug*",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=600, stale-while-revalidate=1200" },
+        ],
+      },
+      {
+        source: "/produtos",
+        headers: [
+          { key: "Cache-Control", value: "public, s-maxage=300, stale-while-revalidate=600" },
+        ],
+      },
+      {
         source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Origin", value: origin },
