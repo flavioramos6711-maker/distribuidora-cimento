@@ -14,8 +14,8 @@ import TestimonialsCarousel from "@/components/store/testimonials-carousel"
 import Link from "next/link"
 import Image from "next/image"
 import {
-  Truck, ShieldCheck, ReceiptText, CreditCard,
-  ChevronRight, BadgeCheck,
+  Truck, ShieldCheck, CreditCard,
+  ChevronRight, BadgeCheck, Zap, Package,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SITE, waLink } from "@/lib/site-config"
@@ -197,10 +197,10 @@ export default async function HomePage() {
   const leaders = pickLeaders(data.cimentos || [])
 
   const trustPillars = [
-    { icon: CreditCard, title: "Parcele em até 12x", desc: "No cartão de crédito sem acréscimos" },
-    { icon: Truck, title: "Entrega com Descarga Inclusa", desc: "Munck e paletizado na sua obra" },
-    { icon: ShieldCheck, title: "Produtos com Garantia ABNT", desc: "Laudos técnicos em todas as entregas" },
-    { icon: ReceiptText, title: "PIX com Desconto", desc: "Melhor preço pagando à vista no PIX" },
+    { icon: CreditCard, title: "Preço de Atacado", desc: "Para pessoa física — sem exigência de CNPJ" },
+    { icon: Zap, title: "Parcele 12x", desc: "No cartão ou PIX parcelado sem acréscimos" },
+    { icon: Truck, title: "Entrega Descarregada", desc: "Munck ou paletizado direto na sua obra" },
+    { icon: Package, title: "Direto da Fábrica", desc: "Produtos certificados ABNT com laudos técnicos" },
   ]
 
   return (
@@ -210,18 +210,15 @@ export default async function HomePage() {
         <HeroBanner initialSlides={initialSlides} />
       </div>
 
-      {/* Faixa corporativa B2B sob o hero */}
+      {/* ── FAIXA ABERTO A TODOS ── */}
       <section className="border-b border-slate-800 bg-slate-950 text-white">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-6 py-5 sm:flex-row sm:justify-between">
           <div className="flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-widest">
             <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-emerald-300">
-              <BadgeCheck className="h-4 w-4" /> Parcele em até 12x no cartão
+              <BadgeCheck className="h-4 w-4" /> Aberto a Todos · Sem Exigência de CNPJ
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-white/80">
-              <Truck className="h-4 w-4" /> PIX com desconto especial
-            </span>
-            <span className="hidden rounded-full border border-white/15 bg-white/5 px-4 py-2 text-white/80 md:inline-flex">
-              Entrega programada para SP e região
+              <Truck className="h-4 w-4" /> Parcele 12x · PIX com Desconto
             </span>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -246,17 +243,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── BARRA DE CONFIANÇA CORPORATIVA ── */}
-      <section className="border-b border-slate-200/70 bg-slate-50/80">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-6 py-10 sm:py-12 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-slate-200">
+      {/* ── PILARES DE CONFIANÇA — PREMIUM 2×2 ── */}
+      <section className="border-b border-slate-200/70 bg-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-slate-100 lg:grid-cols-4 lg:divide-y-0">
           {trustPillars.map((item) => (
-            <div key={item.title} className="flex items-center gap-4 px-2 sm:px-8">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200/80 bg-white text-slate-800 shadow-xs">
+            <div key={item.title} className="flex flex-col items-center gap-3 px-6 py-8 text-center sm:flex-row sm:text-left sm:px-8 sm:py-10">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-sm">
                 <item.icon className="h-5 w-5" />
               </div>
               <div>
                 <h4 className="text-sm font-black leading-snug tracking-tight text-slate-900">{item.title}</h4>
-                <p className="text-xs font-medium leading-relaxed text-slate-500">{item.desc}</p>
+                <p className="mt-0.5 text-xs font-medium leading-relaxed text-slate-500">{item.desc}</p>
               </div>
             </div>
           ))}
