@@ -88,16 +88,28 @@ function shuffle(arr) {
 
 async function main() {
   console.log("🔍 Buscando todos os produtos ativos...")
-  const { data: products, error } = await supabase
-    .from("products")
-    .select("id, name")
-    .eq("active", true)
-    .order("name")
-
-  if (error) {
-    console.error("❌ Erro ao buscar produtos:", error.message)
-    process.exit(1)
+  // Paginação para buscar todos os produtos (Supabase limita 1000/query)
+  let products = []
+  let from = 0
+  const PAGE = 1000
+  while (true) {
+    const { data, error: pageError } = await supabase
+      .from("products")
+      .select("id, name")
+      .eq("active", true)
+      .order("name")
+      .range(from, from + PAGE - 1)
+    if (pageError) {
+      console.error("❌ Erro ao buscar produtos:", pageError.message)
+      process.exit(1)
+    }
+    if (!data || data.length === 0) break
+    products = products.concat(data)
+    if (data.length < PAGE) break
+    from += PAGE
+    console.log(`📦 Carregados ${products.length} produtos até agora...`)
   }
+  const error = null // compatibilidade com o bloco abaixo
 
   console.log(`✅ ${products.length} produtos encontrados. Iniciando geração de avaliações...\n`)
 
